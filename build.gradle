@@ -1,0 +1,159 @@
+plugins {
+    id 'jacoco'
+    id 'java-library'
+    id 'maven-publish'
+
+    id 'org.sonarqube' version '3.0'
+    id 'com.diffplug.gradle.spotless' version '4.4.0'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+group = groupId
+version = artifactVersion
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+spotless {
+    java {
+        encoding 'UTF-8'
+        removeUnusedImports()
+        eclipse().configFile "${projectDir}/config/codestyle.xml"
+    }
+}
+
+configurations {
+    all {
+        resolutionStrategy {
+            cacheChangingModulesFor(1000, 'seconds') // refresh cache for snapshots
+        }
+    }
+    micronautBom
+    compileOnly.extendsFrom(micronautBom)
+    implementation.extendsFrom(micronautBom)
+    annotationProcessor.extendsFrom(micronautBom)
+    testAnnotationProcessor.extendsFrom(micronautBom)
+}
+
+dependencies {
+    micronautBom enforcedPlatform('io.micronaut:micronaut-bom:2.1.2')
+
+    annotationProcessor 'io.micronaut:micronaut-inject-java'
+    annotationProcessor 'io.micronaut:micronaut-graal'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    compileOnly 'org.graalvm.nativeimage:svm'
+
+    implementation 'io.micronaut:micronaut-inject-java'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
+
+    testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+
+    environment([
+            "SECURITY_ENABLED": "false"
+    ])
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.incremental = true
+    options.fork = true
+}
+
+tasks.withType(Test) {
+    reports.html.enabled = false
+    reports.junitXml.enabled = false
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'AWS Lambda GraalVM Library'
+                url = 'https://github.com/GoodforGod/aws-lambda-native'
+                description = 'Library for building GraalVM native AWS Lambdas.'
+
+                license {
+                    name = 'Apache License 2.0'
+                    url = 'https://github.com/GoodforGod/aws-lambda-native/blob/master/LICENSE'
+                    distribution = 'repo'
+                }
+
+                developer {
+                    id = 'GoodforGod'
+                    name = 'Anton Kurako'
+                    email = 'goodforgod.dev@gmail.com'
+                    url = 'https://github.com/GoodforGod'
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/GoodforGod/aws-lambda-native.git'
+                    developerConnection = 'scm:git:ssh://GoodforGod/aws-lambda-native.git'
+                    url = 'https://github.com/GoodforGod/aws-lambda-native/tree/master'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username System.getenv("OSS_USERNAME")
+                password System.getenv("OSS_PASSWORD")
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestReport
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
+if (project.hasProperty("signing.keyId")) {
+    apply plugin: 'signing'
+    signing {
+        sign publishing.publications.mavenJava
+    }
+}
+
+javadoc {
+    options.encoding = "UTF-8"
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
