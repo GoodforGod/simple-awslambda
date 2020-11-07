@@ -6,11 +6,20 @@ package io.lambda.aws.error;
  */
 public class HttpException extends LambdaException {
 
-    private final int code;
+    private int code = 500;
+
+    public HttpException(String message) {
+        super(message);
+    }
 
     public HttpException(int code, String message) {
         super(message);
         this.code = code;
+    }
+
+    public HttpException code(int code) {
+        this.code = code;
+        return this;
     }
 
     public int getCode() {

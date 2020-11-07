@@ -1,23 +1,22 @@
 package io.lambda.aws;
 
 import io.lambda.aws.convert.Converter;
+import io.lambda.aws.http.AwsHttpClient;
+import io.lambda.aws.http.impl.NativeAwsHttpClient;
 import io.lambda.aws.logger.LambdaLogger;
 import io.lambda.aws.model.AwsRequestEvent;
 import io.lambda.aws.model.AwsResponseEvent;
-import io.lambda.aws.model.Pair;
+import io.lambda.aws.http.AwsHttpResponse;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Introspected;
-import io.micronaut.core.reflect.GenericTypeUtils;
 import io.micronaut.core.util.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.util.Map;
+
+import static io.lambda.aws.utils.TimeUtils.getTime;
+import static io.lambda.aws.utils.TimeUtils.timeSpent;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -35,11 +34,6 @@ public class AwsLambdaRuntime {
     private static final String NEXT_INVOCATION_URI = "/2018-06-01/runtime/invocation/next";
     private static final String INIT_ERROR = "/2018-06-01/runtime/init/error";
 
-    private final HttpClient httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMinutes(1))
-            .followRedirects(HttpClient.Redirect.NORMAL)
-            .build();
-
     public static void main(String[] args) {
         try {
             new AwsLambdaRuntime().invoke(args);
@@ -53,65 +47,43 @@ public class AwsLambdaRuntime {
         final long contextStart = getTime();
         final ApplicationContextBuilder builder = ApplicationContext.builder().args(args);
         try (final ApplicationContext context = builder.build().start()) {
-            final Lambda function = context.getBean(Lambda.class);
+            final AwsEventHandler requestHandler = context.getBean(AwsEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
             final LambdaLogger logger = context.getBean(LambdaLogger.class);
-            logger.debug("Context startup took: ", contextStart);
+            final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
+            logger.debug("Context startup took: %s", timeSpent(contextStart));
 
-            final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
-            logger.debug("Function %s with request type '%s' and response type '%s' found",
-                    function.getClass(), functionArgs.getRight(), functionArgs.getLeft());
-
-            logger.debug("AWS runtime uri: " + apiEndpoint);
+            logger.debug("AWS runtime uri: %s", apiEndpoint);
             final URI invocationUri = apiEndpoint.resolve(NEXT_INVOCATION_URI);
-            logger.debug("Starting request parsing for: " + invocationUri);
-            final HttpRequest awsApiReq = HttpRequest.newBuilder(invocationUri).GET().build();
+            logger.debug("Starting request parsing for: %s", invocationUri);
 
             while (!Thread.currentThread().isInterrupted()) {
-                final HttpResponse<String> httpRequest = httpClient.send(awsApiReq, HttpResponse.BodyHandlers.ofString());
-                if (httpRequest.body() == null || httpRequest.body().isEmpty())
+                final AwsHttpResponse httpRequest = httpClient.get(invocationUri);
+                if (StringUtils.isEmpty(httpRequest.body()))
                     throw new IllegalArgumentException("Request body is not present!");
 
-                final AwsRequestEvent requestEvent = converter.convertToType(httpRequest.body(), AwsRequestEvent.class);
-                final String requestId = httpRequest.headers().firstValue(LAMBDA_RUNTIME_AWS_REQUEST_ID).orElseThrow();
+                final AwsRequestEvent requestEvent = converter.convertToType(httpRequest.body(), AwsRequestEvent.class)
+                        .setRequestId(httpRequest.headerAnyOrThrow(LAMBDA_RUNTIME_AWS_REQUEST_ID));
                 try {
-                    final long responseStart = getTime();
-                    logger.debug("Function request body: %s", requestEvent.getBody());
-                    logger.debug("Starting function processing...");
-                    final Object functionInput = converter.convertToType(requestEvent.getBody(), functionArgs.getRight());
-                    final Object functionOutput = function.handle(functionInput);
-                    logger.info("Function processing took: %s", timeSpent(responseStart));
+                    final AwsResponseEvent responseEvent = requestHandler.handle(requestEvent);
+                    final URI responseUri = getResponseUri(apiEndpoint, requestEvent.getRequestId());
 
                     final long respondingStart = getTime();
-                    final String responseBody = converter.convertToJson(functionOutput);
-                    logger.debug("Function response body: %s", responseBody);
-                    final AwsResponseEvent responseEvent = new AwsResponseEvent()
-                            .setBody(responseBody)
-                            .setHeaders(Map.of("Content-Type", "application/json"));
-
-                    final String body = converter.convertToJson(responseEvent);
-                    final URI responseUri = getResponseUri(apiEndpoint, requestId);
-
-                    logger.debug("Starting responding to AWS: " + responseUri);
-                    final HttpRequest eventRequest = build(responseUri, body);
-                    final HttpResponse<String> sent = httpClient.send(eventRequest, HttpResponse.BodyHandlers.ofString());
-
-                    logger.info("Responding to AWS took: ", respondingStart);
-                    logger.info("Response from AWS: " + sent.body().strip());
+                    logger.debug("Starting responding to AWS: %s", responseUri);
+                    final AwsHttpResponse sent = httpClient.post(responseUri, responseEvent.getBody());
+                    logger.info("Responding to AWS took: %s", timeSpent(respondingStart));
+                    logger.info("Response from AWS: %s", sent.body().strip());
                 } catch (Exception e) {
-                    logger.error("Reporting invocation error: " + e.getMessage());
-                    respondWithErrorToAws(getErrorResponseUri(apiEndpoint, requestId), e);
+                    logger.error("Reporting invocation error: %s", e.getMessage());
+                    final URI uri = getErrorResponseUri(apiEndpoint, requestEvent.getRequestId());
+                    httpClient.postAndForget(uri, getErrorResponse(e));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            respondWithErrorToAws(apiEndpoint.resolve(INIT_ERROR), e);
+            final NativeAwsHttpClient httpClient = new NativeAwsHttpClient();
+            httpClient.postAndForget(apiEndpoint.resolve(INIT_ERROR), getErrorResponse(e));
         }
-    }
-
-    private <T extends Lambda> Pair<Class, Class> getInterfaceGenericType(T t) {
-        final Class[] args = GenericTypeUtils.resolveInterfaceTypeArguments(t.getClass(), Lambda.class);
-        return new Pair<>(args[0], args[1]);
     }
 
     private static URI getResponseUri(URI apiEndpoint, String requestId) {
@@ -120,20 +92,6 @@ public class AwsLambdaRuntime {
 
     private static URI getErrorResponseUri(URI apiEndpoint, String requestId) {
         return apiEndpoint.resolve("/2018-06-01/runtime/invocation/" + requestId + "/error");
-    }
-
-    private void respondWithErrorToAws(URI uri, Throwable e) throws Exception {
-        final String body = getErrorResponse(e);
-        final HttpRequest eventRequest = build(uri, body);
-        httpClient.send(eventRequest, HttpResponse.BodyHandlers.discarding());
-    }
-
-    private static HttpRequest build(URI uri, String body) {
-        return HttpRequest.newBuilder(uri)
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .header("Content-Type", "application/json")
-                .timeout(Duration.ofSeconds(5))
-                .build();
     }
 
     private static URI getRuntimeApiEndpoint() throws URISyntaxException {
@@ -148,14 +106,5 @@ public class AwsLambdaRuntime {
     private static String getErrorResponse(Throwable e) {
         return String.format("{\"errorMessage\":\"%s\", \"errorType\":\"%s\"}",
                 e.getMessage(), e.getClass().getSimpleName());
-    }
-
-    private static long getTime() {
-        return System.currentTimeMillis();
-    }
-
-    private static String timeSpent(long started) {
-        final long diff = getTime() - started;
-        return diff + " millis";
     }
 }

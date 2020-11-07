@@ -15,7 +15,7 @@ public class AwsResponseEvent {
 
     private int statusCode = 200;
     private Map<String, String> headers;
-    private Object body;
+    private String body;
     private boolean isBase64Encoded = false;
 
     public AwsResponseEvent addHeader(String name, String value) {
@@ -43,11 +43,11 @@ public class AwsResponseEvent {
         return this;
     }
 
-    public Object getBody() {
+    public String getBody() {
         return body;
     }
 
-    public AwsResponseEvent setBody(Object body) {
+    public AwsResponseEvent setBody(String body) {
         this.body = body;
         return this;
     }
