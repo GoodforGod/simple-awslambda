@@ -35,18 +35,24 @@ public class AwsEventHandler {
     }
 
     public AwsResponseEvent handle(AwsRequestEvent requestEvent) {
+        logger.debug("Function request body: %s", requestEvent.getBody());
         final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
         logger.debug("Function %s with request type '%s' and response type '%s' found",
                 function.getClass(), functionArgs.getRight(), functionArgs.getLeft());
 
         final long responseStart = getTime();
-        logger.debug("Function request body: %s", requestEvent.getBody());
         logger.debug("Starting function processing...");
-        final Object functionInput = converter.convertToType(requestEvent.getBody(), functionArgs.getRight());
+        final Object functionInput = (String.class.equals(functionArgs.getRight()))
+                ? requestEvent.getBody()
+                : converter.convertToType(requestEvent.getBody(), functionArgs.getRight());
+
         final Object functionOutput = function.handle(functionInput);
         logger.info("Function processing took: %s", timeSpent(responseStart));
 
-        final String responseBody = converter.convertToJson(functionOutput);
+        final String responseBody = (functionOutput instanceof String)
+                ? (String) functionOutput
+                : converter.convertToJson(functionOutput);
+
         logger.debug("Function response body: %s", responseBody);
         return new AwsResponseEvent()
                 .setBody(responseBody)

@@ -96,12 +96,12 @@ publishing {
 
             pom {
                 name = 'AWS Lambda GraalVM Runtime'
-                url = 'https://github.com/GoodforGod/aws-lambda-runtime'
+                url = "https://github.com/GoodforGod/$artifactId"
                 description = 'Runtime for building GraalVM compatible AWS Lambdas.'
 
                 license {
-                    name = 'Apache License 2.0'
-                    url = 'https://github.com/GoodforGod/aws-lambda-runtime/blob/master/LICENSE'
+                    name = 'MIT License'
+                    url = "https://github.com/GoodforGod/$artifactId/blob/master/LICENSE"
                     distribution = 'repo'
                 }
 
@@ -113,9 +113,9 @@ publishing {
                 }
 
                 scm {
-                    connection = 'scm:git:git://github.com/GoodforGod/aws-lambda-runtime.git'
-                    developerConnection = 'scm:git:ssh://GoodforGod/aws-lambda-runtime.git'
-                    url = 'https://github.com/GoodforGod/aws-lambda-runtime/tree/master'
+                    connection = "scm:git:git://github.com/GoodforGod/${artifactId}.git"
+                    developerConnection = "scm:git:ssh://GoodforGod/${artifactId}.git"
+                    url = "https://github.com/GoodforGod/$artifactId/tree/master"
                 }
             }
         }
