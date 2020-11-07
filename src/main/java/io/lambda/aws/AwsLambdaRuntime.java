@@ -1,9 +1,9 @@
 package io.lambda.aws;
 
-import io.lambda.aws.model.AwsResponseEvent;
 import io.lambda.aws.convert.Converter;
 import io.lambda.aws.logger.LambdaLogger;
 import io.lambda.aws.model.AwsRequestEvent;
+import io.lambda.aws.model.AwsResponseEvent;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Introspected;
@@ -104,6 +104,7 @@ public class AwsLambdaRuntime {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             respondWithErrorToAws(apiEndpoint.resolve(INIT_ERROR), e);
         }
     }

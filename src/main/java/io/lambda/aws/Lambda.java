@@ -10,7 +10,7 @@ package io.lambda.aws;
  * @param <I> type of input
  * @param <O> type of output
  */
-public interface Lambda<I, O> {
+public interface Lambda<O, I> {
 
     /**
      * @param request to process

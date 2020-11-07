@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lambda.aws.convert.Converter;
 import io.lambda.aws.error.ConvertException;
-import io.micronaut.core.annotation.Introspected;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,7 +12,6 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-@Introspected
 @Singleton
 public class JacksonConverter implements Converter {
 
