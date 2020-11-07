@@ -60,7 +60,7 @@ public class AwsLambdaRuntime {
 
             final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
             logger.debug("Function %s with request type '%s' and response type '%s' found",
-                    function.getClass(), functionArgs.getLeft(), functionArgs.getRight());
+                    function.getClass(), functionArgs.getRight(), functionArgs.getLeft());
 
             logger.debug("AWS runtime uri: " + apiEndpoint);
             final URI invocationUri = apiEndpoint.resolve(NEXT_INVOCATION_URI);
@@ -78,7 +78,7 @@ public class AwsLambdaRuntime {
                     final long responseStart = getTime();
                     logger.debug("Function request body: %s", requestEvent.getBody());
                     logger.debug("Starting function processing...");
-                    final Object functionInput = converter.convertToType(requestEvent.getBody(), functionArgs.getLeft());
+                    final Object functionInput = converter.convertToType(requestEvent.getBody(), functionArgs.getRight());
                     final Object functionOutput = function.handle(functionInput);
                     logger.info("Function processing took: %s", timeSpent(responseStart));
 
