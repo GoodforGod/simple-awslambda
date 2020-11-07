@@ -1,4 +1,4 @@
-package io.lambda.model;
+package io.lambda.aws.model;
 
 import io.micronaut.core.annotation.Introspected;
 import lombok.Getter;

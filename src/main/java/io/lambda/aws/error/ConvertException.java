@@ -1,4 +1,4 @@
-package io.lambda.error;
+package io.lambda.aws.error;
 
 /**
  * Description

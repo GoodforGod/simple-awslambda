@@ -1,7 +1,7 @@
-package io.lambda.logger.impl;
+package io.lambda.aws.logger.impl;
 
-import io.lambda.logger.LambdaLogger;
-import io.lambda.logger.Level;
+import io.lambda.aws.logger.LambdaLogger;
+import io.lambda.aws.logger.Level;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.util.StringUtils;
 

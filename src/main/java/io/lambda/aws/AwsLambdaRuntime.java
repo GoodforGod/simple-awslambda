@@ -1,9 +1,9 @@
-package io.lambda;
+package io.lambda.aws;
 
-import io.lambda.model.AwsResponseEvent;
-import io.lambda.convert.Converter;
-import io.lambda.logger.LambdaLogger;
-import io.lambda.model.AwsRequestEvent;
+import io.lambda.aws.model.AwsResponseEvent;
+import io.lambda.aws.convert.Converter;
+import io.lambda.aws.logger.LambdaLogger;
+import io.lambda.aws.model.AwsRequestEvent;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Introspected;
@@ -40,8 +40,12 @@ public class AwsLambdaRuntime {
             .followRedirects(HttpClient.Redirect.NORMAL)
             .build();
 
-    public static void main(String[] args) throws Exception {
-        new AwsLambdaRuntime().invoke(args);
+    public static void main(String[] args) {
+        try {
+            new AwsLambdaRuntime().invoke(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void invoke(String[] args) throws Exception {
@@ -146,10 +150,11 @@ public class AwsLambdaRuntime {
     }
 
     private static long getTime() {
-        return System.nanoTime();
+        return System.currentTimeMillis();
     }
 
     private static String timeSpent(long started) {
-        return ((System.nanoTime() - started) / 1000) + " millis";
+        final long diff = getTime() - started;
+        return diff + " millis";
     }
 }

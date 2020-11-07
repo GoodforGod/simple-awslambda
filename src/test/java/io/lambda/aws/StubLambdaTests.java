@@ -1,8 +1,8 @@
-package io.lambda;
+package io.lambda.aws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.lambda.config.ObjectMapperConfig;
-import io.lambda.model.AwsRequestEvent;
+import io.lambda.aws.config.ObjectMapperConfig;
+import io.lambda.aws.model.AwsRequestEvent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

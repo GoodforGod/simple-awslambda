@@ -1,4 +1,4 @@
-package io.lambda.convert;
+package io.lambda.aws.convert;
 
 /**
  * @author Anton Kurako (GoodforGod)

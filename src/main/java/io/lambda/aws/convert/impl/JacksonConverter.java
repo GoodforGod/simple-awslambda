@@ -1,9 +1,9 @@
-package io.lambda.convert.impl;
+package io.lambda.aws.convert.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.lambda.convert.Converter;
-import io.lambda.error.ConvertException;
+import io.lambda.aws.convert.Converter;
+import io.lambda.aws.error.ConvertException;
 import io.micronaut.core.annotation.Introspected;
 
 import javax.inject.Inject;
