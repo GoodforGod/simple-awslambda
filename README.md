@@ -1,20 +1,55 @@
 ## AWS Lambda Runtime
 
-The Java11 template uses gradle as a build system.
+AWS lambda runtime with Micronaut DI support with GraalVM native lambda compatability.
 
-Create functions by **forking** this function and renaming **openfaas-template** yaml 
-and inside yaml for you function name.
+Provides Java native library *AwsLambdaRuntime* with support for Dependency Injection from [Micronaut framework](https://docs.micronaut.io/latest/guide/index.html#ioc).
 
-### Structure
+## Dependencies
 
-Package structure should remain the same so templates *entrypoint* code that creates 
-handler will be created correctly from this package as specified per *template*.
+Do not forget to add such dependencies in you build for DI and GraalVM support:
 
-Correct package name for *Handler* is default one *com.openfaas.function*
+```groovy
+dependencies {
+    annotationProcessor 'io.micronaut:micronaut-inject-java'
+    annotationProcessor 'io.micronaut:micronaut-graal'
 
-### Handler
+    compileOnly 'org.graalvm.nativeimage:svm'
+}
+```
 
-The handler is written in the `./src/main/Handler.java` folder
+### How To
 
-Tests are supported with junit via files in `./src/test`
+You just need to implement *Lambda* interface and implement it.
 
+```java
+@Singleton
+public class MyLambda implements Lambda<String, String> {
+
+    public String handle(String s) {
+        return "response for " + s;
+    }
+}
+```
+
+All will be setup for using it as AWS lambda, you will need just to correctly provide GraalVM properties for image to be build.
+
+### Logging
+
+You can use provided *LambdaLogger* for logging.
+
+```java
+@Singleton
+public class MyLambda implements Lambda<String, String> {
+
+    private final LambdaLogger logger;
+    
+    @Inject
+    public MyLambda(LambdaLogger logger) {
+        this.logger = logger;
+    }
+
+    public String handle(String s) {
+        return "response for " + s;
+    }
+}
+```

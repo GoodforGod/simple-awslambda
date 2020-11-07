@@ -1,9 +1,9 @@
 package io.lambda;
 
+import io.lambda.model.AwsResponseEvent;
 import io.lambda.convert.Converter;
 import io.lambda.logger.LambdaLogger;
 import io.lambda.model.AwsRequestEvent;
-import io.lambda.model.AwsResponseEvent;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Introspected;
@@ -17,6 +17,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Map;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -82,7 +83,7 @@ public class AwsLambdaRuntime {
                     logger.debug("Function response body: %s", responseBody);
                     final AwsResponseEvent responseEvent = new AwsResponseEvent()
                             .setBody(responseBody)
-                            .addHeader("Content-Type", "application/json");
+                            .setHeaders(Map.of("Content-Type", "application/json"));
 
                     final String body = converter.convertToJson(responseEvent);
                     final URI responseUri = getResponseUri(apiEndpoint, requestId);

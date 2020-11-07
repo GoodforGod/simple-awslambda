@@ -51,9 +51,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.4'
     compileOnly 'org.graalvm.nativeimage:svm'
 
-    implementation 'io.micronaut:micronaut-inject-java'
+    api 'io.micronaut:micronaut-inject-java'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-    implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'org.slf4j:slf4j-simple:1.7.30'
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
@@ -97,13 +96,13 @@ publishing {
             from components.java
 
             pom {
-                name = 'AWS Lambda GraalVM Library'
-                url = 'https://github.com/GoodforGod/aws-lambda-native'
-                description = 'Library for building GraalVM native AWS Lambdas.'
+                name = 'AWS Lambda GraalVM Runtime'
+                url = 'https://github.com/GoodforGod/aws-lambda-runtime'
+                description = 'Runtime for building GraalVM compatible AWS Lambdas.'
 
                 license {
                     name = 'Apache License 2.0'
-                    url = 'https://github.com/GoodforGod/aws-lambda-native/blob/master/LICENSE'
+                    url = 'https://github.com/GoodforGod/aws-lambda-runtime/blob/master/LICENSE'
                     distribution = 'repo'
                 }
 
@@ -115,9 +114,9 @@ publishing {
                 }
 
                 scm {
-                    connection = 'scm:git:git://github.com/GoodforGod/aws-lambda-native.git'
-                    developerConnection = 'scm:git:ssh://GoodforGod/aws-lambda-native.git'
-                    url = 'https://github.com/GoodforGod/aws-lambda-native/tree/master'
+                    connection = 'scm:git:git://github.com/GoodforGod/aws-lambda-runtime.git'
+                    developerConnection = 'scm:git:ssh://GoodforGod/aws-lambda-runtime.git'
+                    url = 'https://github.com/GoodforGod/aws-lambda-runtime/tree/master'
                 }
             }
         }
