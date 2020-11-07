@@ -4,12 +4,12 @@ import io.lambda.aws.convert.Converter;
 import io.lambda.aws.logger.LambdaLogger;
 import io.lambda.aws.model.AwsRequestEvent;
 import io.lambda.aws.model.AwsResponseEvent;
+import io.lambda.aws.model.Pair;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.reflect.GenericTypeUtils;
 import io.micronaut.core.util.StringUtils;
-import org.graalvm.collections.Pair;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,7 +58,7 @@ public class AwsLambdaRuntime {
             final LambdaLogger logger = context.getBean(LambdaLogger.class);
             logger.debug("Context startup took: ", contextStart);
 
-            final Pair<Class, Class> functionArgs = getClassGenericType(function);
+            final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
             logger.debug("Function %s with request type '%s' and response type '%s' found",
                     function.getClass(), functionArgs.getLeft(), functionArgs.getRight());
 
@@ -109,9 +109,9 @@ public class AwsLambdaRuntime {
         }
     }
 
-    private <T extends Lambda> Pair<Class, Class> getClassGenericType(T t) {
-        final Class[] args = GenericTypeUtils.resolveSuperTypeGenericArguments(t.getClass(), Lambda.class);
-        return Pair.create(args[0], args[1]);
+    private <T extends Lambda> Pair<Class, Class> getInterfaceGenericType(T t) {
+        final Class[] args = GenericTypeUtils.resolveInterfaceTypeArguments(t.getClass(), Lambda.class);
+        return new Pair<>(args[0], args[1]);
     }
 
     private static URI getResponseUri(URI apiEndpoint, String requestId) {
