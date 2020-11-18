@@ -41,21 +41,40 @@ public class AwsEventHandler {
                 function.getClass(), functionArgs.getRight(), functionArgs.getLeft());
 
         final long responseStart = getTime();
-        logger.debug("Starting function processing...");
-        final Object functionInput = (String.class.equals(functionArgs.getRight()))
-                ? requestEvent.getBody()
-                : converter.convertToType(requestEvent.getBody(), functionArgs.getRight());
+        final Object functionInput = getFunctionInput(functionArgs.getRight(), requestEvent);
 
+        logger.debug("Starting function processing...");
         final Object functionOutput = function.handle(functionInput);
         logger.info("Function processing took: %s", timeSpent(responseStart));
 
-        final String responseBody = (functionOutput instanceof String)
-                ? (String) functionOutput
-                : converter.convertToJson(functionOutput);
+        final AwsResponseEvent responseEvent = getFunctionResponseEvent(functionOutput);
+        logger.debug("Function response body: %s", responseEvent.getBody());
+        return responseEvent;
+    }
 
-        logger.debug("Function response body: %s", responseBody);
+    private Object getFunctionInput(Class<?> inputType, AwsRequestEvent requestEvent) {
+        if (String.class.equals(inputType))
+            return requestEvent.getBody();
+
+        if (AwsRequestEvent.class.equals(inputType))
+            return requestEvent;
+
+        return converter.convertToType(requestEvent.getBody(), inputType);
+    }
+
+    private AwsResponseEvent getFunctionResponseEvent(Object functionOutput) {
+        if (functionOutput instanceof String) {
+            return new AwsResponseEvent()
+                    .setBody((String) functionOutput)
+                    .setHeaders(Map.of("Content-Type", "application/json"));
+        }
+
+        if (functionOutput instanceof AwsResponseEvent)
+            return (AwsResponseEvent) functionOutput;
+
+        final String json = converter.convertToJson(functionOutput);
         return new AwsResponseEvent()
-                .setBody(responseBody)
+                .setBody(json)
                 .setHeaders(Map.of("Content-Type", "application/json"));
     }
 
