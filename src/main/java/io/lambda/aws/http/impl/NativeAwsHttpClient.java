@@ -13,6 +13,9 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
+import static io.lambda.aws.model.AwsResponseEvent.CONTENT_TYPE;
+import static io.lambda.aws.model.AwsResponseEvent.MEDIA_TYPE_JSON;
+
 /**
  * @author GoodforGod
  * @since 27.10.2020
@@ -43,7 +46,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
     public AwsHttpResponse post(URI uri, String body) {
         final HttpRequest request = HttpRequest.newBuilder(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(body))
-                .header("Content-Type", "application/json")
+                .header(CONTENT_TYPE, MEDIA_TYPE_JSON)
                 .timeout(Duration.ofSeconds(5))
                 .build();
 
@@ -54,7 +57,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
     public void postAndForget(URI uri, String body) {
         final HttpRequest request = HttpRequest.newBuilder(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(body))
-                .header("Content-Type", "application/json")
+                .header(CONTENT_TYPE, MEDIA_TYPE_JSON)
                 .timeout(Duration.ofSeconds(5))
                 .build();
 

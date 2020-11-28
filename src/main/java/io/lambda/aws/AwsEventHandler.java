@@ -10,7 +10,6 @@ import io.micronaut.core.reflect.GenericTypeUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Map;
 
 import static io.lambda.aws.utils.TimeUtils.getTime;
 import static io.lambda.aws.utils.TimeUtils.timeSpent;
@@ -40,9 +39,11 @@ public class AwsEventHandler {
         logger.debug("Function %s with request type '%s' and response type '%s' found",
                 function.getClass(), functionArgs.getRight(), functionArgs.getLeft());
 
-        final long responseStart = getTime();
+        final long inputStart = getTime();
         final Object functionInput = getFunctionInput(functionArgs.getRight(), requestEvent);
+        logger.debug("Function input conversion took: %s", timeSpent(inputStart));
 
+        final long responseStart = getTime();
         logger.debug("Starting function processing...");
         final Object functionOutput = function.handle(functionInput);
         logger.info("Function processing took: %s", timeSpent(responseStart));
@@ -63,25 +64,21 @@ public class AwsEventHandler {
     }
 
     private AwsResponseEvent getFunctionResponseEvent(Object functionOutput) {
-        if (functionOutput instanceof String) {
-            return new AwsResponseEvent()
-                    .setBody((String) functionOutput)
-                    .setHeaders(Map.of("Content-Type", "application/json"));
-        }
+        if (functionOutput instanceof String)
+            return new AwsResponseEvent().setBody((String) functionOutput);
 
         if (functionOutput instanceof AwsResponseEvent)
             return (AwsResponseEvent) functionOutput;
 
         final String json = converter.convertToJson(functionOutput);
-        return new AwsResponseEvent()
-                .setBody(json)
-                .setHeaders(Map.of("Content-Type", "application/json"));
+        return new AwsResponseEvent().setBody(json);
     }
 
     private <T extends Lambda> Pair<Class, Class> getInterfaceGenericType(T t) {
         final Class[] args = GenericTypeUtils.resolveInterfaceTypeArguments(t.getClass(), Lambda.class);
         if (args.length < 2)
             throw new IllegalArgumentException("Lambda interface is not correctly implemented, interface generic types must be set!");
+
         return new Pair<>(args[0], args[1]);
     }
 }

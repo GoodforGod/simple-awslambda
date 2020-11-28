@@ -39,6 +39,7 @@ public class AwsLambdaRuntime {
             new AwsLambdaRuntime().invoke(args);
         } catch (Exception e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -68,14 +69,14 @@ public class AwsLambdaRuntime {
                     final AwsResponseEvent responseEvent = requestHandler.handle(requestEvent);
                     final URI responseUri = getResponseUri(apiEndpoint, requestEvent.getRequestId());
 
-                    final long respondingStart = getTime();
                     logger.debug("Starting responding to AWS: %s", responseUri);
+                    final long respondingStart = getTime();
                     final AwsHttpResponse sent = httpClient.post(responseUri, responseEvent.getBody());
                     logger.info("Responding to AWS took: %s", timeSpent(respondingStart));
-                    logger.info("Response from AWS: %s", sent.body().strip());
+                    logger.debug("Response from AWS: %s", sent.body().strip());
                 } catch (Exception e) {
                     logger.error("Reporting invocation error: %s", e.getMessage());
-                    final URI uri = getErrorResponseUri(apiEndpoint, requestEvent.getRequestId());
+                    final URI uri = getResponseErrorUri(apiEndpoint, requestEvent.getRequestId());
                     httpClient.postAndForget(uri, getErrorResponse(e));
                 }
             }
@@ -90,7 +91,7 @@ public class AwsLambdaRuntime {
         return apiEndpoint.resolve("/2018-06-01/runtime/invocation/" + requestId + "/response");
     }
 
-    private static URI getErrorResponseUri(URI apiEndpoint, String requestId) {
+    private static URI getResponseErrorUri(URI apiEndpoint, String requestId) {
         return apiEndpoint.resolve("/2018-06-01/runtime/invocation/" + requestId + "/error");
     }
 
@@ -104,7 +105,7 @@ public class AwsLambdaRuntime {
     }
 
     private static String getErrorResponse(Throwable e) {
-        return String.format("{\"errorMessage\":\"%s\", \"errorType\":\"%s\"}",
-                e.getMessage(), e.getClass().getSimpleName());
+        return "{\"errorMessage\":\"" + e.getMessage()
+                + "\", \"errorType\":\"" + e.getClass().getSimpleName() + "\"}";
     }
 }

@@ -22,58 +22,58 @@ public class OutputLambdaLogger implements LambdaLogger {
     }
 
     @Override
-    public void debug(String message) {
+    public void debug(String format) {
         if (level.equals(Level.DEBUG))
-            print(message);
+            print(format);
     }
 
     @Override
-    public void debug(String message, Object... args) {
+    public void debug(String format, Object... args) {
         if (level.equals(Level.DEBUG))
-            print(message, args);
+            print(format, args);
     }
 
     @Override
-    public void info(String message) {
+    public void info(String format) {
         if (level.ordinal() <= Level.INFO.ordinal())
-            print(message);
+            print(format);
     }
 
     @Override
-    public void info(String message, Object... args) {
+    public void info(String format, Object... args) {
         if (level.ordinal() <= Level.INFO.ordinal())
-            print(message, args);
+            print(format, args);
     }
 
     @Override
-    public void warn(String message) {
+    public void warn(String format) {
         if (level.ordinal() <= Level.WARN.ordinal())
-            print(message);
+            print(format);
     }
 
     @Override
-    public void warn(String message, Object... args) {
+    public void warn(String format, Object... args) {
         if (level.ordinal() <= Level.WARN.ordinal())
-            print(message, args);
+            print(format, args);
     }
 
     @Override
-    public void error(String message) {
+    public void error(String format) {
         if (level.ordinal() <= Level.ERROR.ordinal())
-            print(message);
+            print(format);
     }
 
     @Override
-    public void error(String message, Object... args) {
+    public void error(String format, Object... args) {
         if (level.ordinal() <= Level.ERROR.ordinal())
-            print(message, args);
+            print(format, args);
     }
 
-    private void print(String message, Object... args) {
-        System.out.printf((message) + "%n", args);
+    private void print(String format, Object... args) {
+        System.out.printf((format) + "%n", args);
     }
 
-    private void print(String message) {
-        System.out.println(message);
+    private void print(String format) {
+        System.out.println(format + "%n");
     }
 }

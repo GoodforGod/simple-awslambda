@@ -3,8 +3,6 @@ package io.lambda.aws;
 import javax.inject.Singleton;
 
 /**
- * Description
- *
  * @author Anton Kurako (GoodforGod)
  * @since 8.11.2020
  */

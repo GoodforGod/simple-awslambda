@@ -13,14 +13,17 @@ import java.util.Map;
 @Introspected
 public class AwsResponseEvent {
 
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String MEDIA_TYPE_JSON = "application/json";
+
     private int statusCode = 200;
-    private Map<String, String> headers;
+    private Map<String, String> headers = Map.of(CONTENT_TYPE, MEDIA_TYPE_JSON);
     private String body;
     private boolean isBase64Encoded = false;
 
     public AwsResponseEvent addHeader(String name, String value) {
         if (headers == null)
-            this.headers = new HashMap<>(3);
+            this.headers = new HashMap<>(4);
         this.headers.put(name, value);
         return this;
     }
