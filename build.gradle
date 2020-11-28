@@ -67,10 +67,6 @@ test {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
     }
-
-    environment([
-            "SECURITY_ENABLED": "false"
-    ])
 }
 
 tasks.withType(JavaCompile) {
