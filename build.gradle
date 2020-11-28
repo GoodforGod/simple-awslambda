@@ -5,7 +5,6 @@ plugins {
 
     id 'org.sonarqube' version '3.0'
     id 'com.diffplug.gradle.spotless' version '4.4.0'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 repositories {
@@ -70,10 +69,6 @@ test {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
     }
-
-    environment([
-            "SECURITY_ENABLED": "false"
-    ])
 }
 
 tasks.withType(JavaCompile) {
@@ -98,9 +93,9 @@ publishing {
             from components.java
 
             pom {
-                name = 'AWS Lambda GraalVM Runtime'
+                name = 'AWS Lambda Runtime'
                 url = "https://github.com/GoodforGod/$artifactId"
-                description = 'Runtime for building GraalVM compatible AWS Lambdas.'
+                description = 'Runtime for AWS Lambdas with GraalVM compatibility and DI.'
 
                 license {
                     name = 'MIT License'

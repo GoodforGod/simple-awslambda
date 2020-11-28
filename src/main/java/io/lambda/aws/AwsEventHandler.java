@@ -34,6 +34,7 @@ public class AwsEventHandler {
         this.logger = logger;
     }
 
+    @SuppressWarnings("unchecked")
     public @NotNull AwsResponseEvent handle(@NotNull AwsRequestEvent requestEvent) {
         logger.debug("Function request body: %s", requestEvent.getBody());
         final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
