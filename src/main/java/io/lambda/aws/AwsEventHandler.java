@@ -7,6 +7,7 @@ import io.lambda.aws.model.AwsResponseEvent;
 import io.lambda.aws.model.Pair;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.reflect.GenericTypeUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -33,7 +34,7 @@ public class AwsEventHandler {
         this.logger = logger;
     }
 
-    public AwsResponseEvent handle(AwsRequestEvent requestEvent) {
+    public @NotNull AwsResponseEvent handle(@NotNull AwsRequestEvent requestEvent) {
         logger.debug("Function request body: %s", requestEvent.getBody());
         final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
         logger.debug("Function %s with request type '%s' and response type '%s' found",

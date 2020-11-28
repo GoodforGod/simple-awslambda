@@ -11,61 +11,81 @@ import javax.inject.Singleton;
  * @since 7.11.2020
  */
 @Singleton
-public class OutputLambdaLogger implements LambdaLogger {
+public class LambdaSystemOutputLogger implements LambdaLogger {
 
     private final Level level;
 
-    public OutputLambdaLogger() {
+    public LambdaSystemOutputLogger() {
         final String envLevel = System.getenv("LAMBDA_LOGGING_LEVEL");
         this.level = StringUtils.isEmpty(envLevel) ? Level.INFO : Level.valueOf(envLevel);
         debug("Logging level set to: %s", level);
     }
 
     @Override
+    public boolean isDebugEnabled() {
+        return level.equals(Level.DEBUG);
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return level.ordinal() <= Level.INFO.ordinal();
+    }
+
+    @Override
+    public boolean isWarnEnabled() {
+        return level.ordinal() <= Level.WARN.ordinal();
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return level.ordinal() <= Level.ERROR.ordinal();
+    }
+
+    @Override
     public void debug(String format) {
-        if (level.equals(Level.DEBUG))
+        if (isDebugEnabled())
             print(format);
     }
 
     @Override
     public void debug(String format, Object... args) {
-        if (level.equals(Level.DEBUG))
+        if (isDebugEnabled())
             print(format, args);
     }
 
     @Override
     public void info(String format) {
-        if (level.ordinal() <= Level.INFO.ordinal())
+        if (isInfoEnabled())
             print(format);
     }
 
     @Override
     public void info(String format, Object... args) {
-        if (level.ordinal() <= Level.INFO.ordinal())
+        if (isInfoEnabled())
             print(format, args);
     }
 
     @Override
     public void warn(String format) {
-        if (level.ordinal() <= Level.WARN.ordinal())
+        if (isWarnEnabled())
             print(format);
     }
 
     @Override
     public void warn(String format, Object... args) {
-        if (level.ordinal() <= Level.WARN.ordinal())
+        if (isWarnEnabled())
             print(format, args);
     }
 
     @Override
     public void error(String format) {
-        if (level.ordinal() <= Level.ERROR.ordinal())
+        if (isErrorEnabled())
             print(format);
     }
 
     @Override
     public void error(String format, Object... args) {
-        if (level.ordinal() <= Level.ERROR.ordinal())
+        if (isErrorEnabled())
             print(format, args);
     }
 

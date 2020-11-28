@@ -46,12 +46,15 @@ dependencies {
 
     annotationProcessor 'io.micronaut:micronaut-inject-java'
     annotationProcessor 'io.micronaut:micronaut-graal'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
 
+    compileOnly 'org.projectlombok:lombok:1.18.16'
     compileOnly 'org.graalvm.nativeimage:svm'
 
     api 'io.micronaut:micronaut-inject-java'
     api 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+    implementation 'org.jetbrains:annotations:20.1.0'
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
 
