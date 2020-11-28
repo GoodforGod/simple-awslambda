@@ -34,6 +34,7 @@ public class AwsEventHandler {
         this.logger = logger;
     }
 
+    @SuppressWarnings("unchecked")
     public AwsResponseEvent handle(AwsRequestEvent requestEvent) {
         logger.debug("Function request body: %s", requestEvent.getBody());
         final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
