@@ -1,5 +1,7 @@
 package io.aws.lambda.runtime.http;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +13,11 @@ public interface AwsHttpResponse {
 
     String body();
 
+    @NotNull
     Map<String, List<String>> headers();
 
-    String headerAnyOrThrow(String name);
+    @NotNull
+    String headerAnyOrThrow(@NotNull String name);
+
+    String headerAny(@NotNull String name);
 }

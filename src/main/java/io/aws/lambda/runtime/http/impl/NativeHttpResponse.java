@@ -2,6 +2,7 @@ package io.aws.lambda.runtime.http.impl;
 
 import io.aws.lambda.runtime.http.AwsHttpResponse;
 import io.micronaut.core.annotation.Introspected;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -25,13 +26,18 @@ public class NativeHttpResponse implements AwsHttpResponse {
     }
 
     @Override
-    public Map<String, List<String>> headers() {
+    public @NotNull Map<String, List<String>> headers() {
         return httpResponse.headers().map();
     }
 
     @Override
-    public String headerAnyOrThrow(String name) {
+    public @NotNull String headerAnyOrThrow(@NotNull String name) {
         return httpResponse.headers().firstValue(name)
                 .orElseThrow(() -> new IllegalArgumentException("Header not found with name: " + name));
+    }
+
+    @Override
+    public String headerAny(@NotNull String name) {
+        return httpResponse.headers().firstValue(name).orElse(null);
     }
 }

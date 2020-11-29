@@ -71,7 +71,7 @@ public class AwsLambdaRuntime {
 
                 final AwsRequestContext requestContext = new AwsRequestContext()
                         .setRequestId(httpRequest.headerAnyOrThrow(LAMBDA_RUNTIME_AWS_REQUEST_ID))
-                        .setRequestId(httpRequest.headerAnyOrThrow(LAMBDA_RUNTIME_TRACE_ID));
+                        .setTraceId(httpRequest.headerAny(LAMBDA_RUNTIME_TRACE_ID));
 
                 try {
                     final AwsRequestEvent requestEvent = converter.convertToType(httpRequest.body(), AwsRequestEvent.class)
@@ -85,9 +85,9 @@ public class AwsLambdaRuntime {
 
                     logger.debug("Starting responding to AWS: %s", responseUri);
                     final long respondingStart = TimeUtils.getTime();
-                    final AwsHttpResponse sent = httpClient.post(responseUri, responseEvent.getBody());
+                    final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseEvent.getBody());
                     logger.info("Responding to AWS took: %s", TimeUtils.timeSpent(respondingStart));
-                    logger.debug("Response from AWS: %s", sent.body().strip());
+                    logger.debug("Response from AWS: %s", awsResponse.body().strip());
                 } catch (Exception e) {
                     logger.error("Reporting invocation error: %s", e.getMessage());
                     final URI uri = getResponseErrorUri(apiEndpoint, requestContext.getRequestId());
