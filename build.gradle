@@ -49,11 +49,11 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.16'
     compileOnly 'org.graalvm.nativeimage:svm'
+    compileOnly 'io.micronaut:micronaut-inject-java'
 
-    api 'io.micronaut:micronaut-inject-java'
     api 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
     implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
 
@@ -72,7 +72,7 @@ test {
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
     options.incremental = true
     options.fork = true
 }
@@ -93,21 +93,21 @@ publishing {
             from components.java
 
             pom {
-                name = 'AWS Lambda Runtime'
+                name = "AWS Lambda Runtime"
                 url = "https://github.com/GoodforGod/$artifactId"
-                description = 'Runtime for AWS Lambdas with GraalVM compatibility and DI.'
+                description = "Runtime for AWS Lambdas with GraalVM compatibility and DI."
 
                 license {
-                    name = 'MIT License'
+                    name = "MIT License"
                     url = "https://github.com/GoodforGod/$artifactId/blob/master/LICENSE"
-                    distribution = 'repo'
+                    distribution = "repo"
                 }
 
                 developer {
-                    id = 'GoodforGod'
-                    name = 'Anton Kurako'
-                    email = 'goodforgod.dev@gmail.com'
-                    url = 'https://github.com/GoodforGod'
+                    id = "GoodforGod"
+                    name = "Anton Kurako"
+                    email = "goodforgod.dev@gmail.com"
+                    url = "https://github.com/GoodforGod"
                 }
 
                 scm {
