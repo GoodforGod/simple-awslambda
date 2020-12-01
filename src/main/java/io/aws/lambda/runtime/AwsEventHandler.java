@@ -53,7 +53,7 @@ public class AwsEventHandler {
         return responseEvent;
     }
 
-    private Object getFunctionInput(Class<?> inputType, AwsRequestEvent requestEvent) {
+    private @NotNull Object getFunctionInput(@NotNull Class<?> inputType, @NotNull AwsRequestEvent requestEvent) {
         if (String.class.equals(inputType))
             return requestEvent.getBody();
 
@@ -63,7 +63,7 @@ public class AwsEventHandler {
         return converter.convertToType(requestEvent.getBody(), inputType);
     }
 
-    private AwsResponseEvent getFunctionResponseEvent(Object functionOutput) {
+    private @NotNull AwsResponseEvent getFunctionResponseEvent(Object functionOutput) {
         if (functionOutput instanceof String)
             return new AwsResponseEvent().setBody((String) functionOutput);
 

@@ -1,8 +1,6 @@
 package io.aws.lambda.runtime.error;
 
 /**
- * Description
- *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */

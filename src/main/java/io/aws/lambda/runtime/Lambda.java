@@ -4,6 +4,8 @@
 
 package io.aws.lambda.runtime;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Lambda function contract to implement
  * 
@@ -16,5 +18,6 @@ public interface Lambda<O, I> {
      * @param request to process
      * @return output if specified type
      */
-    O handle(I request);
+    @NotNull
+    O handle(@NotNull I request);
 }

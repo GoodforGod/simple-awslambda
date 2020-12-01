@@ -1,5 +1,7 @@
 package io.aws.lambda.runtime;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Singleton;
 
 /**
@@ -10,7 +12,7 @@ import javax.inject.Singleton;
 public class TestLambda implements Lambda<String, String> {
 
     @Override
-    public String handle(String request) {
+    public @NotNull String handle(@NotNull String request) {
         return "response for " + request;
     }
 }

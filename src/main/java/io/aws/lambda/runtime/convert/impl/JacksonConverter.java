@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.error.ConvertException;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,7 +24,7 @@ public class JacksonConverter implements Converter {
     }
 
     @Override
-    public <T> T convertToType(String json, Class<T> type) {
+    public <T> @NotNull T convertToType(@NotNull String json, @NotNull Class<T> type) {
         try {
             return mapper.readValue(json, type);
         } catch (JsonProcessingException e) {
@@ -32,7 +33,7 @@ public class JacksonConverter implements Converter {
     }
 
     @Override
-    public String convertToJson(Object o) {
+    public @NotNull String convertToJson(@NotNull Object o) {
         try {
             return mapper.writeValueAsString(o);
         } catch (JsonProcessingException e) {
