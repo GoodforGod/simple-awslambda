@@ -79,9 +79,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
 
     private void sendAndForget(HttpRequest request) {
         try {
-            final HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
-            if (response.statusCode() != 200)
-                throw new HttpException("Error while executing").code(response.statusCode());
+            client.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception e) {
             throw new HttpException(e.getMessage()).code(500);
         }

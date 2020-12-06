@@ -52,7 +52,7 @@ dependencies {
     compileOnly 'io.micronaut:micronaut-inject-java'
 
     api 'com.fasterxml.jackson.core:jackson-annotations:2.11.3'
-    implementation 'org.jetbrains:annotations:20.1.0'
+    api 'org.jetbrains:annotations:20.1.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
