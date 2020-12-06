@@ -1,6 +1,5 @@
 package io.aws.lambda.runtime.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micronaut.core.annotation.Introspected;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +37,6 @@ public class AwsResponseEvent {
         return this;
     }
 
-    @JsonProperty("isBase64Encoded")
     public boolean isBase64Encoded() {
         return isBase64Encoded;
     }

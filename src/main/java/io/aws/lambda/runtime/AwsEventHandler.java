@@ -34,21 +34,25 @@ public class AwsEventHandler {
 
     @SuppressWarnings("unchecked")
     public @NotNull AwsResponseEvent handle(@NotNull AwsRequestEvent requestEvent) {
-        logger.debug("Function request body: %s", requestEvent.getBody());
+        logger.debug("Function request event body: %s", requestEvent.getBody());
         final Pair<Class, Class> functionArgs = getInterfaceGenericType(function);
-        logger.debug("Function %s with request type '%s' and response type '%s' found",
-                function.getClass(), functionArgs.getRight(), functionArgs.getLeft());
+        logger.debug("Function to handle '%s' with Request type '%s' and Response type '%s'",
+                function.getClass().getName(), functionArgs.getRight().getName(), functionArgs.getLeft().getName());
 
+        logger.debug("Function input conversion started...");
         final long inputStart = TimeUtils.getTime();
         final Object functionInput = getFunctionInput(functionArgs.getRight(), requestEvent);
         logger.debug("Function input conversion took: %s", TimeUtils.timeSpent(inputStart));
 
+        logger.debug("Function processing started...");
         final long responseStart = TimeUtils.getTime();
-        logger.debug("Starting function processing...");
         final Object functionOutput = function.handle(functionInput);
         logger.info("Function processing took: %s", TimeUtils.timeSpent(responseStart));
 
+        logger.debug("Function output conversion started...");
+        final long outputStart = TimeUtils.getTime();
         final AwsResponseEvent responseEvent = getFunctionResponseEvent(functionOutput);
+        logger.debug("Function output conversion took: %s", TimeUtils.timeSpent(outputStart));
         logger.debug("Function response body: %s", responseEvent.getBody());
         return responseEvent;
     }

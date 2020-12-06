@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
-    testCompileOnly 'io.micronaut:micronaut-inject-java'
+    testCompile 'io.micronaut:micronaut-inject-java'
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.30'

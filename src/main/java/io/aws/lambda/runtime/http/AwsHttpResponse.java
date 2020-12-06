@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public interface AwsHttpResponse {
 
+    int code();
+
     String body();
 
     @NotNull

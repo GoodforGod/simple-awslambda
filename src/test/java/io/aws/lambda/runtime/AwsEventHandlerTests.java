@@ -16,7 +16,7 @@ class AwsEventHandlerTests extends Assertions {
     void handled() {
         try (final ApplicationContext context = ApplicationContext.run()) {
             final AwsEventHandler eventHandler = context.getBean(AwsEventHandler.class);
-            final AwsRequestEvent requestEvent = new AwsRequestEvent().setBody("bob");
+            final AwsRequestEvent requestEvent = new AwsRequestEvent().setBody("{\"name\":\"bob\"}");
             final AwsResponseEvent responseEvent = eventHandler.handle(requestEvent);
             assertNotNull(responseEvent);
             assertEquals("response for bob", responseEvent.getBody());

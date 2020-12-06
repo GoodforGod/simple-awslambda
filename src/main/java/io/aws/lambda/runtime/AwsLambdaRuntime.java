@@ -59,10 +59,10 @@ public class AwsLambdaRuntime {
             final LambdaLogger logger = context.getBean(LambdaLogger.class);
             final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
             logger.debug("Context startup took: %s", TimeUtils.timeSpent(contextStart));
-
             logger.debug("AWS runtime uri: %s", apiEndpoint);
+
             final URI invocationUri = apiEndpoint.resolve(NEXT_INVOCATION_URI);
-            logger.debug("Starting request parsing for: %s", invocationUri);
+            logger.debug("Request event awaiting at: %s", invocationUri);
 
             while (!Thread.currentThread().isInterrupted()) {
                 final AwsHttpResponse httpRequest = httpClient.get(invocationUri);
@@ -73,22 +73,26 @@ public class AwsLambdaRuntime {
                         .setRequestId(httpRequest.headerAnyOrThrow(LAMBDA_RUNTIME_AWS_REQUEST_ID))
                         .setTraceId(httpRequest.headerAny(LAMBDA_RUNTIME_TRACE_ID));
 
+                logger.refresh();
+                logger.debug("Request event received with RequestID: %s", requestContext.getRequestId());
                 try {
+                    logger.debug("Request event conversion started...");
+                    final long requestStart = TimeUtils.getTime();
                     final AwsRequestEvent requestEvent = converter.convertToType(httpRequest.body(), AwsRequestEvent.class)
                             .setContext(requestContext);
-
-                    logger.refresh();
-                    logger.debug("Received request event with RequestID: %s", requestContext.getRequestId());
+                    logger.debug("Request event conversion took: %s", TimeUtils.timeSpent(requestStart));
 
                     final AwsResponseEvent responseEvent = requestHandler.handle(requestEvent);
                     final URI responseUri = getResponseUri(apiEndpoint, requestContext.getRequestId());
 
-                    logger.debug("Starting responding to AWS: %s", responseUri);
+                    logger.debug("Responding to AWS started: %s", responseUri);
                     final long respondingStart = TimeUtils.getTime();
                     final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseEvent.getBody());
                     logger.info("Responding to AWS took: %s", TimeUtils.timeSpent(respondingStart));
-                    logger.debug("Response from AWS: %s", awsResponse.body().strip());
+                    logger.debug("AWS responded with http code '%s' and body: %s",
+                            awsResponse.code(), awsResponse.body().strip());
                 } catch (Exception e) {
+                    e.printStackTrace();
                     logger.error("Reporting invocation error: %s", e.getMessage());
                     final URI uri = getResponseErrorUri(apiEndpoint, requestContext.getRequestId());
                     httpClient.postAndForget(uri, getErrorResponse(e));

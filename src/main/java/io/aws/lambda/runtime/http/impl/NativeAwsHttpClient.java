@@ -67,11 +67,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
     private AwsHttpResponse sendAndResponse(HttpRequest request) {
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            if (response.statusCode() == 200) {
-                return new NativeHttpResponse(response);
-            } else {
-                throw new HttpException(response.body()).code(response.statusCode());
-            }
+            return new NativeHttpResponse(response);
         } catch (Exception e) {
             throw new HttpException(e.getMessage()).code(500);
         }

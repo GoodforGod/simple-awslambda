@@ -21,6 +21,11 @@ public class NativeHttpResponse implements AwsHttpResponse {
     }
 
     @Override
+    public int code() {
+        return httpResponse.statusCode();
+    }
+
+    @Override
     public String body() {
         return httpResponse.body();
     }
