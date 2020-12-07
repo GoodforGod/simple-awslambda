@@ -75,6 +75,10 @@ public class AwsLambdaRuntime {
 
                 logger.refresh();
                 logger.debug("Request event received with RequestID: %s", requestContext.getRequestId());
+                if(logger.isDebugEnabled()) {
+                    httpRequest.headers().forEach((k, v) -> logger.debug("Request header: %s - %s", k, v));
+                }
+
                 try {
                     logger.debug("Request event conversion started...");
                     final long requestStart = TimeUtils.getTime();
@@ -92,8 +96,7 @@ public class AwsLambdaRuntime {
                     logger.debug("AWS responded with http code '%s' and body: %s",
                             awsResponse.code(), awsResponse.body().strip());
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error("Reporting invocation error: %s", e.getMessage());
+                    logger.error("Invocation error occurred", e);
                     final URI uri = getResponseErrorUri(apiEndpoint, requestContext.getRequestId());
                     httpClient.postAndForget(uri, getErrorResponse(e));
                 }
