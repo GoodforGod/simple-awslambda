@@ -6,6 +6,8 @@ package io.aws.lambda.runtime.utils;
  */
 public class TimeUtils {
 
+    private TimeUtils() {}
+
     public static long getTime() {
         return System.currentTimeMillis();
     }

@@ -83,6 +83,14 @@ public class LambdaSystemOutputLogger implements LambdaLogger {
     }
 
     @Override
+    public void warn(String message, Throwable throwable) {
+        if (isWarnEnabled()) {
+            print(message);
+            throwable.printStackTrace();
+        }
+    }
+
+    @Override
     public void error(String format) {
         if (isErrorEnabled())
             print(format);
@@ -92,6 +100,14 @@ public class LambdaSystemOutputLogger implements LambdaLogger {
     public void error(String format, Object... args) {
         if (isErrorEnabled())
             print(format, args);
+    }
+
+    @Override
+    public void error(String message, Throwable throwable) {
+        if (isErrorEnabled()) {
+            print(message);
+            throwable.printStackTrace();
+        }
     }
 
     private void print(String format, Object... args) {

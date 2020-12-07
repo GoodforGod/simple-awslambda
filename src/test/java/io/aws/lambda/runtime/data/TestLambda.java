@@ -12,7 +12,7 @@ import javax.inject.Singleton;
  * @since 8.11.2020
  */
 @Singleton
-public class TestLambda implements Lambda<String, Card> {
+public class TestLambda implements Lambda<Void, Card> {
 
     private final Converter converter;
 
@@ -22,7 +22,8 @@ public class TestLambda implements Lambda<String, Card> {
     }
 
     @Override
-    public @NotNull String handle(@NotNull Card card) {
-        return "response for " + card.getName();
+    public @NotNull Void handle(@NotNull Card card) {
+//        "response for " + card.getName();
+        return null;
     }
 }

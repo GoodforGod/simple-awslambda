@@ -24,21 +24,20 @@ import static io.aws.lambda.runtime.model.AwsResponseEvent.MEDIA_TYPE_JSON;
 @Singleton
 public class NativeAwsHttpClient implements AwsHttpClient {
 
-    private final HttpClient client;
-
-    public NativeAwsHttpClient() {
-        this.client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofMinutes(1))
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
-    }
+    private static final HttpClient CLIENT = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofMinutes(5))
+            .followRedirects(HttpClient.Redirect.NORMAL)
+            .build();
 
     @Override
     public AwsHttpResponse get(URI uri) {
-        final HttpRequest request = HttpRequest.newBuilder(uri)
-                .timeout(Duration.ofSeconds(5))
-                .build();
+        final HttpRequest request = HttpRequest.newBuilder(uri).build();
+        return sendAndResponse(request);
+    }
 
+    @Override
+    public AwsHttpResponse get(URI uri, Duration timeout) {
+        final HttpRequest request = HttpRequest.newBuilder(uri).timeout(timeout).build();
         return sendAndResponse(request);
     }
 
@@ -47,7 +46,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
         final HttpRequest request = HttpRequest.newBuilder(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .header(CONTENT_TYPE, MEDIA_TYPE_JSON)
-                .timeout(Duration.ofSeconds(5))
+                .timeout(Duration.ofSeconds(10))
                 .build();
 
         return sendAndResponse(request);
@@ -58,7 +57,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
         final HttpRequest request = HttpRequest.newBuilder(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .header(CONTENT_TYPE, MEDIA_TYPE_JSON)
-                .timeout(Duration.ofSeconds(5))
+                .timeout(Duration.ofSeconds(10))
                 .build();
 
         sendAndForget(request);
@@ -66,7 +65,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
 
     private AwsHttpResponse sendAndResponse(HttpRequest request) {
         try {
-            final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            final HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             return new NativeHttpResponse(response);
         } catch (Exception e) {
             throw new HttpException(e.getMessage()).code(500);
@@ -75,7 +74,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
 
     private void sendAndForget(HttpRequest request) {
         try {
-            client.send(request, HttpResponse.BodyHandlers.discarding());
+            CLIENT.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception e) {
             throw new HttpException(e.getMessage()).code(500);
         }

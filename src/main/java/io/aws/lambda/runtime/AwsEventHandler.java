@@ -68,6 +68,9 @@ public class AwsEventHandler {
     }
 
     private @NotNull AwsResponseEvent getFunctionResponseEvent(Object functionOutput) {
+        if (functionOutput == null)
+            return new AwsResponseEvent();
+
         if (functionOutput instanceof String)
             return new AwsResponseEvent().setBody((String) functionOutput);
 

@@ -28,8 +28,12 @@ public interface LambdaLogger {
 
     void warn(String format, Object... args);
 
+    void warn(String message, Throwable throwable);
+
     void error(String format);
 
     void error(String format, Object... args);
+
+    void error(String message, Throwable throwable);
 
 }
