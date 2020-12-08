@@ -23,7 +23,7 @@ public class TestLambda implements Lambda<Void, Card> {
 
     @Override
     public @NotNull Void handle(@NotNull Card card) {
-//        "response for " + card.getName();
+        // "response for " + card.getName();
         return null;
     }
 }

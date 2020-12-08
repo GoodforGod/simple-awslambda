@@ -75,7 +75,7 @@ public class AwsLambdaRuntime {
 
                 logger.refresh();
                 logger.debug("Request event received with RequestID: %s", requestContext.getRequestId());
-                if(logger.isDebugEnabled()) {
+                if (logger.isDebugEnabled()) {
                     httpRequest.headers().forEach((k, v) -> logger.debug("Request header: %s - %s", k, v));
                 }
 
