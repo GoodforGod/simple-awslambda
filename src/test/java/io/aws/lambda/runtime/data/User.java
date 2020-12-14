@@ -1,12 +1,10 @@
 package io.aws.lambda.runtime.data;
 
 /**
- * Description
- *
  * @author Anton Kurako (GoodforGod)
  * @since 6.12.2020
  */
-public class Card {
+public class User {
 
     private String name;
 

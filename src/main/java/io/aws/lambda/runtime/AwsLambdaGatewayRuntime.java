@@ -1,6 +1,6 @@
 package io.aws.lambda.runtime;
 
-import io.aws.lambda.runtime.handler.impl.AwsEventHandler;
+import io.aws.lambda.runtime.handler.impl.AwsGatewayEventHandler;
 import io.aws.lambda.runtime.invoker.AwsRuntimeInvoker;
 import io.micronaut.core.annotation.Introspected;
 
@@ -9,11 +9,11 @@ import io.micronaut.core.annotation.Introspected;
  * @since 7.11.2020
  */
 @Introspected
-public class AwsLambdaRuntime {
+public class AwsLambdaGatewayRuntime {
 
     public static void main(String[] args) {
         try {
-            new AwsRuntimeInvoker().invoke(AwsEventHandler.class);
+            new AwsRuntimeInvoker().invoke(AwsGatewayEventHandler.class);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
