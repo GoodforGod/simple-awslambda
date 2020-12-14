@@ -1,5 +1,7 @@
 package io.aws.lambda.runtime.http;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.net.URI;
 import java.time.Duration;
 
@@ -13,7 +15,7 @@ public interface AwsHttpClient {
 
     AwsHttpResponse get(URI uri, Duration timeout);
 
-    AwsHttpResponse post(URI uri, String body);
+    AwsHttpResponse post(URI uri, @Nullable String body);
 
-    void postAndForget(URI uri, String body);
+    void postAndForget(URI uri, @Nullable String body);
 }

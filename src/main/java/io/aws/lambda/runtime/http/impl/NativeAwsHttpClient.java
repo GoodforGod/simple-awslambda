@@ -4,6 +4,7 @@ import io.aws.lambda.runtime.http.AwsHttpResponse;
 import io.aws.lambda.runtime.error.HttpException;
 import io.aws.lambda.runtime.http.AwsHttpClient;
 import io.micronaut.core.annotation.Introspected;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Singleton;
 import java.net.URI;
@@ -20,8 +21,8 @@ import static io.aws.lambda.runtime.model.AwsResponseEvent.MEDIA_TYPE_JSON;
  * @author GoodforGod
  * @since 27.10.2020
  */
-@Introspected
 @Singleton
+@Introspected
 public class NativeAwsHttpClient implements AwsHttpClient {
 
     private static final HttpClient CLIENT = HttpClient.newBuilder()
@@ -43,24 +44,26 @@ public class NativeAwsHttpClient implements AwsHttpClient {
 
     @Override
     public AwsHttpResponse post(URI uri, String body) {
-        final HttpRequest request = HttpRequest.newBuilder(uri)
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .header(CONTENT_TYPE, MEDIA_TYPE_JSON)
-                .timeout(Duration.ofSeconds(10))
-                .build();
-
+        final HttpRequest request = getPostRequest(uri, body);
         return sendAndResponse(request);
     }
 
     @Override
     public void postAndForget(URI uri, String body) {
-        final HttpRequest request = HttpRequest.newBuilder(uri)
-                .POST(HttpRequest.BodyPublishers.ofString(body))
+        final HttpRequest request = getPostRequest(uri, body);
+        sendAndForget(request);
+    }
+
+    private HttpRequest getPostRequest(URI uri, @Nullable String body) {
+        final HttpRequest.BodyPublisher publisher = (body == null)
+                ? HttpRequest.BodyPublishers.noBody()
+                : HttpRequest.BodyPublishers.ofString(body);
+
+        return HttpRequest.newBuilder(uri)
+                .POST(publisher)
                 .header(CONTENT_TYPE, MEDIA_TYPE_JSON)
                 .timeout(Duration.ofSeconds(10))
                 .build();
-
-        sendAndForget(request);
     }
 
     private AwsHttpResponse sendAndResponse(HttpRequest request) {

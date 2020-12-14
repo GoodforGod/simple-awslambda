@@ -2,6 +2,7 @@ package io.aws.lambda.runtime.logger.impl;
 
 import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.logger.Level;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.util.StringUtils;
 
 import javax.inject.Singleton;
@@ -11,6 +12,7 @@ import javax.inject.Singleton;
  * @since 7.11.2020
  */
 @Singleton
+@Introspected
 public class LambdaSystemOutputLogger implements LambdaLogger {
 
     private Level level;

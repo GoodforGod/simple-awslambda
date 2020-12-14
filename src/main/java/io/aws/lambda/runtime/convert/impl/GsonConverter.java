@@ -11,8 +11,8 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-@Introspected
 @Singleton
+@Introspected
 public class GsonConverter implements Converter {
 
     private static final Gson MAPPER = new Gson();
