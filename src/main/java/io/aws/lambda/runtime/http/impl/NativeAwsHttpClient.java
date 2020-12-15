@@ -1,8 +1,8 @@
 package io.aws.lambda.runtime.http.impl;
 
-import io.aws.lambda.runtime.http.AwsHttpResponse;
 import io.aws.lambda.runtime.error.HttpException;
 import io.aws.lambda.runtime.http.AwsHttpClient;
+import io.aws.lambda.runtime.http.AwsHttpResponse;
 import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,8 +14,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-import static io.aws.lambda.runtime.model.AwsResponseEvent.CONTENT_TYPE;
-import static io.aws.lambda.runtime.model.AwsResponseEvent.MEDIA_TYPE_JSON;
+import static io.aws.lambda.runtime.model.AwsGatewayResponse.CONTENT_TYPE;
+import static io.aws.lambda.runtime.model.AwsGatewayResponse.MEDIA_TYPE_JSON;
 
 /**
  * @author GoodforGod

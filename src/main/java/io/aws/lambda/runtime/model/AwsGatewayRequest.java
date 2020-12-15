@@ -18,7 +18,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Introspected
-public class AwsRequestEvent {
+public class AwsGatewayRequest {
 
     private AwsRequestContext context;
 

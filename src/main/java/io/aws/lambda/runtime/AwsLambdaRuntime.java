@@ -5,6 +5,9 @@ import io.aws.lambda.runtime.invoker.AwsRuntimeInvoker;
 import io.micronaut.core.annotation.Introspected;
 
 /**
+ * Runtime for direct Lambda processing
+ *
+ * @see AwsEventHandler
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */

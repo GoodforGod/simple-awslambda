@@ -16,8 +16,7 @@ public interface Lambda<O, I> {
 
     /**
      * @param request to process
-     * @return output if specified type
+     * @return output in specified type or null if no output is desired
      */
-    @NotNull
     O handle(@NotNull I request);
 }

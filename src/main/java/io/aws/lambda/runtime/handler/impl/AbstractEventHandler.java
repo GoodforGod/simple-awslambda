@@ -4,7 +4,7 @@ import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.logger.LambdaLogger;
-import io.aws.lambda.runtime.model.AwsRequestEvent;
+import io.aws.lambda.runtime.model.AwsGatewayRequest;
 import io.aws.lambda.runtime.model.Pair;
 import io.micronaut.core.reflect.GenericTypeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public abstract class AbstractEventHandler implements EventHandler {
         if (String.class.equals(inputType))
             return event;
 
-        if (AwsRequestEvent.class.equals(inputType))
+        if (AwsGatewayRequest.class.equals(inputType))
             return event;
 
         return converter.convertToType(event, inputType);

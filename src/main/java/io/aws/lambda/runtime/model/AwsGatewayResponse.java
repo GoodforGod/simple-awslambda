@@ -17,7 +17,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Introspected
-public class AwsResponseEvent {
+public class AwsGatewayResponse {
 
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String MEDIA_TYPE_JSON = "application/json";

@@ -1,12 +1,12 @@
 package io.aws.lambda.runtime.handler.impl;
 
 import io.aws.lambda.runtime.Lambda;
-import io.aws.lambda.runtime.model.AwsRequestContext;
-import io.aws.lambda.runtime.model.AwsResponseEvent;
-import io.aws.lambda.runtime.utils.TimeUtils;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.logger.LambdaLogger;
-import io.aws.lambda.runtime.model.AwsRequestEvent;
+import io.aws.lambda.runtime.model.AwsGatewayRequest;
+import io.aws.lambda.runtime.model.AwsGatewayResponse;
+import io.aws.lambda.runtime.model.AwsRequestContext;
+import io.aws.lambda.runtime.utils.TimeUtils;
 import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,7 @@ public class AwsGatewayEventHandler extends AwsEventHandler {
     public String handle(@NotNull String event, @NotNull AwsRequestContext context) {
         logger.debug("Gateway Request Event conversion started...");
         final long requestStart = TimeUtils.getTime();
-        final AwsRequestEvent requestEvent = converter.convertToType(event, AwsRequestEvent.class)
+        final AwsGatewayRequest requestEvent = converter.convertToType(event, AwsGatewayRequest.class)
                 .setContext(context);
         logger.debug("Gateway Request Event conversion took: %s", TimeUtils.timeSpent(requestStart));
 
@@ -40,23 +40,23 @@ public class AwsGatewayEventHandler extends AwsEventHandler {
 
         logger.debug("Gateway Response Event conversion started...");
         final long outputStart = TimeUtils.getTime();
-        final AwsResponseEvent responseEvent = getFunctionResponseEvent(functionOutput);
+        final AwsGatewayResponse responseEvent = getFunctionResponseEvent(functionOutput);
         logger.debug("Gateway Response Event conversion took: %s", TimeUtils.timeSpent(outputStart));
         logger.debug("Gateway Response Event body: %s", responseEvent.getBody());
         return converter.convertToJson(responseEvent);
     }
 
-    private @NotNull AwsResponseEvent getFunctionResponseEvent(Object functionOutput) {
+    private @NotNull AwsGatewayResponse getFunctionResponseEvent(Object functionOutput) {
         if (functionOutput == null)
-            return new AwsResponseEvent();
+            return new AwsGatewayResponse();
 
         if (functionOutput instanceof String)
-            return new AwsResponseEvent().setBody((String) functionOutput);
+            return new AwsGatewayResponse().setBody((String) functionOutput);
 
-        if (functionOutput instanceof AwsResponseEvent)
-            return (AwsResponseEvent) functionOutput;
+        if (functionOutput instanceof AwsGatewayResponse)
+            return (AwsGatewayResponse) functionOutput;
 
         final String json = converter.convertToJson(functionOutput);
-        return new AwsResponseEvent().setBody(json);
+        return new AwsGatewayResponse().setBody(json);
     }
 }

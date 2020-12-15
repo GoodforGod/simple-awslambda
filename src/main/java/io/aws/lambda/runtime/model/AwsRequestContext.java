@@ -13,8 +13,8 @@ import lombok.experimental.Accessors;
 @ToString
 @Accessors(chain = true)
 @Getter
-@Introspected
 @AllArgsConstructor
+@Introspected
 public class AwsRequestContext {
 
     private final String requestId;
