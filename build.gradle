@@ -41,7 +41,7 @@ configurations {
 }
 
 dependencies {
-    micronautBom enforcedPlatform('io.micronaut:micronaut-bom:2.2.1')
+    micronautBom enforcedPlatform('io.micronaut:micronaut-bom:2.2.2')
 
     annotationProcessor 'io.micronaut:micronaut-inject-java'
     annotationProcessor 'io.micronaut:micronaut-graal'
