@@ -53,6 +53,7 @@ dependencies {
 
     api 'com.google.code.gson:gson:2.8.6'
     api 'org.jetbrains:annotations:20.1.0'
+    api 'io.micronaut:micronaut-inject'
 
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
     testCompile 'io.micronaut:micronaut-inject-java'

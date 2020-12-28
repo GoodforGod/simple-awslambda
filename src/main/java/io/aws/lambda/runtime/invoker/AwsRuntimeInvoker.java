@@ -62,7 +62,8 @@ public class AwsRuntimeInvoker {
                 final AwsRequestContext requestContext = new AwsRequestContext(requestId, traceId);
 
                 logger.refresh();
-                logger.debug("Request event received with RequestID: %s", requestContext.getRequestId());
+                logger.debug("Request event received with AwsRequestID: '%s' and AwsTraceID: '%s'",
+                        requestContext.getRequestId(), requestContext.getTraceId());
                 if (logger.isDebugEnabled()) {
                     httpRequest.headers().forEach((k, v) -> logger.debug("Request header: %s - %s", k, v));
                 }
