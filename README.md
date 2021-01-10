@@ -17,6 +17,7 @@ dependencies {
     annotationProcessor 'io.micronaut:micronaut-inject-java'
     annotationProcessor 'io.micronaut:micronaut-graal'
 
+    compileOnly 'io.micronaut:micronaut-inject-java'
     compileOnly 'org.graalvm.nativeimage:svm'
 }
 ```
