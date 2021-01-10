@@ -1,8 +1,12 @@
 ## AWS Lambda Runtime
 
-AWS lambda runtime with Micronaut DI support with GraalVM native lambda compatability.
+AWS lambda runtime with Micronaut DI support with GraalVM native lambda compatibility.
 
 Provides Java native library *AwsLambdaRuntime* with support for Dependency Injection from [Micronaut framework](https://docs.micronaut.io/latest/guide/index.html#ioc).
+
+Allow building smallest and fastest native lambdas with DI support.
+
+## Dependency
 
 ## Dependencies
 
@@ -17,9 +21,11 @@ dependencies {
 }
 ```
 
-### How To
+## Lambda
 
-You just need to implement *Lambda* interface and implement it.
+### Getting Started
+
+Just implement *Lambda* interface and implement it.
 
 ```java
 @Singleton
@@ -31,7 +37,47 @@ public class MyLambda implements Lambda<String, String> {
 }
 ```
 
-All will be setup for using it as AWS lambda, you will need just to correctly provide GraalVM properties for image to be build.
+### Runtime
+
+There two runtimes available for Lambda execution, choose runtime as main class for correct execution.
+
+Available runtimes:
+- **AwsLambdaRuntime** (Process requests as is)
+- **AwsLambdaGatewayRuntime** (Processes requests as [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
+
+In case of migrating lambda from internal usage to *API Gateway* there no need to change rewrite any just change runtime.
+
+#### Gradle
+
+How to set runtime as main class in *build.gradle* for *jar* execution:
+```groovy
+mainClassName = "io.aws.lambda.runtime.AwsLambdaRuntime"
+```
+
+For GraalVM check [corresponding](#graalvm) section.
+
+### GraalVM
+
+#### Dependencies
+
+Do not forget to add such dependencies in you build for DI and GraalVM support:
+
+```groovy
+dependencies {
+    annotationProcessor 'io.micronaut:micronaut-inject-java'
+    annotationProcessor 'io.micronaut:micronaut-graal'
+
+    compileOnly 'org.graalvm.nativeimage:svm'
+}
+```
+
+#### Runtime
+
+Just place *native-image.properties* in resource folder as GraalVM specify with runtime as main class:
+```text
+Args = -H:Name=lambda \
+       -H:Class=io.aws.lambda.runtime.AwsLambdaGatewayRuntime
+```
 
 ### Logging
 
@@ -48,8 +94,16 @@ public class MyLambda implements Lambda<String, String> {
         this.logger = logger;
     }
 
-    public String handle(String s) {
+    public String handle(String input) {
+        logger.info("Lambda input %s", input);
         return "response for " + s;
     }
 }
 ```
+
+You can change logging levels via **LAMBDA_LOGGING_LEVEL** environment variable:
+- DEBUG
+- INFO
+- WARN
+- ERROR
+- OFF
