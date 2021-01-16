@@ -46,7 +46,7 @@ Available runtimes:
 - **AwsLambdaRuntime** (Process requests as is)
 - **AwsLambdaGatewayRuntime** (Processes requests as [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
 
-In case of migrating lambda from internal usage to *API Gateway* there no need to change rewrite any just change runtime.
+In case of migrating lambda from internal usage to *API Gateway* there no need to change rewrite any code just change runtime.
 
 #### Gradle
 
@@ -74,7 +74,7 @@ dependencies {
 
 #### Runtime
 
-Just place *native-image.properties* in resource folder as GraalVM specify with runtime as main class:
+Just place *native-image.properties* in resource folder as [GraalVM specify](https://docs.oracle.com/en/graalvm/enterprise/19/guide/reference/native-image/configuration.html) with runtime as main class:
 ```text
 Args = -H:Name=lambda \
        -H:Class=io.aws.lambda.runtime.AwsLambdaGatewayRuntime
