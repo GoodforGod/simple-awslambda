@@ -8,7 +8,6 @@ import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -34,23 +33,28 @@ public class AwsRuntimeInvoker {
      */
     private static final String LAMBDA_RUNTIME_TRACE_ID = "Lambda-Runtime-Trace-Id";
 
+    /**
+     * AWS Lambda provides an HTTP API for custom runtimes to receive invocation events
+     * from Lambda and send response data back within the Lambda execution environment.
+     */
     private static final String AWS_LAMBDA_RUNTIME_API = "AWS_LAMBDA_RUNTIME_API";
-    private static final String NEXT_INVOCATION_URI = "/2018-06-01/runtime/invocation/next";
+
     private static final String INIT_ERROR = "/2018-06-01/runtime/init/error";
+    private static final String INVOCATION_URI = "/2018-06-01/runtime/invocation/";
+    private static final String INVOCATION_NEXT_URI = INVOCATION_URI + "next";
 
     public void invoke(@NotNull Class<? extends EventHandler> handlerType) {
         final URI apiEndpoint = getRuntimeApiEndpoint();
         final long contextStart = TimeUtils.getTime();
-        final ApplicationContextBuilder builder = ApplicationContext.builder();
-        try (final ApplicationContext context = builder.build().start()) {
+        try (final ApplicationContext context = ApplicationContext.build().start()) {
             final EventHandler eventHandler = context.getBean(handlerType);
             final LambdaLogger logger = context.getBean(LambdaLogger.class);
             final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
             logger.debug("Context startup took: %s", TimeUtils.timeSpent(contextStart));
             logger.debug("AWS runtime uri: %s", apiEndpoint);
 
-            final URI invocationUri = apiEndpoint.resolve(NEXT_INVOCATION_URI);
-            logger.debug("Request event awaiting at: %s", invocationUri);
+            final URI invocationUri = getInvocationNextUri(apiEndpoint);
+            logger.debug("AWS Runtime Event provider at: %s", invocationUri);
 
             while (!Thread.currentThread().isInterrupted()) {
                 final AwsHttpResponse httpRequest = httpClient.get(invocationUri);
@@ -62,24 +66,24 @@ public class AwsRuntimeInvoker {
                 final AwsRequestContext requestContext = new AwsRequestContext(requestId, traceId);
 
                 logger.refresh();
-                logger.debug("AWS Request event received with %s", requestContext);
+                logger.debug("AWS Request Event received with %s", requestContext);
                 if (logger.isDebugEnabled()) {
                     httpRequest.headers().forEach((k, v) -> logger.debug("Request header: %s - %s", k, v));
                 }
 
                 try {
                     final String responseEvent = eventHandler.handle(httpRequest.body(), requestContext);
-                    final URI responseUri = getResponseUri(apiEndpoint, requestContext.getRequestId());
+                    final URI responseUri = getInvocationResponseUri(apiEndpoint, requestContext.getRequestId());
 
                     logger.debug("Responding to AWS started: %s", responseUri);
                     final long respondingStart = TimeUtils.getTime();
                     final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseEvent);
                     logger.info("Responding to AWS took: %s", TimeUtils.timeSpent(respondingStart));
                     logger.debug("AWS responded with http code '%s' and body: %s",
-                            awsResponse.code(), awsResponse.body().strip());
+                            awsResponse.code(), awsResponse.body());
                 } catch (Exception e) {
                     logger.error("Invocation error occurred", e);
-                    final URI uri = getResponseErrorUri(apiEndpoint, requestContext.getRequestId());
+                    final URI uri = getInvocationErrorUri(apiEndpoint, requestContext.getRequestId());
                     httpClient.postAndForget(uri, getErrorResponse(e));
                 }
             }
@@ -90,19 +94,46 @@ public class AwsRuntimeInvoker {
         }
     }
 
-    private static URI getResponseUri(URI apiEndpoint, String requestId) {
-        return apiEndpoint.resolve("/2018-06-01/runtime/invocation/" + requestId + "/response");
+    /**
+     * Retrieves an invocation event.
+     * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     * @param apiEndpoint of api URI
+     * @return invocation response uri
+     */
+    private static URI getInvocationNextUri(URI apiEndpoint) {
+        return apiEndpoint.resolve(INVOCATION_NEXT_URI);
     }
 
-    private static URI getResponseErrorUri(URI apiEndpoint, String requestId) {
-        return apiEndpoint.resolve("/2018-06-01/runtime/invocation/" + requestId + "/error");
+    /**
+     * Sends an invocation response to Lambda.
+     * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     * @param apiEndpoint of api URI
+     * @param requestId of request
+     * @return invocation response uri
+     */
+    private static URI getInvocationResponseUri(URI apiEndpoint, String requestId) {
+        return apiEndpoint.resolve(INVOCATION_URI + requestId + "/response");
     }
 
+    /**
+     * If the function returns an error, the runtime formats the error into a JSON document, and posts it to the invocation error path.
+     * @see <a href="https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     * @param apiEndpoint of api URI
+     * @param requestId of request
+     * @return invocation response uri
+     */
+    private static URI getInvocationErrorUri(URI apiEndpoint, String requestId) {
+        return apiEndpoint.resolve(INVOCATION_URI + requestId + "/error");
+    }
+
+    /**
+     * @return {@link #AWS_LAMBDA_RUNTIME_API}
+     */
     private static URI getRuntimeApiEndpoint() {
         final String runtimeApiEndpoint = System.getenv(AWS_LAMBDA_RUNTIME_API);
         if (StringUtils.isEmpty(runtimeApiEndpoint))
-            throw new IllegalStateException("Missing " + AWS_LAMBDA_RUNTIME_API
-                    + " environment variable. Custom runtime can only be run within AWS Lambda environment.");
+            throw new IllegalStateException("Missing '" + AWS_LAMBDA_RUNTIME_API
+                    + "' environment variable. Custom runtime can only be run within AWS Lambda environment.");
 
         return URI.create("http://" + runtimeApiEndpoint);
     }

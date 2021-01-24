@@ -5,7 +5,7 @@ import io.aws.lambda.runtime.invoker.AwsRuntimeInvoker;
 import io.micronaut.core.annotation.Introspected;
 
 /**
- * Runtime for direct Lambda processing
+ * AWS Lambda Runtime main entry point for direct lambda request\response.
  *
  * @see AwsEventHandler
  * @author Anton Kurako (GoodforGod)

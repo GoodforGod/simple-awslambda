@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * AWS Lambda Handler for handling direct requests for AWS Lambda
+ * AWS Lambda Handler for handling direct requests for AWS Lambda.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020

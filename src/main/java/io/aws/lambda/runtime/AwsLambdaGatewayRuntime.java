@@ -7,7 +7,7 @@ import io.aws.lambda.runtime.model.AwsGatewayResponse;
 import io.micronaut.core.annotation.Introspected;
 
 /**
- * Runtime for Gateway Events Lambda processing
+ * AWS Lambda Runtime main entry point for Lambda API gateway request\response.
  *
  * @see AwsGatewayResponse
  * @see AwsGatewayRequest
