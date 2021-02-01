@@ -1,5 +1,6 @@
 package io.aws.lambda.runtime;
 
+import io.aws.lambda.runtime.context.impl.MicronautContext;
 import io.aws.lambda.runtime.handler.impl.AwsGatewayEventHandler;
 import io.aws.lambda.runtime.invoker.AwsRuntimeInvoker;
 import io.aws.lambda.runtime.model.AwsGatewayRequest;
@@ -20,7 +21,7 @@ public class AwsLambdaGatewayRuntime {
 
     public static void main(String[] args) {
         try {
-            new AwsRuntimeInvoker().invoke(AwsGatewayEventHandler.class);
+            new AwsRuntimeInvoker().invoke(MicronautContext.class, AwsGatewayEventHandler.class);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
