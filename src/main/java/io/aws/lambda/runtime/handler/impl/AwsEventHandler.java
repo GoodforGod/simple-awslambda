@@ -7,7 +7,6 @@ import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
-import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -20,7 +19,6 @@ import javax.inject.Singleton;
  * @since 7.11.2020
  */
 @Singleton
-@Introspected
 public class AwsEventHandler extends AbstractEventHandler implements EventHandler {
 
     private final Lambda function;

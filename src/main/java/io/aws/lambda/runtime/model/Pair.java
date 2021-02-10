@@ -1,6 +1,5 @@
 package io.aws.lambda.runtime.model;
 
-import io.micronaut.core.annotation.Introspected;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +9,6 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-@Introspected
 public class Pair<L, R> {
 
     private final L left;

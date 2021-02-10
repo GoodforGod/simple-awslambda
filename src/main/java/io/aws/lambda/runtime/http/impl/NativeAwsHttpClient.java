@@ -3,7 +3,6 @@ package io.aws.lambda.runtime.http.impl;
 import io.aws.lambda.runtime.error.HttpException;
 import io.aws.lambda.runtime.http.AwsHttpClient;
 import io.aws.lambda.runtime.http.AwsHttpResponse;
-import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Singleton;
@@ -22,7 +21,6 @@ import static io.aws.lambda.runtime.model.AwsGatewayResponse.MEDIA_TYPE_JSON;
  * @since 27.10.2020
  */
 @Singleton
-@Introspected
 public class NativeAwsHttpClient implements AwsHttpClient {
 
     private static final HttpClient CLIENT = HttpClient.newBuilder()

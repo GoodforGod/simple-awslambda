@@ -1,6 +1,5 @@
 package io.aws.lambda.runtime.model;
 
-import io.micronaut.core.annotation.Introspected;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,7 +16,6 @@ import java.util.Map;
 @Accessors(chain = true)
 @Getter
 @Setter
-@Introspected
 public class AwsGatewayRequest {
 
     private AwsRequestContext context;

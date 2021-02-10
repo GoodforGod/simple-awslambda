@@ -1,6 +1,5 @@
 package io.aws.lambda.runtime.model;
 
-import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Getter
 @AllArgsConstructor
-@Introspected
 public class AwsRequestContext {
 
     private final String requestId;

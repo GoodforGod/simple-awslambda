@@ -2,7 +2,6 @@ package io.aws.lambda.runtime.convert.impl;
 
 import com.google.gson.Gson;
 import io.aws.lambda.runtime.convert.Converter;
-import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
@@ -12,7 +11,6 @@ import javax.inject.Singleton;
  * @since 7.11.2020
  */
 @Singleton
-@Introspected
 public class GsonConverter implements Converter {
 
     private static final Gson MAPPER = new Gson();
