@@ -9,7 +9,6 @@ import io.aws.lambda.runtime.http.impl.NativeAwsHttpClient;
 import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.utils.TimeUtils;
-import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +18,6 @@ import java.net.URI;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-@Introspected
 public class AwsRuntimeInvoker {
 
     /**
@@ -45,11 +43,31 @@ public class AwsRuntimeInvoker {
     private static final String INVOCATION_URI = "/2018-06-01/runtime/invocation/";
     private static final String INVOCATION_NEXT_URI = INVOCATION_URI + "next";
 
+    /**
+     * @param contextType class type to instantiate
+     * @param handlerType class type to instantiate from context
+     */
     public void invoke(@NotNull Class<? extends RuntimeContext> contextType,
+                       @NotNull Class<? extends EventHandler> handlerType) {
+        try (RuntimeContext context = getInstance(contextType)) {
+            invoke(context, handlerType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            final AwsHttpClient httpClient = new NativeAwsHttpClient();
+            final URI apiEndpoint = getRuntimeApiEndpoint();
+            httpClient.postAndForget(apiEndpoint.resolve(INIT_ERROR), getErrorResponse(e));
+        }
+    }
+
+    /**
+     * @param context     runtime instance
+     * @param handlerType class type to instantiate from context
+     */
+    public void invoke(@NotNull RuntimeContext context,
                        @NotNull Class<? extends EventHandler> handlerType) {
         final URI apiEndpoint = getRuntimeApiEndpoint();
         final long contextStart = TimeUtils.getTime();
-        try (final RuntimeContext context = getInstance(contextType)) {
+        try {
             final EventHandler eventHandler = context.getBean(handlerType);
             final LambdaLogger logger = context.getBean(LambdaLogger.class);
             final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
@@ -77,7 +95,6 @@ public class AwsRuntimeInvoker {
                 try {
                     final String responseEvent = eventHandler.handle(httpRequest.body(), requestContext);
                     final URI responseUri = getInvocationResponseUri(apiEndpoint, requestContext.getRequestId());
-
                     logger.debug("Responding to AWS started: %s", responseUri);
                     final long respondingStart = TimeUtils.getTime();
                     final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseEvent);
@@ -92,7 +109,7 @@ public class AwsRuntimeInvoker {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            final NativeAwsHttpClient httpClient = new NativeAwsHttpClient();
+            final AwsHttpClient httpClient = new NativeAwsHttpClient();
             httpClient.postAndForget(apiEndpoint.resolve(INIT_ERROR), getErrorResponse(e));
         }
     }
@@ -108,11 +125,11 @@ public class AwsRuntimeInvoker {
 
     /**
      * Retrieves an invocation event.
-     * 
-     * @see <a href=
-     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     *
      * @param apiEndpoint of api URI
      * @return invocation response uri
+     * @see <a href=
+     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationNextUri(URI apiEndpoint) {
         return apiEndpoint.resolve(INVOCATION_NEXT_URI);
@@ -120,12 +137,12 @@ public class AwsRuntimeInvoker {
 
     /**
      * Sends an invocation response to Lambda.
-     * 
-     * @see <a href=
-     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     *
      * @param apiEndpoint of api URI
      * @param requestId   of request
      * @return invocation response uri
+     * @see <a href=
+     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationResponseUri(URI apiEndpoint, String requestId) {
         return apiEndpoint.resolve(INVOCATION_URI + requestId + "/response");
@@ -134,12 +151,12 @@ public class AwsRuntimeInvoker {
     /**
      * If the function returns an error, the runtime formats the error into a JSON
      * document, and posts it to the invocation error path.
-     * 
-     * @see <a href=
-     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     *
      * @param apiEndpoint of api URI
      * @param requestId   of request
      * @return invocation response uri
+     * @see <a href=
+     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationErrorUri(URI apiEndpoint, String requestId) {
         return apiEndpoint.resolve(INVOCATION_URI + requestId + "/error");
