@@ -14,6 +14,7 @@ public interface RuntimeContext extends AutoCloseable {
 
     /**
      * @param beanType class or interface of bean to look for
+     * @param <T> type of bean to instantiate
      * @return return bean instance
      */
     <T> T getBean(Class<T> beanType);

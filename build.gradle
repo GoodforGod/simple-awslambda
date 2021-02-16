@@ -41,27 +41,19 @@ configurations {
 }
 
 dependencies {
-    micronautBom enforcedPlatform('io.micronaut:micronaut-bom:2.3.1')
-
-    annotationProcessor 'io.micronaut:micronaut-inject-java'
-    annotationProcessor 'io.micronaut:micronaut-graal'
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
 
     compileOnly 'org.projectlombok:lombok:1.18.18'
-    compileOnly 'org.graalvm.nativeimage:svm'
-    compileOnly 'io.micronaut:micronaut-inject-java'
+    compileOnly 'org.graalvm.nativeimage:svm:21.0.0'
 
+    api 'javax.inject:javax.inject:1'
     api 'com.google.code.gson:gson:2.8.6'
     api 'org.jetbrains:annotations:20.1.0'
-    api 'io.micronaut:micronaut-inject'
 
-    testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
-    testCompile 'io.micronaut:micronaut-inject-java'
-
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.30'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
 }
 
 test {

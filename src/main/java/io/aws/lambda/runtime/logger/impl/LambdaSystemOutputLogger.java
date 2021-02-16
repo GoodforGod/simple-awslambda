@@ -2,7 +2,7 @@ package io.aws.lambda.runtime.logger.impl;
 
 import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.logger.Level;
-import io.micronaut.core.util.StringUtils;
+import io.aws.lambda.runtime.utils.StringUtils;
 
 import javax.inject.Singleton;
 

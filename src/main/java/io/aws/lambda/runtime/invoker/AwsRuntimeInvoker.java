@@ -8,8 +8,8 @@ import io.aws.lambda.runtime.http.AwsHttpResponse;
 import io.aws.lambda.runtime.http.impl.NativeAwsHttpClient;
 import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.model.AwsRequestContext;
+import io.aws.lambda.runtime.utils.StringUtils;
 import io.aws.lambda.runtime.utils.TimeUtils;
-import io.micronaut.core.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
