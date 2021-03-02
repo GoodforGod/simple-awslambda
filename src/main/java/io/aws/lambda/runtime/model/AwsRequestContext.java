@@ -1,6 +1,6 @@
 package io.aws.lambda.runtime.model;
 
-import io.micronaut.core.util.StringUtils;
+import io.aws.lambda.runtime.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
