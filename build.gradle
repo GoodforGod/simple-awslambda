@@ -26,19 +26,6 @@ spotless {
     }
 }
 
-configurations {
-    all {
-        resolutionStrategy {
-            cacheChangingModulesFor(1000, 'seconds') // refresh cache for snapshots
-        }
-    }
-    micronautBom
-    compileOnly.extendsFrom(micronautBom)
-    implementation.extendsFrom(micronautBom)
-    annotationProcessor.extendsFrom(micronautBom)
-    testAnnotationProcessor.extendsFrom(micronautBom)
-}
-
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
 

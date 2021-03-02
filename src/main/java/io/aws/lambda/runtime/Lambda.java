@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Lambda function contract to implement
- * 
+ *
  * @param <I> type of input
  * @param <O> type of output
  */
