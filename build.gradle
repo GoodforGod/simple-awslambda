@@ -28,7 +28,9 @@ spotless {
 
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
+    annotationProcessor 'io.micronaut:micronaut-inject-java:2.3.4'
 
+    compileOnly 'io.micronaut:micronaut-inject-java:2.3.4'
     compileOnly 'org.projectlombok:lombok:1.18.18'
     compileOnly 'org.graalvm.nativeimage:svm:21.0.0'
 
