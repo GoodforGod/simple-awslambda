@@ -12,6 +12,7 @@ import io.aws.lambda.runtime.utils.StringUtils;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 
 /**
@@ -117,7 +118,9 @@ public class AwsRuntimeInvoker {
     @SuppressWarnings("unchecked")
     private static <T> T getInstance(Class<T> type) {
         try {
-            return (T) type.getConstructors()[0].newInstance();
+            final Constructor<?> constructor = type.getDeclaredConstructors()[0];
+            constructor.setAccessible(true);
+            return (T) constructor.newInstance();
         } catch (Exception e) {
             throw new ContextException("Context can not be instantiated through constructor due to: " + e.getMessage());
         }
