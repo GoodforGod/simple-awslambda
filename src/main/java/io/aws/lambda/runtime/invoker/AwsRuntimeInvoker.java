@@ -12,8 +12,8 @@ import io.aws.lambda.runtime.utils.StringUtils;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Constructor;
 import java.net.URI;
+import java.util.function.Supplier;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -51,7 +51,7 @@ public class AwsRuntimeInvoker {
     public void invoke(@NotNull Class<? extends RuntimeContext> contextType,
                        @NotNull Class<? extends EventHandler> handlerType) {
         try (RuntimeContext context = getInstance(contextType)) {
-            invoke(context, handlerType);
+            invoke(() -> context, handlerType);
         } catch (Exception e) {
             e.printStackTrace();
             final AwsHttpClient httpClient = new NativeAwsHttpClient();
@@ -61,14 +61,14 @@ public class AwsRuntimeInvoker {
     }
 
     /**
-     * @param context     runtime instance
-     * @param handlerType class type to instantiate from context
+     * @param contextSupplier runtime instance supplier
+     * @param handlerType     class type to instantiate from contextSupplier
      */
-    public void invoke(@NotNull RuntimeContext context,
+    public void invoke(@NotNull Supplier<RuntimeContext> contextSupplier,
                        @NotNull Class<? extends EventHandler> handlerType) {
         final URI apiEndpoint = getRuntimeApiEndpoint();
         final long contextStart = TimeUtils.getTime();
-        try {
+        try (final RuntimeContext context = contextSupplier.get()) {
             final EventHandler eventHandler = context.getBean(handlerType);
             final LambdaLogger logger = context.getBean(LambdaLogger.class);
             final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
@@ -115,12 +115,9 @@ public class AwsRuntimeInvoker {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private static <T> T getInstance(Class<T> type) {
         try {
-            final Constructor<?> constructor = type.getDeclaredConstructors()[0];
-            constructor.setAccessible(true);
-            return (T) constructor.newInstance();
+            return type.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new ContextException("Context can not be instantiated through constructor due to: " + e.getMessage());
         }
