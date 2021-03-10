@@ -6,6 +6,7 @@ import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.model.AwsGatewayRequest;
 import io.aws.lambda.runtime.model.AwsGatewayResponse;
 import io.aws.lambda.runtime.model.AwsRequestContext;
+import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,11 +31,14 @@ public class AwsGatewayEventHandler extends AwsEventHandler {
     public String handle(@NotNull String event, @NotNull AwsRequestContext context) {
         logger.debug("Gateway Request Event conversion started...");
         final long requestStart = TimeUtils.getTime();
-        final AwsGatewayRequest requestEvent = converter.convertToType(event, AwsGatewayRequest.class)
-                .setContext(context);
+
+        final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
+        final String requestBody = (funcArgs.getRight().isAssignableFrom(AwsRequestContext.class))
+                ? event
+                : converter.convertToType(event, AwsGatewayRequest.class).getBody();
         logger.debug("Gateway Request Event conversion took: %s", TimeUtils.timeSpent(requestStart));
 
-        final Object functionOutput = super.handle(requestEvent.getBody(), context);
+        final Object functionOutput = super.handle(requestBody, context);
 
         logger.debug("Gateway Response Event conversion started...");
         final long outputStart = TimeUtils.getTime();

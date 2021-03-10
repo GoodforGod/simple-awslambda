@@ -21,7 +21,7 @@ import javax.inject.Singleton;
 @Singleton
 public class AwsEventHandler extends AbstractEventHandler implements EventHandler {
 
-    private final Lambda function;
+    protected final Lambda function;
 
     @Inject
     public AwsEventHandler(Lambda function, Converter converter, LambdaLogger logger) {

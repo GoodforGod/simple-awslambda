@@ -27,9 +27,6 @@ public abstract class AbstractEventHandler implements EventHandler {
         if (String.class.equals(inputType))
             return event;
 
-        if (AwsGatewayRequest.class.equals(inputType))
-            return event;
-
         return converter.convertToType(event, inputType);
     }
 
