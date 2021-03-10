@@ -26,13 +26,29 @@ spotless {
     }
 }
 
-dependencies {
-    annotationProcessor 'org.projectlombok:lombok:1.18.18'
-    annotationProcessor 'io.micronaut:micronaut-inject-java:2.3.4'
+configurations {
+    all {
+        resolutionStrategy {
+            cacheChangingModulesFor(1000, 'seconds') // refresh cache for snapshots
+        }
+    }
+    micronautBom
+    compileOnly.extendsFrom(micronautBom)
+    implementation.extendsFrom(micronautBom)
+    annotationProcessor.extendsFrom(micronautBom)
+    testAnnotationProcessor.extendsFrom(micronautBom)
+}
 
-    compileOnly 'io.micronaut:micronaut-inject-java:2.3.4'
+dependencies {
+    micronautBom enforcedPlatform('io.micronaut:micronaut-bom:2.3.4')
+
+    annotationProcessor 'io.micronaut:micronaut-inject-java'
+    annotationProcessor 'io.micronaut:micronaut-graal'
+    annotationProcessor 'org.projectlombok:lombok:1.18.18'
+
     compileOnly 'org.projectlombok:lombok:1.18.18'
-    compileOnly 'org.graalvm.nativeimage:svm:21.0.0'
+    compileOnly 'org.graalvm.nativeimage:svm'
+    compileOnly 'io.micronaut:micronaut-inject-java'
 
     api 'javax.inject:javax.inject:1'
     api 'org.jetbrains:annotations:20.1.0'
