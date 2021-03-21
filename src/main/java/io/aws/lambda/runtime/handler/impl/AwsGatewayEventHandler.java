@@ -8,6 +8,7 @@ import io.aws.lambda.runtime.model.AwsGatewayResponse;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
+import io.micronaut.core.annotation.TypeHint;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
+@TypeHint({AwsGatewayRequest.class, AwsGatewayResponse.class})
 @Singleton
 public class AwsGatewayEventHandler extends AwsEventHandler {
 
