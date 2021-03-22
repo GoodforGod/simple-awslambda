@@ -22,7 +22,8 @@ class AwsGatewayEventHandlerTests extends Assertions {
             final EventHandler handler = context.getBean(AwsGatewayEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
 
-            final AwsGatewayRequest requestEvent = new AwsGatewayRequest().setBody("{\"name\":\"bob\"}");
+            final AwsGatewayRequest requestEvent = new AwsGatewayRequest();
+            requestEvent.setBody("{\"name\":\"bob\"}");
             final String json = converter.convertToJson(requestEvent);
 
             final String response = handler.handle(json, new AwsRequestContext("1", "1"));

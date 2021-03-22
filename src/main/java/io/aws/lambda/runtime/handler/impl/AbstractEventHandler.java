@@ -4,7 +4,6 @@ import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.logger.LambdaLogger;
-import io.aws.lambda.runtime.model.AwsGatewayRequest;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.GenericUtils;
 import org.jetbrains.annotations.NotNull;

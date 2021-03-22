@@ -11,10 +11,10 @@ import java.util.Map;
  * @author GoodforGod
  * @since 29.10.2020
  */
-@ToString
 @Accessors(chain = true)
 @Getter
 @Setter
+@ToString
 public class AwsGatewayResponse {
 
     public static final String CONTENT_TYPE = "Content-Type";

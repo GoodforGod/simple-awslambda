@@ -4,7 +4,7 @@ plugins {
 
     id "io.micronaut.library" version "1.4.2"
     id "org.sonarqube" version "3.1.1"
-    id "com.diffplug.spotless" version "5.10.1"
+    id "com.diffplug.spotless" version "5.11.0"
 }
 
 repositories {
@@ -47,7 +47,6 @@ dependencies {
 
     api "javax.inject:javax.inject:1"
     api "org.jetbrains:annotations:20.1.0"
-    api "com.jsoniter:jsoniter:0.9.23"
     api "com.google.code.gson:gson:2.8.6"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"

@@ -20,7 +20,13 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-@TypeHint({AwsGatewayRequest.class, AwsGatewayResponse.class})
+@TypeHint(
+        value = { AwsGatewayRequest.class, AwsGatewayResponse.class },
+        accessType = { TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS,
+                TypeHint.AccessType.ALL_DECLARED_METHODS,
+                TypeHint.AccessType.ALL_DECLARED_FIELDS,
+                TypeHint.AccessType.ALL_PUBLIC_CONSTRUCTORS,
+                TypeHint.AccessType.ALL_PUBLIC_METHODS })
 @Singleton
 public class AwsGatewayEventHandler extends AwsEventHandler {
 
@@ -35,10 +41,11 @@ public class AwsGatewayEventHandler extends AwsEventHandler {
         final long requestStart = TimeUtils.getTime();
 
         final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
-        final String requestBody = (funcArgs.getRight().isAssignableFrom(AwsRequestContext.class))
+        final String requestBody = (AwsRequestContext.class.isAssignableFrom(funcArgs.getRight()))
                 ? event
                 : converter.convertToType(event, AwsGatewayRequest.class).getBody();
         logger.debug("Gateway Request Event conversion took: %s", TimeUtils.timeSpent(requestStart));
+        logger.debug("Gateway Request Event body: %s", requestBody);
 
         final Object functionOutput = super.handle(requestBody, context);
 
