@@ -96,11 +96,11 @@ public class AwsRuntimeInvoker {
                 try {
                     final String responseEvent = eventHandler.handle(httpRequest.body(), requestContext);
                     final URI responseUri = getInvocationResponseUri(apiEndpoint, requestContext.getRequestId());
-                    logger.debug("Responding to AWS started: %s", responseUri);
+                    logger.debug("Responding to AWS invocation started: %s", responseUri);
                     final long respondingStart = TimeUtils.getTime();
                     final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseEvent);
-                    logger.info("Responding to AWS took: %s", TimeUtils.timeSpent(respondingStart));
-                    logger.debug("AWS responded with http code '%s' and body: %s",
+                    logger.info("Responding to AWS invocation took: %s", TimeUtils.timeSpent(respondingStart));
+                    logger.debug("AWS invocation response: Http Code '%s' and Body: %s",
                             awsResponse.code(), awsResponse.body());
                 } catch (Exception e) {
                     logger.error("Invocation error occurred", e);
