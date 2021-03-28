@@ -4,6 +4,9 @@ import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.logger.LambdaLogger;
+import io.aws.lambda.runtime.model.AwsGatewayRequest;
+import io.aws.lambda.runtime.model.AwsGatewayRequestBuilder;
+import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.GenericUtils;
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +25,17 @@ public abstract class AbstractEventHandler implements EventHandler {
         this.logger = logger;
     }
 
-    protected @NotNull Object getFunctionInput(@NotNull Class<?> inputType, @NotNull String event) {
+    protected @NotNull Object getFunctionInput(@NotNull Class<?> inputType,
+                                               @NotNull String event,
+                                               @NotNull AwsRequestContext context) {
         if (String.class.equals(inputType))
             return event;
+
+        if (AwsGatewayRequest.class.equals(inputType)) {
+            return converter.convertToType(event, AwsGatewayRequestBuilder.class)
+                    .setContext(context)
+                    .build();
+        }
 
         return converter.convertToType(event, inputType);
     }

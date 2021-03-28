@@ -38,7 +38,7 @@ public class AwsEventHandler extends AbstractEventHandler implements EventHandle
 
         logger.debug("Function input conversion started...");
         final long inputStart = TimeUtils.getTime();
-        final Object functionInput = getFunctionInput(funcArgs.getRight(), event);
+        final Object functionInput = getFunctionInput(funcArgs.getRight(), event, context);
         logger.debug("Function input conversion took: %s", TimeUtils.timeSpent(inputStart));
         logger.debug("Function input: %s", functionInput);
 

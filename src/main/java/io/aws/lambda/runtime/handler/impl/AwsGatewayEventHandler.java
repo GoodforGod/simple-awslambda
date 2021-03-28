@@ -3,12 +3,11 @@ package io.aws.lambda.runtime.handler.impl;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.logger.LambdaLogger;
-import io.aws.lambda.runtime.model.AwsGatewayRequest;
+import io.aws.lambda.runtime.model.AwsGatewayRequestBuilder;
 import io.aws.lambda.runtime.model.AwsGatewayResponse;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
-import io.micronaut.core.annotation.TypeHint;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -20,9 +19,6 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-@TypeHint(
-        value = { AwsGatewayRequest.class, AwsGatewayResponse.class },
-        accessType = { TypeHint.AccessType.ALL_PUBLIC })
 @Singleton
 public class AwsGatewayEventHandler extends AwsEventHandler {
 
@@ -39,7 +35,7 @@ public class AwsGatewayEventHandler extends AwsEventHandler {
         final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
         final String requestBody = (AwsRequestContext.class.isAssignableFrom(funcArgs.getRight()))
                 ? event
-                : converter.convertToType(event, AwsGatewayRequest.class).getBody();
+                : converter.convertToType(event, AwsGatewayRequestBuilder.class).build().getBody();
         logger.debug("Gateway Request Event conversion took: %s", TimeUtils.timeSpent(requestStart));
         logger.debug("Gateway Request Event body: %s", requestBody);
 

@@ -39,9 +39,7 @@ micronaut {
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-graal"
-    annotationProcessor "org.projectlombok:lombok:1.18.18"
 
-    compileOnly "org.projectlombok:lombok:1.18.18"
     compileOnly "org.graalvm.nativeimage:svm"
     compileOnly "io.micronaut:micronaut-inject-java"
 

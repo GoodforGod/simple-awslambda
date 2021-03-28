@@ -4,8 +4,7 @@ import io.aws.lambda.runtime.context.RuntimeContext;
 import io.micronaut.context.ApplicationContext;
 
 /**
- * Micronaut context implementation
- * {@link ApplicationContext}
+ * Micronaut context implementation {@link ApplicationContext}
  *
  * @author Anton Kurako (GoodforGod)
  * @since 15.2.2021
