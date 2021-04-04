@@ -1,5 +1,6 @@
 package io.aws.lambda.runtime.model;
 
+import io.aws.lambda.runtime.utils.StringUtils;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 
@@ -80,12 +81,12 @@ public class IAM {
 
     @Override
     public String toString() {
-        return "[accessKey='" + accessKey +
-                "', accountId='" + accountId +
-                "', callerId='" + callerId +
-                "', cognitoIdentity='" + cognitoIdentity +
-                "', principalOrgId='" + principalOrgId +
-                "', userId='" + userId +
-                "', userArn='" + userArn + "']";
+        return "{" + StringUtils.concatOrEmpty("\"accessKey\":\"", accessKey) +
+                StringUtils.concatOrEmpty("\", \"accountId\":\"", accountId) +
+                StringUtils.concatOrEmpty("\", \"callerId\":\"", callerId) +
+                StringUtils.concatOrEmpty("\", \"cognitoIdentity\":\"", cognitoIdentity) +
+                StringUtils.concatOrEmpty("\", \"principalOrgId\":\"", principalOrgId) +
+                StringUtils.concatOrEmpty("\", \"userId\":\"", userId) +
+                StringUtils.concatOrEmpty("\", \"userArn\":\"", userArn) + "\"}";
     }
 }

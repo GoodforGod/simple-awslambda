@@ -1,5 +1,6 @@
 package io.aws.lambda.runtime.model;
 
+import io.aws.lambda.runtime.utils.StringUtils;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 
@@ -65,10 +66,10 @@ public class AwsGatewayRequestHttpContext {
 
     @Override
     public String toString() {
-        return "[method='" + method +
-                "', path='" + path +
-                "', protocol='" + protocol +
-                "', sourceIp='" + sourceIp +
-                "', userAgent='" + userAgent + "']";
+        return "{\"method\":\"" + method +
+                StringUtils.concatOrEmpty("\", path\":\"", path) +
+                StringUtils.concatOrEmpty("\", protocol\":\"", protocol) +
+                StringUtils.concatOrEmpty("\", sourceIp\":\"", sourceIp) +
+                StringUtils.concatOrEmpty("\", userAgent\":\"", userAgent) + "\"}";
     }
 }

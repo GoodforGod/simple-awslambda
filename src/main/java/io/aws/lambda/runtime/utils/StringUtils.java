@@ -17,7 +17,7 @@ public class StringUtils {
     }
 
     public static String concatOrEmpty(String prefix, Object value) {
-        if(value == null)
+        if (value == null)
             return "";
 
         final String s = value.toString();

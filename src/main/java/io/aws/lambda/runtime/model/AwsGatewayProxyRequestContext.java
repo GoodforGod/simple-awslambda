@@ -111,15 +111,15 @@ public class AwsGatewayProxyRequestContext {
 
     @Override
     public String toString() {
-        return '[' + StringUtils.concatOrEmpty( "accountId='", accountId) +
-                StringUtils.concatOrEmpty("', apiId='", apiId) +
-                        StringUtils.concatOrEmpty("', domainName='", domainName) +
-                                StringUtils.concatOrEmpty( "', domainPrefix='", domainPrefix) +
-                                        StringUtils.concatOrEmpty( "', requestId='" ,requestId) +
-                                                StringUtils.concatOrEmpty( "', routeKey='", routeKey) +
-                                                        StringUtils.concatOrEmpty( "', stage='", stage) +
-                                                                StringUtils.concatOrEmpty( "', time='" + time +
-                                                                        StringUtils.concatOrEmpty( "', timeEpoch=" + timeEpoch +
-                                                                                StringUtils.concatOrEmpty( ", identity=" + authorizer + ']';
+        return "{\"timeEpoch\":" + timeEpoch +
+                ", \"identity\":" + authorizer +
+                ", \"time\":\"" + time +
+                StringUtils.concatOrEmpty("\", \"apiId\":\"", apiId) +
+                StringUtils.concatOrEmpty("\", \"domainName\":\"", domainName) +
+                StringUtils.concatOrEmpty("\", \"domainPrefix\":\"", domainPrefix) +
+                StringUtils.concatOrEmpty("\", \"requestId\":\"", requestId) +
+                StringUtils.concatOrEmpty("\", \"routeKey\":\"", routeKey) +
+                StringUtils.concatOrEmpty("\", \"stage\":\"", stage) +
+                StringUtils.concatOrEmpty("\", \"accountId\":\"", accountId) + "\"}";
     }
 }

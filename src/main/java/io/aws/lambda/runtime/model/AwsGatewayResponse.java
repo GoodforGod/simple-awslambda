@@ -59,9 +59,9 @@ public class AwsGatewayResponse {
 
     @Override
     public String toString() {
-        return "[statusCode=" + statusCode +
-                ", headers=" + headers +
-                ", body='" + body +
-                "', isBase64Encoded=" + isBase64Encoded + ']';
+        return "{\"statusCode\":\"" + statusCode +
+                "\", \"headers\":\"" + headers +
+                "\", \"body\":\"" + body +
+                "\", \"isBase64Encoded\":\"" + isBase64Encoded + "\"}";
     }
 }

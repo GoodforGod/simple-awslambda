@@ -29,7 +29,7 @@ public class AwsRequestContext {
     @Override
     public String toString() {
         return (StringUtils.isEmpty(traceId))
-                ? "[AwsRequestID=" + requestId + ']'
-                : "[AwsRequestID=" + requestId + ", AwsTraceID=" + traceId + ']';
+                ? "{\"AwsRequestID\":\"" + requestId + "\"}"
+                : "{\"AwsRequestID\":\"" + requestId + "\", \"AwsTraceID\":\"" + traceId + "\"}";
     }
 }

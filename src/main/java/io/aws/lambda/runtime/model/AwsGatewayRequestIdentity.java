@@ -47,6 +47,8 @@ public class AwsGatewayRequestIdentity {
 
     @Override
     public String toString() {
-        return "[IAM=" + iam + ", JWT=" + jwt + ']';
+        return (jwt == null)
+                ? "{\"IAM\":" + iam + "}"
+                : "{\"IAM\":" + iam + ", \"JWT\":\"" + jwt + "\"}";
     }
 }

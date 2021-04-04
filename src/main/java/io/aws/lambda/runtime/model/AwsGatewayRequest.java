@@ -1,5 +1,6 @@
 package io.aws.lambda.runtime.model;
 
+import io.aws.lambda.runtime.utils.StringUtils;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 
@@ -124,17 +125,17 @@ public class AwsGatewayRequest {
 
     @Override
     public String toString() {
-        return "[context=" + context +
-                ", isBase64Encoded=" + isBase64Encoded +
-                ", version='" + version +
-                "', rawPath='" + rawPath +
-                "', body='" + body +
-                "', rawQueryString='" + rawQueryString +
-                "', headers=" + headers +
-                ", queryStringParameters=" + queryStringParameters +
-                ", pathParameters=" + pathParameters +
-                ", stageVariables=" + stageVariables +
-                ", cookies=" + cookies +
-                ", requestContext=" + requestContext + ']';
+        return "{\"context\":" + context +
+                ", \"requestContext\":" + requestContext +
+                ", \"body\":" + body +
+                ", \"isBase64Encoded\":\"" + isBase64Encoded +
+                StringUtils.concatOrEmpty("\", \"version\":\"", version) +
+                StringUtils.concatOrEmpty("\", \"rawPath\":\"", rawPath) +
+                StringUtils.concatOrEmpty("\", \"rawQueryString\":\"", rawQueryString) +
+                StringUtils.concatOrEmpty("\", \"headers\":\"", headers) +
+                StringUtils.concatOrEmpty("\", \"queryStringParameters\":\"", queryStringParameters) +
+                StringUtils.concatOrEmpty("\", \"pathParameters\":\"", pathParameters) +
+                StringUtils.concatOrEmpty("\", \"stageVariables\":\"", stageVariables) +
+                StringUtils.concatOrEmpty("\", \"cookies\":\"", cookies) + "\"}";
     }
 }
