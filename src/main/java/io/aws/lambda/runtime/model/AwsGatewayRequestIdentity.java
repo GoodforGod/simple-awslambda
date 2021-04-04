@@ -17,7 +17,7 @@ public class AwsGatewayRequestIdentity {
     private final IAM iam;
     private final Map<String, Object> jwt;
 
-    public AwsGatewayRequestIdentity(IAM iam, Map<String, Object> jwt) {
+    protected AwsGatewayRequestIdentity(IAM iam, Map<String, Object> jwt) {
         this.iam = iam;
         this.jwt = jwt;
     }

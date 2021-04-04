@@ -88,7 +88,9 @@ public class AwsGatewayRequestBuilder {
     }
 
     public AwsGatewayRequest build() {
-        return new AwsGatewayRequest(context, isBase64Encoded, version, rawPath, body, rawQueryString, headers,
-                queryStringParameters, pathParameters, stageVariables, cookies, (requestContext == null) ? null : requestContext.build());
+        return new AwsGatewayRequest(this.context, this.isBase64Encoded != null && this.isBase64Encoded,
+                version, rawPath, body, rawQueryString, headers,
+                queryStringParameters, pathParameters, stageVariables,
+                cookies, (requestContext == null) ? null : requestContext.build());
     }
 }

@@ -1,5 +1,6 @@
 package io.aws.lambda.runtime.model;
 
+import io.aws.lambda.runtime.utils.Base64Utils;
 import io.aws.lambda.runtime.utils.StringUtils;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
@@ -18,10 +19,11 @@ public class AwsGatewayRequest {
 
     private final AwsRequestContext context;
 
-    private final Boolean isBase64Encoded;
+    private final boolean isBase64Encoded;
     private final String version;
     private final String rawPath;
     private final String body;
+    private String bodyDecoded;
     private final String rawQueryString;
 
     private final Map<String, String> headers;
@@ -32,10 +34,10 @@ public class AwsGatewayRequest {
 
     private final AwsGatewayProxyRequestContext requestContext;
 
-    public AwsGatewayRequest(AwsRequestContext context, Boolean isBase64Encoded, String version, String rawPath, String body,
-                             String rawQueryString, Map<String, String> headers, Map<String, String> queryStringParameters,
-                             Map<String, String> pathParameters, Map<String, String> stageVariables, List<String> cookies,
-                             AwsGatewayProxyRequestContext requestContext) {
+    protected AwsGatewayRequest(AwsRequestContext context, boolean isBase64Encoded, String version, String rawPath, String body,
+                                String rawQueryString, Map<String, String> headers, Map<String, String> queryStringParameters,
+                                Map<String, String> pathParameters, Map<String, String> stageVariables, List<String> cookies,
+                                AwsGatewayProxyRequestContext requestContext) {
         this.context = context;
         this.isBase64Encoded = isBase64Encoded;
         this.version = version;
@@ -58,7 +60,7 @@ public class AwsGatewayRequest {
         return context;
     }
 
-    public Boolean getBase64Encoded() {
+    public boolean isBase64Encoded() {
         return isBase64Encoded;
     }
 
@@ -72,6 +74,17 @@ public class AwsGatewayRequest {
 
     public String getBody() {
         return body;
+    }
+
+    /**
+     * @return body decoded from base64 if that was the case
+     *         {@link #isBase64Encoded}
+     */
+    public String getBodyDecoded() {
+        if (bodyDecoded == null)
+            bodyDecoded = (isBase64Encoded) ? Base64Utils.decode(body) : body;
+
+        return bodyDecoded;
     }
 
     public String getRawQueryString() {
@@ -127,9 +140,9 @@ public class AwsGatewayRequest {
     public String toString() {
         return "{\"context\":" + context +
                 ", \"requestContext\":" + requestContext +
-                ", \"body\":" + body +
-                ", \"isBase64Encoded\":\"" + isBase64Encoded +
-                StringUtils.concatOrEmpty("\", \"version\":\"", version) +
+                ", \"body\":" + getBodyDecoded() +
+                ", \"isBase64Encoded\":" + isBase64Encoded +
+                ", \"version\":\"" + version +
                 StringUtils.concatOrEmpty("\", \"rawPath\":\"", rawPath) +
                 StringUtils.concatOrEmpty("\", \"rawQueryString\":\"", rawQueryString) +
                 StringUtils.concatOrEmpty("\", \"headers\":\"", headers) +

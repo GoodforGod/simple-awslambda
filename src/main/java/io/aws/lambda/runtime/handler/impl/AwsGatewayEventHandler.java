@@ -35,7 +35,7 @@ public class AwsGatewayEventHandler extends AwsEventHandler {
         final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
         final String requestBody = (AwsRequestContext.class.isAssignableFrom(funcArgs.getRight()))
                 ? event
-                : converter.convertToType(event, AwsGatewayRequestBuilder.class).build().getBody();
+                : converter.convertToType(event, AwsGatewayRequestBuilder.class).build().getBodyDecoded();
         logger.debug("Gateway Request Event conversion took: %s", TimeUtils.timeSpent(requestStart));
         logger.debug("Gateway Request Event body: %s", requestBody);
 

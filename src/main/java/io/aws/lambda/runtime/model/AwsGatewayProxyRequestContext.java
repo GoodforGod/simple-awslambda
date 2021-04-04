@@ -27,9 +27,9 @@ public class AwsGatewayProxyRequestContext {
     private final AwsGatewayRequestHttpContext http;
     private final AwsGatewayRequestIdentity authorizer;
 
-    public AwsGatewayProxyRequestContext(String accountId, String apiId, String domainName, String domainPrefix, String requestId,
-                                         String routeKey, String stage, String time, long timeEpoch, AwsGatewayRequestHttpContext http,
-                                         AwsGatewayRequestIdentity authorizer) {
+    protected AwsGatewayProxyRequestContext(String accountId, String apiId, String domainName, String domainPrefix, String requestId,
+                                            String routeKey, String stage, String time, long timeEpoch, AwsGatewayRequestHttpContext http,
+                                            AwsGatewayRequestIdentity authorizer) {
         this.accountId = accountId;
         this.apiId = apiId;
         this.domainName = domainName;
