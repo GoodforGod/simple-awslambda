@@ -1,43 +1,59 @@
 package io.aws.lambda.runtime.model;
 
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Anton Kurako (GoodforGod)
+ * @since 4.4.2021
+ */
 @TypeHint(value = { AwsGatewayRequestBuilder.class, }, accessType = { TypeHint.AccessType.ALL_PUBLIC })
+@Introspected
 public class AwsGatewayRequestBuilder {
 
     private AwsRequestContext context;
-    private String resource;
-    private String path;
-    private String httpMethod;
+    private Boolean isBase64Encoded;
+    private String version;
+    private String rawPath;
+    private String body;
+    private String rawQueryString;
     private Map<String, String> headers;
-    private Map<String, List<String>> multiValueHeaders;
     private Map<String, String> queryStringParameters;
-    private Map<String, List<String>> multiValueQueryStringParameters;
     private Map<String, String> pathParameters;
     private Map<String, String> stageVariables;
-    private String body;
-    private Boolean isBase64Encoded;
+    private List<String> cookies;
+    private AwsGatewayProxyRequestContextBuilder requestContext;
 
     public AwsGatewayRequestBuilder setContext(AwsRequestContext context) {
         this.context = context;
         return this;
     }
 
-    public AwsGatewayRequestBuilder setResource(String resource) {
-        this.resource = resource;
+    public AwsGatewayRequestBuilder setIsBase64Encoded(Boolean isBase64Encoded) {
+        this.isBase64Encoded = isBase64Encoded;
         return this;
     }
 
-    public AwsGatewayRequestBuilder setPath(String path) {
-        this.path = path;
+    public AwsGatewayRequestBuilder setVersion(String version) {
+        this.version = version;
         return this;
     }
 
-    public AwsGatewayRequestBuilder setHttpMethod(String httpMethod) {
-        this.httpMethod = httpMethod;
+    public AwsGatewayRequestBuilder setRawPath(String rawPath) {
+        this.rawPath = rawPath;
+        return this;
+    }
+
+    public AwsGatewayRequestBuilder setBody(String body) {
+        this.body = body;
+        return this;
+    }
+
+    public AwsGatewayRequestBuilder setRawQueryString(String rawQueryString) {
+        this.rawQueryString = rawQueryString;
         return this;
     }
 
@@ -46,18 +62,8 @@ public class AwsGatewayRequestBuilder {
         return this;
     }
 
-    public AwsGatewayRequestBuilder setMultiValueHeaders(Map<String, List<String>> multiValueHeaders) {
-        this.multiValueHeaders = multiValueHeaders;
-        return this;
-    }
-
     public AwsGatewayRequestBuilder setQueryStringParameters(Map<String, String> queryStringParameters) {
         this.queryStringParameters = queryStringParameters;
-        return this;
-    }
-
-    public AwsGatewayRequestBuilder setMultiValueQueryStringParameters(Map<String, List<String>> multiValueQueryStringParameters) {
-        this.multiValueQueryStringParameters = multiValueQueryStringParameters;
         return this;
     }
 
@@ -71,19 +77,18 @@ public class AwsGatewayRequestBuilder {
         return this;
     }
 
-    public AwsGatewayRequestBuilder setBody(String body) {
-        this.body = body;
+    public AwsGatewayRequestBuilder setCookies(List<String> cookies) {
+        this.cookies = cookies;
         return this;
     }
 
-    public AwsGatewayRequestBuilder setIsBase64Encoded(Boolean isBase64Encoded) {
-        this.isBase64Encoded = isBase64Encoded;
+    public AwsGatewayRequestBuilder setRequestContext(AwsGatewayProxyRequestContextBuilder requestContext) {
+        this.requestContext = requestContext;
         return this;
     }
 
     public AwsGatewayRequest build() {
-        return new AwsGatewayRequest(context, resource, path, httpMethod, headers,
-                multiValueHeaders, queryStringParameters, multiValueQueryStringParameters,
-                pathParameters, stageVariables, body, isBase64Encoded);
+        return new AwsGatewayRequest(context, isBase64Encoded, version, rawPath, body, rawQueryString, headers,
+                queryStringParameters, pathParameters, stageVariables, cookies, (requestContext == null) ? null : requestContext.build());
     }
 }

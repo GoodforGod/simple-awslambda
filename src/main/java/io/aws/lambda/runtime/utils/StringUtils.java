@@ -15,4 +15,12 @@ public class StringUtils {
     public static boolean isNotEmpty(String s) {
         return s != null && !s.isEmpty();
     }
+
+    public static String concatOrEmpty(String prefix, Object value) {
+        if(value == null)
+            return "";
+
+        final String s = value.toString();
+        return s.isEmpty() ? "" : prefix + s;
+    }
 }

@@ -1,11 +1,13 @@
 package io.aws.lambda.runtime.model;
 
 import io.aws.lambda.runtime.utils.StringUtils;
+import io.micronaut.core.annotation.Introspected;
 
 /**
  * @author Anton Kurako (GoodforGod)
  * @since 29.11.2020
  */
+@Introspected
 public class AwsRequestContext {
 
     private final String requestId;

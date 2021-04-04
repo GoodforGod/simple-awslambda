@@ -1,54 +1,52 @@
 package io.aws.lambda.runtime.model;
 
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author GoodforGod
  * @since 28.10.2020
  */
 @TypeHint(value = { AwsGatewayRequest.class, }, accessType = { TypeHint.AccessType.ALL_PUBLIC })
+@Introspected
 public class AwsGatewayRequest {
 
     private final AwsRequestContext context;
 
-    private final String resource;
-    private final String path;
-    private final String httpMethod;
-    private final String body;
     private final Boolean isBase64Encoded;
+    private final String version;
+    private final String rawPath;
+    private final String body;
+    private final String rawQueryString;
 
     private final Map<String, String> headers;
-    private final Map<String, List<String>> multiValueHeaders;
-
     private final Map<String, String> queryStringParameters;
-    private final Map<String, List<String>> multiValueQueryStringParameters;
-
     private final Map<String, String> pathParameters;
     private final Map<String, String> stageVariables;
+    private final List<String> cookies;
 
-    protected AwsGatewayRequest(AwsRequestContext context, String resource, String path, String httpMethod,
-                                Map<String, String> headers,
-                                Map<String, List<String>> multiValueHeaders,
-                                Map<String, String> queryStringParameters,
-                                Map<String, List<String>> multiValueQueryStringParameters,
-                                Map<String, String> pathParameters,
-                                Map<String, String> stageVariables,
-                                String body, Boolean isBase64Encoded) {
+    private final AwsGatewayProxyRequestContext requestContext;
+
+    public AwsGatewayRequest(AwsRequestContext context, Boolean isBase64Encoded, String version, String rawPath, String body,
+                             String rawQueryString, Map<String, String> headers, Map<String, String> queryStringParameters,
+                             Map<String, String> pathParameters, Map<String, String> stageVariables, List<String> cookies,
+                             AwsGatewayProxyRequestContext requestContext) {
         this.context = context;
-        this.resource = resource;
-        this.path = path;
-        this.httpMethod = httpMethod;
+        this.isBase64Encoded = isBase64Encoded;
+        this.version = version;
+        this.rawPath = rawPath;
+        this.body = body;
+        this.rawQueryString = rawQueryString;
         this.headers = headers;
-        this.multiValueHeaders = multiValueHeaders;
         this.queryStringParameters = queryStringParameters;
-        this.multiValueQueryStringParameters = multiValueQueryStringParameters;
         this.pathParameters = pathParameters;
         this.stageVariables = stageVariables;
-        this.body = body;
-        this.isBase64Encoded = isBase64Encoded;
+        this.cookies = cookies;
+        this.requestContext = requestContext;
     }
 
     public static AwsGatewayRequestBuilder builder() {
@@ -59,32 +57,32 @@ public class AwsGatewayRequest {
         return context;
     }
 
-    public String getResource() {
-        return resource;
+    public Boolean getBase64Encoded() {
+        return isBase64Encoded;
     }
 
-    public String getPath() {
-        return path;
+    public String getVersion() {
+        return version;
     }
 
-    public String getHttpMethod() {
-        return httpMethod;
+    public String getRawPath() {
+        return rawPath;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getRawQueryString() {
+        return rawQueryString;
     }
 
     public Map<String, String> getHeaders() {
         return headers;
     }
 
-    public Map<String, List<String>> getMultiValueHeaders() {
-        return multiValueHeaders;
-    }
-
     public Map<String, String> getQueryStringParameters() {
         return queryStringParameters;
-    }
-
-    public Map<String, List<String>> getMultiValueQueryStringParameters() {
-        return multiValueQueryStringParameters;
     }
 
     public Map<String, String> getPathParameters() {
@@ -95,29 +93,48 @@ public class AwsGatewayRequest {
         return stageVariables;
     }
 
-    public String getBody() {
-        return body;
+    public List<String> getCookies() {
+        return cookies;
     }
 
-    public Boolean getBase64Encoded() {
-        return isBase64Encoded;
+    public AwsGatewayProxyRequestContext getRequestContext() {
+        return requestContext;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        AwsGatewayRequest that = (AwsGatewayRequest) o;
+        return Objects.equals(context, that.context) && Objects.equals(isBase64Encoded, that.isBase64Encoded)
+                && Objects.equals(version, that.version) && Objects.equals(rawPath, that.rawPath) && Objects.equals(body, that.body)
+                && Objects.equals(rawQueryString, that.rawQueryString) && Objects.equals(headers, that.headers)
+                && Objects.equals(queryStringParameters, that.queryStringParameters) && Objects.equals(pathParameters, that.pathParameters)
+                && Objects.equals(stageVariables, that.stageVariables) && Objects.equals(cookies, that.cookies)
+                && Objects.equals(requestContext, that.requestContext);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(context, isBase64Encoded, version, rawPath, body, rawQueryString, headers, queryStringParameters,
+                pathParameters, stageVariables, cookies, requestContext);
     }
 
     @Override
     public String toString() {
-        return "AwsGatewayRequest{" +
-                "context=" + context +
-                ", resource='" + resource + '\'' +
-                ", path='" + path + '\'' +
-                ", httpMethod='" + httpMethod + '\'' +
-                ", headers=" + headers +
-                ", multiValueHeaders=" + multiValueHeaders +
+        return "[context=" + context +
+                ", isBase64Encoded=" + isBase64Encoded +
+                ", version='" + version +
+                "', rawPath='" + rawPath +
+                "', body='" + body +
+                "', rawQueryString='" + rawQueryString +
+                "', headers=" + headers +
                 ", queryStringParameters=" + queryStringParameters +
-                ", multiValueQueryStringParameters=" + multiValueQueryStringParameters +
                 ", pathParameters=" + pathParameters +
                 ", stageVariables=" + stageVariables +
-                ", body='" + body + '\'' +
-                ", isBase64Encoded=" + isBase64Encoded +
-                '}';
+                ", cookies=" + cookies +
+                ", requestContext=" + requestContext + ']';
     }
 }

@@ -1,5 +1,6 @@
 package io.aws.lambda.runtime.model;
 
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
  * @since 29.10.2020
  */
 @TypeHint(value = { AwsGatewayResponse.class, }, accessType = { TypeHint.AccessType.ALL_PUBLIC })
+@Introspected
 public class AwsGatewayResponse {
 
     public static final String CONTENT_TYPE = "Content-Type";
@@ -57,11 +59,9 @@ public class AwsGatewayResponse {
 
     @Override
     public String toString() {
-        return "AwsGatewayResponse{" +
-                "statusCode=" + statusCode +
+        return "[statusCode=" + statusCode +
                 ", headers=" + headers +
-                ", body='" + body + '\'' +
-                ", isBase64Encoded=" + isBase64Encoded +
-                '}';
+                ", body='" + body +
+                "', isBase64Encoded=" + isBase64Encoded + ']';
     }
 }
