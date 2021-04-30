@@ -1,6 +1,3 @@
-template
-build
-
 # Package Files #
 *.war
 *.nar
@@ -13,9 +10,8 @@ build
 .gradle
 build/
 
-# Idea generated files
+# Idea generatted files
 .idea
-.idea/httpRequestsa
 /out/
-/orgstaff.iml
 *.iml
+.settings/

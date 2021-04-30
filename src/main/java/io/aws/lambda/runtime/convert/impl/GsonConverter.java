@@ -1,7 +1,6 @@
 package io.aws.lambda.runtime.convert.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.aws.lambda.runtime.config.GsonConfiguration;
 import io.aws.lambda.runtime.convert.Converter;
 import org.jetbrains.annotations.NotNull;
@@ -20,27 +19,7 @@ public class GsonConverter implements Converter {
 
     @Inject
     public GsonConverter(GsonConfiguration configuration) {
-        final GsonBuilder builder = new GsonBuilder()
-                .setDateFormat(configuration.getDateFormat())
-        .setLongSerializationPolicy(configuration.getLongSerializationPolicy())
-                .setFieldNamingPolicy(configuration.getFieldNamingPolicy());
-
-        if(configuration.isComplexMapKeySerialization())
-            builder.enableComplexMapKeySerialization();
-        if(!configuration.isEscapeHtmlChars())
-            builder.disableHtmlEscaping();
-        if(configuration.isGenerateNonExecutableJson())
-            builder.generateNonExecutableJson();
-        if(configuration.isLenient())
-            builder.setLenient();
-        if(configuration.isPrettyPrinting())
-            builder.setPrettyPrinting();
-        if(configuration.isSerializeSpecialFloatingPointValues())
-            builder.serializeSpecialFloatingPointValues();
-        if(configuration.isSerializeNulls())
-            builder.serializeNulls();
-
-        this.mapper = builder.create();
+        this.mapper = configuration.build();
     }
 
     @Override

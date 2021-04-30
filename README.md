@@ -9,7 +9,7 @@ Allow building smallest and fastest native lambdas with DI support.
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:aws-lambda-runtime:2.0.0'
+    compile 'com.github.goodforgod:aws-lambda-runtime:2.0.0-SNAPSHOT'
 }
 ```
 
@@ -18,7 +18,7 @@ dependencies {
 <dependency>
     <groupId>com.github.goodforgod</groupId>
     <artifactId>aws-lambda-runtime</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
