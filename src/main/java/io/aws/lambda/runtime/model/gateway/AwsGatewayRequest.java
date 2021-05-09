@@ -1,5 +1,6 @@
-package io.aws.lambda.runtime.model;
+package io.aws.lambda.runtime.model.gateway;
 
+import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.utils.Base64Utils;
 import io.aws.lambda.runtime.utils.StringUtils;
 import io.micronaut.core.annotation.Introspected;

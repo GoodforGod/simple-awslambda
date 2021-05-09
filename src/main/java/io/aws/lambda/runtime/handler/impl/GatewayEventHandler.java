@@ -2,11 +2,10 @@ package io.aws.lambda.runtime.handler.impl;
 
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
-import io.aws.lambda.runtime.logger.LambdaLogger;
-import io.aws.lambda.runtime.model.AwsGatewayRequestBuilder;
-import io.aws.lambda.runtime.model.AwsGatewayResponse;
-import io.aws.lambda.runtime.model.AwsRequestContext;
-import io.aws.lambda.runtime.model.Pair;
+import io.aws.lambda.runtime.model.*;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayRequestBuilder;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayResponse;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,32 +19,39 @@ import javax.inject.Singleton;
  * @since 7.11.2020
  */
 @Singleton
-public class AwsGatewayEventHandler extends AwsEventHandler {
+public class GatewayEventHandler extends DirectEventHandler {
 
     @Inject
-    public AwsGatewayEventHandler(Lambda function, Converter converter, LambdaLogger logger) {
-        super(function, converter, logger);
+    public GatewayEventHandler(Lambda function, Converter converter) {
+        super(function, converter);
     }
 
     @Override
     public String handle(@NotNull String event, @NotNull AwsRequestContext context) {
         logger.debug("Gateway Request Event conversion started...");
-        final long requestStart = TimeUtils.getTime();
+        final long requestStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;;
 
         final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
-        final String requestBody = (AwsRequestContext.class.isAssignableFrom(funcArgs.getRight()))
-                ? event
-                : converter.convertToType(event, AwsGatewayRequestBuilder.class).build().getBodyDecoded();
-        logger.debug("Gateway Request Event conversion took: %s", TimeUtils.timeSpent(requestStart));
-        logger.debug("Gateway Request Event body: %s", requestBody);
+        final String requestBody = (AwsGatewayRequest.class.isAssignableFrom(funcArgs.getRight())
+                || AwsGatewayRequestBuilder.class.isAssignableFrom(funcArgs.getRight()))
+                        ? event
+                        : converter.convertToType(event, AwsGatewayRequestBuilder.class).build().getBodyDecoded();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Gateway Request Event conversion took: {}", TimeUtils.timeSpent(requestStart));
+            logger.debug("Gateway Request Event body: {}", requestBody);
+        }
 
         final Object functionOutput = super.handle(requestBody, context);
 
         logger.debug("Gateway Response Event conversion started...");
-        final long outputStart = TimeUtils.getTime();
+        final long outputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
         final AwsGatewayResponse responseEvent = getFunctionResponseEvent(functionOutput);
-        logger.debug("Gateway Response Event conversion took: %s", TimeUtils.timeSpent(outputStart));
-        logger.debug("Gateway Response Event body: %s", responseEvent.getBody());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Gateway Response Event conversion took: {}", TimeUtils.timeSpent(outputStart));
+            logger.debug("Gateway Response Event body: {}", responseEvent.getBody());
+        }
+
         return converter.convertToJson(responseEvent);
     }
 

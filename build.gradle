@@ -28,7 +28,7 @@ spotless {
 }
 
 micronaut {
-    version "2.5.0"
+    version "2.5.1"
     processing {
         incremental true
         module project.name
@@ -88,7 +88,7 @@ publishing {
             pom {
                 name = "AWS Lambda Runtime"
                 url = "https://github.com/GoodforGod/$artifactId"
-                description = "Runtime for AWS Lambdas with GraalVM compatibility and DI."
+                description = "Fast, Lightweight and GraalVM compatible AWS Lambda Runtime with DI."
 
                 license {
                     name = "MIT License"

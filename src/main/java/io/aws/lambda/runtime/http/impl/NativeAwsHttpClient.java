@@ -13,8 +13,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-import static io.aws.lambda.runtime.model.AwsGatewayResponse.CONTENT_TYPE;
-import static io.aws.lambda.runtime.model.AwsGatewayResponse.MEDIA_TYPE_JSON;
+import static io.aws.lambda.runtime.model.gateway.AwsGatewayResponse.CONTENT_TYPE;
+import static io.aws.lambda.runtime.model.gateway.AwsGatewayResponse.MEDIA_TYPE_JSON;
 
 /**
  * @author GoodforGod

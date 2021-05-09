@@ -1,7 +1,5 @@
 package io.aws.lambda.runtime.data;
 
-import java.time.*;
-
 /**
  * @author Anton Kurako (GoodforGod)
  * @since 6.12.2020

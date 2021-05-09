@@ -2,9 +2,9 @@ package io.aws.lambda.runtime;
 
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.handler.impl.AwsGatewayEventHandler;
-import io.aws.lambda.runtime.model.AwsGatewayRequest;
-import io.aws.lambda.runtime.model.AwsGatewayResponse;
+import io.aws.lambda.runtime.handler.impl.GatewayEventHandler;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayResponse;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.micronaut.context.ApplicationContext;
 import org.junit.jupiter.api.Assertions;
@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test;
  * @author GoodforGod
  * @since 27.10.2020
  */
-class AwsGatewayEventHandlerTests extends Assertions {
+class GatewayEventHandlerTests extends Assertions {
 
     @Test
     void handled() {
         try (final ApplicationContext context = ApplicationContext.run()) {
-            final EventHandler handler = context.getBean(AwsGatewayEventHandler.class);
+            final EventHandler handler = context.getBean(GatewayEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
 
             final String body = "{\"name\":\"bob\"}";

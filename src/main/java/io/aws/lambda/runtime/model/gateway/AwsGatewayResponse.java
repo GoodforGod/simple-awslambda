@@ -1,4 +1,4 @@
-package io.aws.lambda.runtime.model;
+package io.aws.lambda.runtime.model.gateway;
 
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
@@ -15,9 +15,10 @@ public class AwsGatewayResponse {
 
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String MEDIA_TYPE_JSON = "application/json";
+    private static final Map<String, String> DEFAULT_HEADERS = Map.of(CONTENT_TYPE, MEDIA_TYPE_JSON);
 
     private int statusCode = 200;
-    private Map<String, String> headers = Map.of(CONTENT_TYPE, MEDIA_TYPE_JSON);
+    private Map<String, String> headers = DEFAULT_HEADERS;
     private String body;
     private boolean isBase64Encoded = false;
 

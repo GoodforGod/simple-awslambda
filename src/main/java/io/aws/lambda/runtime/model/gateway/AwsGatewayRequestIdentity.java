@@ -1,5 +1,6 @@
-package io.aws.lambda.runtime.model;
+package io.aws.lambda.runtime.model.gateway;
 
+import io.aws.lambda.runtime.model.IAM;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 

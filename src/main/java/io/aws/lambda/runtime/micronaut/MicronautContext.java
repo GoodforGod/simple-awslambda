@@ -1,6 +1,6 @@
 package io.aws.lambda.runtime.micronaut;
 
-import io.aws.lambda.runtime.context.RuntimeContext;
+import io.aws.lambda.runtime.RuntimeContext;
 import io.micronaut.context.ApplicationContext;
 
 /**

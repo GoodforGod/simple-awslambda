@@ -1,4 +1,4 @@
-package io.aws.lambda.runtime.context;
+package io.aws.lambda.runtime;
 
 /**
  * Runtime Context interface so whole code can be used with other DI framework

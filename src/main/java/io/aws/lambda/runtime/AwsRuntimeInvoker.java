@@ -1,21 +1,23 @@
-package io.aws.lambda.runtime.invoker;
+package io.aws.lambda.runtime;
 
-import io.aws.lambda.runtime.context.RuntimeContext;
 import io.aws.lambda.runtime.error.ContextException;
 import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.http.AwsHttpClient;
 import io.aws.lambda.runtime.http.AwsHttpResponse;
 import io.aws.lambda.runtime.http.impl.NativeAwsHttpClient;
-import io.aws.lambda.runtime.logger.LambdaLogger;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.utils.StringUtils;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.function.Supplier;
 
 /**
+ * Implementation of AWS Lambda invocation pipeline
+ *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
@@ -67,16 +69,18 @@ public class AwsRuntimeInvoker {
     public void invoke(@NotNull Supplier<RuntimeContext> contextSupplier,
                        @NotNull Class<? extends EventHandler> handlerType) {
         final URI apiEndpoint = getRuntimeApiEndpoint();
+        final Logger logger = LoggerFactory.getLogger(getClass());
         final long contextStart = TimeUtils.getTime();
         try (final RuntimeContext context = contextSupplier.get()) {
             final EventHandler eventHandler = context.getBean(handlerType);
-            final LambdaLogger logger = context.getBean(LambdaLogger.class);
             final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
-            logger.debug("Context startup took: %s", TimeUtils.timeSpent(contextStart));
-            logger.debug("AWS runtime uri: %s", apiEndpoint);
+            if (logger.isInfoEnabled()) {
+                logger.info("Context startup took: {}", TimeUtils.timeSpent(contextStart));
+                logger.debug("AWS Runtime URI: {}", apiEndpoint);
+            }
 
             final URI invocationUri = getInvocationNextUri(apiEndpoint);
-            logger.debug("AWS Runtime Event provider at: %s", invocationUri);
+            logger.debug("AWS Runtime Event provider at: {}", invocationUri);
 
             while (!Thread.currentThread().isInterrupted()) {
                 final AwsHttpResponse httpRequest = httpClient.get(invocationUri);
@@ -87,20 +91,21 @@ public class AwsRuntimeInvoker {
                 final String traceId = httpRequest.headerAny(LAMBDA_RUNTIME_TRACE_ID);
                 final AwsRequestContext requestContext = new AwsRequestContext(requestId, traceId);
 
-                logger.refresh();
-                logger.debug("AWS Request Event received with %s", requestContext);
                 if (logger.isDebugEnabled()) {
-                    httpRequest.headers().forEach((k, v) -> logger.debug("Request header: %s - %s", k, v));
+                    logger.debug("AWS Request Event received with {}", requestContext);
+                    httpRequest.headers().forEach((k, v) -> logger.debug("Request header: {} - {}", k, v));
                 }
 
                 try {
                     final String responseEvent = eventHandler.handle(httpRequest.body(), requestContext);
                     final URI responseUri = getInvocationResponseUri(apiEndpoint, requestContext.getRequestId());
-                    logger.debug("Responding to AWS invocation started: %s", responseUri);
+                    logger.debug("Responding to AWS invocation started: {}", responseUri);
                     final long respondingStart = TimeUtils.getTime();
                     final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseEvent);
-                    logger.info("Responding to AWS invocation took: %s", TimeUtils.timeSpent(respondingStart));
-                    logger.debug("AWS invocation response: Http Code '%s' and Body: %s",
+                    if (logger.isInfoEnabled())
+                        logger.info("Responding to AWS invocation took: {}", TimeUtils.timeSpent(respondingStart));
+
+                    logger.debug("AWS invocation response: Http Code '{}' and Body: {}",
                             awsResponse.code(), awsResponse.body());
                 } catch (Exception e) {
                     logger.error("Invocation error occurred", e);

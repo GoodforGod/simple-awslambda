@@ -1,4 +1,4 @@
-package io.aws.lambda.runtime.model;
+package io.aws.lambda.runtime.model.gateway;
 
 import io.aws.lambda.runtime.utils.StringUtils;
 import io.micronaut.core.annotation.Introspected;

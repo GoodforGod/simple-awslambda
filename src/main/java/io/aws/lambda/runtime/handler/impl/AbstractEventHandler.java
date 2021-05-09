@@ -3,13 +3,14 @@ package io.aws.lambda.runtime.handler.impl;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.logger.LambdaLogger;
-import io.aws.lambda.runtime.model.AwsGatewayRequest;
-import io.aws.lambda.runtime.model.AwsGatewayRequestBuilder;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayRequestBuilder;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.GenericUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -18,11 +19,10 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractEventHandler implements EventHandler {
 
     protected final Converter converter;
-    protected final LambdaLogger logger;
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public AbstractEventHandler(Converter converter, LambdaLogger logger) {
+    public AbstractEventHandler(Converter converter) {
         this.converter = converter;
-        this.logger = logger;
     }
 
     protected @NotNull Object getFunctionInput(@NotNull Class<?> inputType,
