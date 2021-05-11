@@ -5,7 +5,7 @@ import io.micronaut.core.annotation.Introspected;
 import java.util.Objects;
 
 /**
- * @author GoodforGod
+ * @author Anton Kurako (GoodforGod)
  * @since 07.11.2020
  */
 @Introspected

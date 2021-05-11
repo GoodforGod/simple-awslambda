@@ -1,7 +1,7 @@
 package io.aws.lambda.runtime.utils;
 
 /**
- * Description
+ * Basic String Utils
  *
  * @author Anton Kurako (GoodforGod)
  * @since 15.2.2021

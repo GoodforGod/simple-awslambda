@@ -2,7 +2,8 @@ package io.aws.lambda.runtime.handler.impl;
 
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
-import io.aws.lambda.runtime.model.*;
+import io.aws.lambda.runtime.model.AwsRequestContext;
+import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
 import io.aws.lambda.runtime.model.gateway.AwsGatewayRequestBuilder;
 import io.aws.lambda.runtime.model.gateway.AwsGatewayResponse;
@@ -38,7 +39,7 @@ public class GatewayEventHandler extends DirectEventHandler {
                         : converter.convertToType(event, AwsGatewayRequestBuilder.class).build().getBodyDecoded();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Gateway Request Event conversion took: {}", TimeUtils.timeSpent(requestStart));
+            logger.debug("Gateway Request Event conversion took: {} millis", TimeUtils.timeTook(requestStart));
             logger.debug("Gateway Request Event body: {}", requestBody);
         }
 
@@ -48,7 +49,7 @@ public class GatewayEventHandler extends DirectEventHandler {
         final long outputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
         final AwsGatewayResponse responseEvent = getFunctionResponseEvent(functionOutput);
         if (logger.isDebugEnabled()) {
-            logger.debug("Gateway Response Event conversion took: {}", TimeUtils.timeSpent(outputStart));
+            logger.debug("Gateway Response Event conversion took: {} millis", TimeUtils.timeTook(outputStart));
             logger.debug("Gateway Response Event body: {}", responseEvent.getBody());
         }
 

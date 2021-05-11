@@ -39,7 +39,7 @@ public class DirectEventHandler extends AbstractEventHandler implements EventHan
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
         final Object functionInput = getFunctionInput(funcArgs.getRight(), event, context);
         if (logger.isDebugEnabled()) {
-            logger.debug("Function input conversion took: {}", TimeUtils.timeSpent(inputStart));
+            logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
             logger.debug("Function input: {}", functionInput);
         }
 
@@ -47,13 +47,13 @@ public class DirectEventHandler extends AbstractEventHandler implements EventHan
         final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         final Object functionOutput = function.handle(functionInput);
         if (logger.isInfoEnabled())
-            logger.info("Function processing took: {}", TimeUtils.timeSpent(responseStart));
+            logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
 
         logger.debug("Function output conversion started...");
         final long outputStart = TimeUtils.getTime();
         final String response = getFunctionResponse(functionOutput);
         if (logger.isDebugEnabled()) {
-            logger.debug("Function output conversion took: {}", TimeUtils.timeSpent(outputStart));
+            logger.debug("Function output conversion took: {} millis", TimeUtils.timeTook(outputStart));
             logger.debug("Function response body: {}", response);
         }
 

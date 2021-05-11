@@ -75,7 +75,7 @@ public class AwsRuntimeInvoker {
             final EventHandler eventHandler = context.getBean(handlerType);
             final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
             if (logger.isInfoEnabled()) {
-                logger.info("Context startup took: {}", TimeUtils.timeSpent(contextStart));
+                logger.info("Context startup took: {} millis", TimeUtils.timeTook(contextStart));
                 logger.debug("AWS Runtime URI: {}", apiEndpoint);
             }
 
@@ -103,7 +103,7 @@ public class AwsRuntimeInvoker {
                     final long respondingStart = TimeUtils.getTime();
                     final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseEvent);
                     if (logger.isInfoEnabled())
-                        logger.info("Responding to AWS invocation took: {}", TimeUtils.timeSpent(respondingStart));
+                        logger.info("Responding to AWS invocation took: {} millis", TimeUtils.timeTook(respondingStart));
 
                     logger.debug("AWS invocation response: Http Code '{}' and Body: {}",
                             awsResponse.code(), awsResponse.body());

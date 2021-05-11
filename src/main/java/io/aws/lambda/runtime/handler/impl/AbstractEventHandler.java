@@ -3,11 +3,11 @@ package io.aws.lambda.runtime.handler.impl;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
-import io.aws.lambda.runtime.model.gateway.AwsGatewayRequestBuilder;
 import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
-import io.aws.lambda.runtime.utils.GenericUtils;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
+import io.aws.lambda.runtime.model.gateway.AwsGatewayRequestBuilder;
+import io.micronaut.core.reflect.GenericTypeUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public abstract class AbstractEventHandler implements EventHandler {
     }
 
     protected <T extends Lambda> Pair<Class, Class> getInterfaceGenericType(T t) {
-        final Class[] args = GenericUtils.resolveInterfaceTypeArguments(t.getClass(), Lambda.class);
+        final Class[] args = GenericTypeUtils.resolveInterfaceTypeArguments(t.getClass(), Lambda.class);
         if (args.length < 2)
             throw new IllegalArgumentException("Lambda interface is not correctly implemented, interface generic types must be set!");
 

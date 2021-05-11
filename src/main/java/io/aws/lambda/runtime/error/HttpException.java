@@ -1,25 +1,16 @@
 package io.aws.lambda.runtime.error;
 
 /**
- * @author GoodforGod
+ * @author Anton Kurako (GoodforGod)
  * @since 28.10.2020
  */
 public class HttpException extends LambdaException {
 
-    private int code = 500;
+    private final int code;
 
-    public HttpException(String message) {
-        super(message);
-    }
-
-    public HttpException(int code, String message) {
+    public HttpException(String message, int code) {
         super(message);
         this.code = code;
-    }
-
-    public HttpException code(int code) {
-        this.code = code;
-        return this;
     }
 
     public int getCode() {

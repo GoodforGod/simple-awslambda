@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleLoggerRefresher {
 
+    private static final String LOGGING_ENV = "LAMBDA_LOGGING_LEVEL";
+    private static final String DEFAULT_LOGGING_PROPERTY = "org.slf4j.simpleLogger.defaultLogLevel";
+
     public enum LoggingLevel {
         TRACE,
         DEBUG,
@@ -21,13 +24,13 @@ public class SimpleLoggerRefresher {
     }
 
     public static void refresh() {
-        final String envLevel = System.getenv("LAMBDA_LOGGING_LEVEL");
+        final String envLevel = System.getenv(LOGGING_ENV);
         if (StringUtils.isEmpty(envLevel))
             return;
 
         try {
             final LoggingLevel level = LoggingLevel.valueOf(envLevel);
-            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", level.name().toLowerCase());
+            System.setProperty(DEFAULT_LOGGING_PROPERTY, level.name().toLowerCase());
         } catch (IllegalArgumentException e) {
             final Logger logger = LoggerFactory.getLogger(SimpleLoggerRefresher.class);
             logger.warn("Can't set logging level due to invalid variable: {}", envLevel);

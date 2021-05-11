@@ -12,8 +12,7 @@ public class TimeUtils {
         return System.currentTimeMillis();
     }
 
-    public static String timeSpent(long started) {
-        final long diff = getTime() - started;
-        return diff + " millis";
+    public static long timeTook(long startedInMillis) {
+        return getTime() - startedInMillis;
     }
 }

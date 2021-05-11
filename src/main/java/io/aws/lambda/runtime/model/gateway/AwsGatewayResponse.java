@@ -6,7 +6,7 @@ import io.micronaut.core.annotation.TypeHint;
 import java.util.Map;
 
 /**
- * @author GoodforGod
+ * @author Anton Kurako (GoodforGod)
  * @since 29.10.2020
  */
 @TypeHint(value = { AwsGatewayResponse.class, }, accessType = { TypeHint.AccessType.ALL_PUBLIC })

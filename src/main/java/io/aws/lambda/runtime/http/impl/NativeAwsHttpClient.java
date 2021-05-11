@@ -17,7 +17,7 @@ import static io.aws.lambda.runtime.model.gateway.AwsGatewayResponse.CONTENT_TYP
 import static io.aws.lambda.runtime.model.gateway.AwsGatewayResponse.MEDIA_TYPE_JSON;
 
 /**
- * @author GoodforGod
+ * @author Anton Kurako (GoodforGod)
  * @since 27.10.2020
  */
 @Singleton
@@ -69,7 +69,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
             final HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             return new NativeHttpResponse(response);
         } catch (Exception e) {
-            throw new HttpException(e.getMessage()).code(500);
+            throw new HttpException(e.getMessage(), 500);
         }
     }
 
@@ -77,7 +77,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
         try {
             CLIENT.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception e) {
-            throw new HttpException(e.getMessage()).code(500);
+            throw new HttpException(e.getMessage(), 500);
         }
     }
 }

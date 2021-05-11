@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @author GoodforGod
+ * @author Anton Kurako (GoodforGod)
  * @since 28.10.2020
  */
 @TypeHint(value = { AwsGatewayRequest.class, }, accessType = { TypeHint.AccessType.ALL_PUBLIC })
