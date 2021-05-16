@@ -28,7 +28,7 @@ spotless {
 }
 
 micronaut {
-    version "2.5.1"
+    version "2.5.3"
     processing {
         incremental true
         module project.name
