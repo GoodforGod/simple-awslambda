@@ -2,6 +2,7 @@ package io.aws.lambda.runtime.micronaut;
 
 import io.aws.lambda.runtime.RuntimeContext;
 import io.micronaut.context.ApplicationContext;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Micronaut context implementation {@link ApplicationContext}
@@ -21,7 +22,7 @@ public class MicronautContext implements RuntimeContext {
     }
 
     @Override
-    public <T> T getBean(Class<T> beanType) {
+    public <T> T getBean(@NotNull Class<T> beanType) {
         return context.getBean(beanType);
     }
 

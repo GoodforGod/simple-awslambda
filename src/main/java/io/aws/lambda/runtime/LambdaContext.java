@@ -9,7 +9,6 @@ import io.aws.lambda.runtime.config.RuntimeVariables;
 import io.aws.lambda.runtime.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,15 +21,19 @@ public class LambdaContext implements Context {
 
     private final Map<String, String> headers;
 
-    private LambdaContext(Map<String, String> headers) {
-        this.headers = headers;
+    private LambdaContext(@NotNull Map<String, String> headers) {
+        this.headers = Map.copyOf(headers);
+    }
+
+    public static LambdaContext ofRequestId(@NotNull String requestId) {
+        return new LambdaContext(Map.of(RuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID, requestId));
     }
 
     public static LambdaContext ofHeaders(@NotNull Map<String, String> headers) {
         return new LambdaContext(headers);
     }
 
-    public static LambdaContext ofMultiHeaders(@NotNull Map<String, List<String>> headers) {
+    public static LambdaContext ofHeadersMulti(@NotNull Map<String, List<String>> headers) {
         final Map<String, String> singleValueHeaders = headers.entrySet().stream()
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().iterator().next()));
@@ -80,14 +83,14 @@ public class LambdaContext implements Context {
 
     @Override
     public int getRemainingTimeInMillis() {
-        String millis = headers.get(RuntimeVariables.LAMBDA_RUNTIME_DEADLINE_MS);
+        final String millis = headers.get(RuntimeVariables.LAMBDA_RUNTIME_DEADLINE_MS);
         if (StringUtils.isEmpty(millis))
             return 0;
 
         try {
-            long deadlineepoch = Long.parseLong(millis);
-            long currentepoch = currentTime();
-            long remainingTime = deadlineepoch - currentepoch;
+            final long deadlineEpoch = Long.parseLong(millis);
+            final long currentEpoch = currentTime();
+            final long remainingTime = deadlineEpoch - currentEpoch;
             return (int) remainingTime;
         } catch (NumberFormatException e) {
             return 0;
@@ -96,7 +99,7 @@ public class LambdaContext implements Context {
 
     @Override
     public int getMemoryLimitInMB() {
-        String memory = getEnv(ContextVariables.AWS_LAMBDA_FUNCTION_MEMORY_SIZE);
+        final String memory = getEnv(ContextVariables.AWS_LAMBDA_FUNCTION_MEMORY_SIZE);
         if (StringUtils.isEmpty(memory))
             return 0;
 
@@ -126,7 +129,7 @@ public class LambdaContext implements Context {
      *         the current date
      */
     protected long currentTime() {
-        return Calendar.getInstance().getTimeInMillis();
+        return System.currentTimeMillis();
     }
 
     @Override

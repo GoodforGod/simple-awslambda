@@ -102,8 +102,8 @@ public class AwsRuntimeInvoker {
                 if (StringUtils.isEmpty(httpRequest.body()))
                     throw new IllegalArgumentException("Request body is not present!");
 
-                final LambdaContext requestContext = LambdaContext.ofMultiHeaders(httpRequest.headers());
-                if(StringUtils.isEmpty(requestContext.getAwsRequestId()))
+                final LambdaContext requestContext = LambdaContext.ofHeadersMulti(httpRequest.headers());
+                if (StringUtils.isEmpty(requestContext.getAwsRequestId()))
                     throw new IllegalArgumentException("Request ID is not present!");
 
                 if (logger.isDebugEnabled()) {

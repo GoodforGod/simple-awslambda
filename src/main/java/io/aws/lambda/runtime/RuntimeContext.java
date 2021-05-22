@@ -1,5 +1,7 @@
 package io.aws.lambda.runtime;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Runtime Context interface so whole code can be used with other DI framework
  * or even with some plain java written realisation
@@ -17,5 +19,5 @@ public interface RuntimeContext extends AutoCloseable {
      * @param <T>      type of bean to instantiate
      * @return return bean instance
      */
-    <T> T getBean(Class<T> beanType);
+    <T> T getBean(@NotNull Class<T> beanType);
 }
