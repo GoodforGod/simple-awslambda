@@ -19,6 +19,9 @@ public interface AwsHttpResponse {
     Map<String, List<String>> headers();
 
     @NotNull
+    Map<String, String> headerFirstValues();
+
+    @NotNull
     String headerAnyOrThrow(@NotNull String name);
 
     String headerAny(@NotNull String name);

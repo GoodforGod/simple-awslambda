@@ -1,9 +1,9 @@
 package io.aws.lambda.runtime.handler.impl;
 
+import com.amazonaws.services.lambda.runtime.Context;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public class DirectEventHandler extends AbstractEventHandler implements EventHan
     }
 
     @SuppressWarnings("unchecked")
-    public String handle(@NotNull String event, @NotNull AwsRequestContext context) {
+    public String handle(@NotNull String event, @NotNull Context context) {
         logger.debug("Function request event body: {}", event);
         final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
         logger.debug("Function to handle '{}' with Request type '{}' and Response type '{}'",
@@ -45,7 +45,7 @@ public class DirectEventHandler extends AbstractEventHandler implements EventHan
 
         logger.debug("Function processing started...");
         final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
-        final Object functionOutput = function.handle(functionInput);
+        final Object functionOutput = function.handle(functionInput, context);
         if (logger.isInfoEnabled())
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
 

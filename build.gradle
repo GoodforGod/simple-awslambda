@@ -44,11 +44,14 @@ dependencies {
     compileOnly "org.graalvm.nativeimage:svm"
     compileOnly "io.micronaut:micronaut-inject-java"
 
-    implementation "org.jetbrains:annotations:20.1.0"
-
+    api "org.jetbrains:annotations:20.1.0"
     api "io.micronaut:micronaut-inject"
+
     api "com.google.code.gson:gson:2.8.6"
     api "com.github.goodforgod:gson-datetime-adapters:1.0.0"
+
+    api "com.amazonaws:aws-lambda-java-events:3.8.0"
+    api "com.amazonaws:aws-lambda-java-core:1.2.1"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
     testRuntimeOnly "org.slf4j:slf4j-simple:1.7.30"

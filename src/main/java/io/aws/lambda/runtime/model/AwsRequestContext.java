@@ -7,6 +7,7 @@ import io.micronaut.core.annotation.Introspected;
  * @author Anton Kurako (GoodforGod)
  * @since 29.11.2020
  */
+@Deprecated
 @Introspected
 public class AwsRequestContext {
 

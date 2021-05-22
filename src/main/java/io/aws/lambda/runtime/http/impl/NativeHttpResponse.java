@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -31,6 +32,13 @@ public class NativeHttpResponse implements AwsHttpResponse {
     @Override
     public @NotNull Map<String, List<String>> headers() {
         return httpResponse.headers().map();
+    }
+
+    @Override
+    public @NotNull Map<String, String> headerFirstValues() {
+        return headers().entrySet().stream()
+                .filter(e -> !e.getValue().isEmpty())
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().iterator().next()));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package io.aws.lambda.runtime.handler;
 
-import io.aws.lambda.runtime.model.AwsRequestContext;
+import com.amazonaws.services.lambda.runtime.Context;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,5 +16,5 @@ public interface EventHandler {
      * @param context of the request
      * @return response representation as string
      */
-    String handle(@NotNull String event, @NotNull AwsRequestContext context);
+    String handle(@NotNull String event, @NotNull Context context);
 }

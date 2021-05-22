@@ -44,9 +44,10 @@ There two runtimes available for Lambda execution, choose runtime as main class 
 
 Available runtimes:
 - **io.aws.lambda.runtime.micronaut.AwsLambdaRuntime** (Process requests as is)
-- **io.aws.lambda.runtime.micronaut.AwsGatewayLambdaRuntime** (Processes requests as [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
+- **io.aws.lambda.runtime.micronaut.AwsAPIGatewayV2LambdaRuntime** (Processes requests as [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
+- **io.aws.lambda.runtime.micronaut.AwsAPIGatewayProxyLambdaRuntime** (Processes requests as [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
 
-In case of migrating lambda from internal usage to *API Gateway* there no need to change rewrite any code just change runtime.
+In case of migrating lambda from direct usage to *API Gateway* there no need to change rewrite any code just change runtime.
 
 #### Gradle
 

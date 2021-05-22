@@ -1,12 +1,10 @@
 package io.aws.lambda.runtime.handler.impl;
 
+import com.amazonaws.services.lambda.runtime.Context;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.model.AwsRequestContext;
 import io.aws.lambda.runtime.model.Pair;
-import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
-import io.aws.lambda.runtime.model.gateway.AwsGatewayRequestBuilder;
 import io.micronaut.core.reflect.GenericTypeUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -27,15 +25,9 @@ public abstract class AbstractEventHandler implements EventHandler {
 
     protected @NotNull Object getFunctionInput(@NotNull Class<?> inputType,
                                                @NotNull String event,
-                                               @NotNull AwsRequestContext context) {
+                                               @NotNull Context context) {
         if (String.class.equals(inputType))
             return event;
-
-        if (AwsGatewayRequest.class.equals(inputType)) {
-            return converter.convertToType(event, AwsGatewayRequestBuilder.class)
-                    .setContext(context)
-                    .build();
-        }
 
         return converter.convertToType(event, inputType);
     }
