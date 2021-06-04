@@ -1,7 +1,7 @@
 package io.aws.lambda.runtime.handler.impl;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
@@ -14,16 +14,16 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * AWS Lambda Gateway Handler for handling requests coming from AWS Gateway
+ * AWS Lambda Gateway Handler for handling requests coming from events that contains body.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
 @Singleton
-public class APIGatewayProxyEventHandler extends DirectEventHandler {
+public class BodyEventHandler extends RawEventHandler {
 
     @Inject
-    public APIGatewayProxyEventHandler(Lambda function, Converter converter) {
+    public BodyEventHandler(Lambda function, Converter converter) {
         super(function, converter);
     }
 
@@ -34,10 +34,10 @@ public class APIGatewayProxyEventHandler extends DirectEventHandler {
 
         final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
         final String requestBody;
-        if (APIGatewayProxyRequestEvent.class.isAssignableFrom(funcArgs.getRight())) {
+        if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcArgs.getRight())) {
             requestBody = event;
         } else {
-            final APIGatewayProxyRequestEvent httpEvent = converter.convertToType(event, APIGatewayProxyRequestEvent.class);
+            final APIGatewayV2HTTPEvent httpEvent = converter.convertToType(event, APIGatewayV2HTTPEvent.class);
             final String body = httpEvent.getBody();
             requestBody = (httpEvent.getIsBase64Encoded()) ? Base64Utils.decode(body) : body;
         }

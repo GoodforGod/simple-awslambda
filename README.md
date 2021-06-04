@@ -43,17 +43,14 @@ public class MyLambda implements Lambda<String, String> {
 There two runtimes available for Lambda execution, choose runtime as main class for correct execution.
 
 Available runtimes:
-- **io.aws.lambda.runtime.micronaut.AwsLambdaRuntime** (Process requests as is)
-- **io.aws.lambda.runtime.micronaut.AwsAPIGatewayV2LambdaRuntime** (Processes requests as [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
-- **io.aws.lambda.runtime.micronaut.AwsAPIGatewayProxyLambdaRuntime** (Processes requests as [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
-
-In case of migrating lambda from direct usage to *API Gateway* there no need to change rewrite any code just change runtime.
+- **io.aws.lambda.runtime.AwsLambdaRuntime** (Process requests as is)
+- **io.aws.lambda.runtime.AwsBodyLambdaRuntime** (Processes requests with body like [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
 
 #### Gradle
 
 How to set runtime as main class in *build.gradle* for *jar* execution:
 ```groovy
-mainClassName = "io.aws.lambda.runtime.micronaut.AwsLambdaRuntime"
+mainClassName = "io.aws.lambda.runtime.AwsLambdaRuntime"
 ```
 
 For GraalVM check [corresponding](#graalvm) section.
@@ -145,5 +142,5 @@ public class GatewayLambda implements Lambda<Book, User> {
 Just place *native-image.properties* in resource folder as [GraalVM specify](https://docs.oracle.com/en/graalvm/enterprise/19/guide/reference/native-image/configuration.html) with runtime as main class:
 ```text
 Args = -H:Name=lambda \
-       -H:Class=io.aws.lambda.runtime.micronaut.AwsLambdaRuntime
+       -H:Class=io.aws.lambda.runtime.AwsLambdaRuntime
 ```

@@ -12,18 +12,18 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * AWS Lambda Handler for handling direct requests for AWS Lambda.
+ * AWS Lambda Handler for handling raw event as it was passed to lambda.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
 @Singleton
-public class DirectEventHandler extends AbstractEventHandler implements EventHandler {
+public class RawEventHandler extends AbstractEventHandler implements EventHandler {
 
     protected final Lambda function;
 
     @Inject
-    public DirectEventHandler(Lambda function, Converter converter) {
+    public RawEventHandler(Lambda function, Converter converter) {
         super(converter);
         this.function = function;
     }

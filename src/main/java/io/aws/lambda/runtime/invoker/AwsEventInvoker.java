@@ -1,5 +1,7 @@
-package io.aws.lambda.runtime;
+package io.aws.lambda.runtime.invoker;
 
+import io.aws.lambda.runtime.LambdaContext;
+import io.aws.lambda.runtime.context.RuntimeContext;
 import io.aws.lambda.runtime.config.RuntimeVariables;
 import io.aws.lambda.runtime.error.ContextException;
 import io.aws.lambda.runtime.handler.EventHandler;
@@ -54,7 +56,7 @@ import java.util.function.Supplier;
                 com.amazonaws.services.lambda.runtime.events.SNSEvent.class,
                 com.amazonaws.services.lambda.runtime.events.SQSEvent.class
         })
-public class AwsRuntimeInvoker {
+public class AwsEventInvoker {
 
     private static final String INIT_ERROR = "/2018-06-01/runtime/init/error";
     private static final String INVOCATION_URI = "/2018-06-01/runtime/invocation/";

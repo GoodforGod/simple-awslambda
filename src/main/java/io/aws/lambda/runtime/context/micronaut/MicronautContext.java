@@ -1,6 +1,6 @@
-package io.aws.lambda.runtime.micronaut;
+package io.aws.lambda.runtime.context.micronaut;
 
-import io.aws.lambda.runtime.RuntimeContext;
+import io.aws.lambda.runtime.context.RuntimeContext;
 import io.micronaut.context.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 

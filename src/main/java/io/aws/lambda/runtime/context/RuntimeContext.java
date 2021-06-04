@@ -1,4 +1,4 @@
-package io.aws.lambda.runtime;
+package io.aws.lambda.runtime.context;
 
 import org.jetbrains.annotations.NotNull;
 

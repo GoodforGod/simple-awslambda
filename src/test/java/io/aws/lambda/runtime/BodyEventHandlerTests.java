@@ -2,7 +2,7 @@ package io.aws.lambda.runtime;
 
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.handler.impl.APIGatewayV2EventHandler;
+import io.aws.lambda.runtime.handler.impl.BodyEventHandler;
 import io.aws.lambda.runtime.model.gateway.AwsGatewayRequest;
 import io.aws.lambda.runtime.model.gateway.AwsGatewayResponse;
 import io.micronaut.context.ApplicationContext;
@@ -15,12 +15,12 @@ import java.util.Collections;
  * @author GoodforGod
  * @since 27.10.2020
  */
-class APIGatewayV2EventHandlerTests extends Assertions {
+class BodyEventHandlerTests extends Assertions {
 
     @Test
     void handled() {
         try (final ApplicationContext context = ApplicationContext.run()) {
-            final EventHandler handler = context.getBean(APIGatewayV2EventHandler.class);
+            final EventHandler handler = context.getBean(BodyEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
 
             final String body = "{\"name\":\"bob\"}";
