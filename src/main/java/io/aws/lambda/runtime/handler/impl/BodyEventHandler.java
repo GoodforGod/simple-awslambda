@@ -1,8 +1,8 @@
 package io.aws.lambda.runtime.handler.impl;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import io.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
+import io.aws.lambda.events.gateway.APIGatewayV2HTTPResponse;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.model.Pair;
@@ -14,7 +14,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * AWS Lambda Gateway Handler for handling requests coming from events that contains body.
+ * AWS Lambda Gateway Handler for handling requests coming from events that
+ * contains body.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
@@ -39,7 +40,7 @@ public class BodyEventHandler extends RawEventHandler {
         } else {
             final APIGatewayV2HTTPEvent httpEvent = converter.convertToType(event, APIGatewayV2HTTPEvent.class);
             final String body = httpEvent.getBody();
-            requestBody = (httpEvent.getIsBase64Encoded()) ? Base64Utils.decode(body) : body;
+            requestBody = (httpEvent.isBase64Encoded()) ? Base64Utils.decode(body) : body;
         }
 
         if (logger.isDebugEnabled()) {

@@ -49,8 +49,8 @@ dependencies {
 
     api "com.google.code.gson:gson:2.8.6"
     api "com.github.goodforgod:gson-datetime-adapters:1.0.0"
+    api "com.github.goodforgod:aws-lambda-java-events:0.9.0-SNAPSHOT"
 
-    api "com.amazonaws:aws-lambda-java-events:3.8.0"
     api "com.amazonaws:aws-lambda-java-core:1.2.1"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
