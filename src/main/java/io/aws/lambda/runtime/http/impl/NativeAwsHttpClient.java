@@ -1,8 +1,9 @@
 package io.aws.lambda.runtime.http.impl;
 
-import io.aws.lambda.runtime.error.HttpException;
+import io.aws.lambda.runtime.error.StatusException;
 import io.aws.lambda.runtime.http.AwsHttpClient;
 import io.aws.lambda.runtime.http.AwsHttpResponse;
+import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Singleton;
@@ -13,15 +14,16 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-import static io.aws.lambda.runtime.model.gateway.AwsGatewayResponse.CONTENT_TYPE;
-import static io.aws.lambda.runtime.model.gateway.AwsGatewayResponse.MEDIA_TYPE_JSON;
-
 /**
  * @author Anton Kurako (GoodforGod)
  * @since 27.10.2020
  */
+@Introspected
 @Singleton
 public class NativeAwsHttpClient implements AwsHttpClient {
+
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String MEDIA_TYPE_JSON = "application/json";
 
     private static final HttpClient CLIENT = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
@@ -69,7 +71,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
             final HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             return new NativeHttpResponse(response);
         } catch (Exception e) {
-            throw new HttpException(e.getMessage(), 500);
+            throw new StatusException(e.getMessage(), 500);
         }
     }
 
@@ -77,7 +79,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
         try {
             CLIENT.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception e) {
-            throw new HttpException(e.getMessage(), 500);
+            throw new StatusException(e.getMessage(), 500);
         }
     }
 }

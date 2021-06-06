@@ -3,6 +3,7 @@ package io.aws.lambda.runtime.convert.impl;
 import com.google.gson.Gson;
 import io.aws.lambda.runtime.config.GsonConfiguration;
 import io.aws.lambda.runtime.convert.Converter;
+import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 22.3.2021
  */
+@Introspected
 @Singleton
 public class GsonConverter implements Converter {
 

@@ -8,12 +8,19 @@ import io.aws.lambda.events.system.LoadBalancerRequest;
 import io.aws.lambda.events.system.LoadBalancerResponse;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
+import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
+import io.micronaut.core.annotation.Introspected;
+import io.micronaut.core.annotation.TypeHint;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Map;
+
+import static io.aws.lambda.runtime.http.impl.NativeAwsHttpClient.CONTENT_TYPE;
+import static io.aws.lambda.runtime.http.impl.NativeAwsHttpClient.MEDIA_TYPE_JSON;
 
 /**
  * AWS Lambda Gateway Handler for handling requests coming from events that
@@ -22,14 +29,43 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
+@TypeHint(
+        accessType = { TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS, TypeHint.AccessType.ALL_PUBLIC },
+        value = {
+                APIGatewayProxyEvent.class,
+                APIGatewayProxyEvent.RequestIdentity.class,
+                APIGatewayProxyEvent.ProxyRequestContext.class,
+                APIGatewayProxyResponse.class,
+                APIGatewayV2HTTPEvent.class,
+                APIGatewayV2HTTPEvent.RequestContext.class,
+                APIGatewayV2HTTPEvent.RequestContext.Http.class,
+                APIGatewayV2HTTPEvent.RequestContext.CognitoIdentity.class,
+                APIGatewayV2HTTPEvent.RequestContext.Authorizer.class,
+                APIGatewayV2HTTPEvent.RequestContext.Authorizer.JWT.class,
+                APIGatewayV2HTTPResponse.class,
+                APIGatewayV2WebSocketEvent.class,
+                APIGatewayV2WebSocketEvent.RequestContext.class,
+                APIGatewayV2WebSocketEvent.RequestIdentity.class,
+                APIGatewayV2WebSocketResponse.class,
+
+                BodyEvent.class,
+                BodyBase64Event.class
+        })
+@Introspected
 @Singleton
-public class BodyEventHandler extends RawEventHandler {
+public class BodyEventHandler extends AbstractEventHandler implements EventHandler {
+
+    private static final Map<String, String> DEFAULT_HEADERS = Map.of(CONTENT_TYPE, MEDIA_TYPE_JSON);
+
+    private final Lambda function;
 
     @Inject
     public BodyEventHandler(Lambda function, Converter converter) {
-        super(function, converter);
+        super(converter);
+        this.function = function;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public String handle(@NotNull String event, @NotNull Context context) {
         logger.debug("API Event conversion started...");
@@ -48,20 +84,30 @@ public class BodyEventHandler extends RawEventHandler {
         }
 
         if (logger.isDebugEnabled()) {
-            final String eventName = inputArgument.getSimpleName();
-            logger.debug("{} API Event conversion took: {} millis", eventName, TimeUtils.timeTook(requestStart));
-            logger.debug("{} API Event body: {}", eventName, eventBody);
+            logger.debug("API Event conversion took: {} millis", TimeUtils.timeTook(requestStart));
+            logger.debug("API Event body: {}", eventBody);
         }
 
-        final Object functionOutput = super.handle(eventBody, context);
+        logger.debug("Function input conversion started...");
+        final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
+        final Object functionInput = getFunctionInput(funcArgs.getRight(), eventBody, context);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
+            logger.debug("Function input: {}", functionInput);
+        }
+
+        logger.debug("Function processing started...");
+        final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+        final Object functionOutput = function.handle(functionInput, context);
+        if (logger.isInfoEnabled())
+            logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
 
         logger.debug("API Event conversion started...");
         final long outputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
         final Object response = getFunctionResponseEvent(functionOutput, funcArgs.getLeft());
         if (logger.isDebugEnabled()) {
-            final String eventName = inputArgument.getSimpleName();
-            logger.debug("{} API Event conversion took: {} millis", eventName, TimeUtils.timeTook(outputStart));
-            logger.debug("{} API Event body: {}", eventName, response);
+            logger.debug("API Event conversion took: {} millis", TimeUtils.timeTook(outputStart));
+            logger.debug("API Event body: {}", response);
         }
 
         return converter.convertToJson(response);
@@ -74,14 +120,17 @@ public class BodyEventHandler extends RawEventHandler {
                 || funcOutValue instanceof LoadBalancerResponse)
             return funcOutValue;
 
+        if (funcOutValue instanceof String)
+            return funcOutValue;
+
         if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputArg)) {
-            return new APIGatewayProxyResponse().setBody(funcOutValue);
+            return new APIGatewayProxyResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
         } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputArg)) {
-            return new APIGatewayV2HTTPResponse().setBody(funcOutValue);
+            return new APIGatewayV2HTTPResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
         } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputArg)) {
-            return new APIGatewayV2WebSocketResponse().setBody(funcOutValue);
+            return new APIGatewayV2WebSocketResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
         } else if (LoadBalancerRequest.class.isAssignableFrom(funcInputArg)) {
-            return new LoadBalancerResponse().setBody(funcOutValue);
+            return new LoadBalancerResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
         }
 
         return funcOutValue;

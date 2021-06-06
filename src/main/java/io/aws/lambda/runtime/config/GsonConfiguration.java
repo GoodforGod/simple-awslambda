@@ -3,12 +3,14 @@ package io.aws.lambda.runtime.config;
 import com.google.gson.Gson;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.core.annotation.Introspected;
 
 /**
  * @see io.aws.lambda.runtime.convert.impl.GsonConverter
  * @author Anton Kurako (GoodforGod)
  * @since 25.04.2021
  */
+@Introspected
 @ConfigurationProperties("gson")
 public class GsonConfiguration {
 

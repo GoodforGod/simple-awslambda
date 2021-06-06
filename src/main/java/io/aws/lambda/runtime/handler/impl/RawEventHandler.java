@@ -6,6 +6,7 @@ import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
+import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -17,10 +18,11 @@ import javax.inject.Singleton;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
+@Introspected
 @Singleton
 public class RawEventHandler extends AbstractEventHandler implements EventHandler {
 
-    protected final Lambda function;
+    private final Lambda function;
 
     @Inject
     public RawEventHandler(Lambda function, Converter converter) {

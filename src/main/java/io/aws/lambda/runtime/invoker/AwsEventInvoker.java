@@ -1,9 +1,5 @@
 package io.aws.lambda.runtime.invoker;
 
-import io.aws.lambda.events.*;
-import io.aws.lambda.events.dynamodb.*;
-import io.aws.lambda.events.gateway.*;
-import io.aws.lambda.events.s3.*;
 import io.aws.lambda.runtime.LambdaContext;
 import io.aws.lambda.runtime.config.RuntimeVariables;
 import io.aws.lambda.runtime.context.RuntimeContext;
@@ -14,7 +10,6 @@ import io.aws.lambda.runtime.http.AwsHttpResponse;
 import io.aws.lambda.runtime.http.impl.NativeAwsHttpClient;
 import io.aws.lambda.runtime.utils.StringUtils;
 import io.aws.lambda.runtime.utils.TimeUtils;
-import io.micronaut.core.annotation.TypeHint;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,72 +23,6 @@ import java.util.function.Supplier;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-@TypeHint(
-        accessType = { TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS, TypeHint.AccessType.ALL_PUBLIC },
-        value = {
-                DynamodbEvent.class,
-                DynamodbEvent.DynamodbStreamRecord.class,
-                DynamodbTimeWindowEvent.class,
-                AttributeValue.class,
-                Identity.class,
-                StreamRecord.class,
-
-                APIGatewayCustomAuthorizerEvent.class,
-                APIGatewayCustomAuthorizerEvent.Identity.class,
-                APIGatewayCustomAuthorizerEvent.RequestContext.class,
-                APIGatewayV2CustomAuthorizerEvent.class,
-                APIGatewayV2CustomAuthorizerEvent.Http.class,
-                APIGatewayV2CustomAuthorizerEvent.RequestContext.class,
-                APIGatewayProxyEvent.class,
-                APIGatewayProxyEvent.RequestIdentity.class,
-                APIGatewayProxyEvent.ProxyRequestContext.class,
-                APIGatewayProxyResponse.class,
-                APIGatewayV2HTTPEvent.class,
-                APIGatewayV2HTTPEvent.RequestContext.class,
-                APIGatewayV2HTTPEvent.RequestContext.Http.class,
-                APIGatewayV2HTTPEvent.RequestContext.CognitoIdentity.class,
-                APIGatewayV2HTTPEvent.RequestContext.Authorizer.class,
-                APIGatewayV2HTTPEvent.RequestContext.Authorizer.JWT.class,
-                APIGatewayV2HTTPResponse.class,
-                APIGatewayV2WebSocketEvent.class,
-                APIGatewayV2WebSocketEvent.RequestContext.class,
-                APIGatewayV2WebSocketEvent.RequestIdentity.class,
-                APIGatewayV2WebSocketResponse.class,
-
-                S3Event.class,
-                S3BatchEvent.class,
-                S3BatchEvent.Job.class,
-                S3BatchEvent.Task.class,
-                S3BatchResponse.class,
-                S3BatchResponse.Result.class,
-                S3BatchResponse.ResultCode.class,
-                S3EventNotification.class,
-                S3EventNotification.RequestParametersEntity.class,
-                S3EventNotification.ResponseElementsEntity.class,
-                S3EventNotification.S3BucketEntity.class,
-                S3EventNotification.S3Entity.class,
-                S3EventNotification.S3EventNotificationRecord.class,
-                S3EventNotification.S3ObjectEntity.class,
-                S3EventNotification.UserIdentityEntity.class,
-                S3ObjectLambdaEvent.class,
-                S3ObjectLambdaEvent.Configuration.class,
-                S3ObjectLambdaEvent.GetObjectContext.class,
-                S3ObjectLambdaEvent.UserIdentity.class,
-                S3ObjectLambdaEvent.UserRequest.class,
-
-                KafkaEvent.class,
-                KafkaEvent.KafkaEventRecord.class,
-                KafkaEvent.TopicPartition.class,
-                SNSEvent.class,
-                SNSEvent.SNS.class,
-                SNSEvent.SNSRecord.class,
-                SNSEvent.MessageAttribute.class,
-                SQSEvent.class,
-                SQSEvent.MessageAttribute.class,
-                SQSEvent.SQSMessage.class,
-                BodyEvent.class,
-                BodyBase64Event.class
-        })
 public class AwsEventInvoker {
 
     private static final String INIT_ERROR = "/2018-06-01/runtime/init/error";
