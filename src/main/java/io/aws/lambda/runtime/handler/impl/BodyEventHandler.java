@@ -1,12 +1,14 @@
 package io.aws.lambda.runtime.handler.impl;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import io.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
-import io.aws.lambda.events.gateway.APIGatewayV2HTTPResponse;
+import io.aws.lambda.events.BodyBase64Event;
+import io.aws.lambda.events.BodyEvent;
+import io.aws.lambda.events.gateway.*;
+import io.aws.lambda.events.system.LoadBalancerRequest;
+import io.aws.lambda.events.system.LoadBalancerResponse;
 import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.model.Pair;
-import io.aws.lambda.runtime.utils.Base64Utils;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,50 +32,58 @@ public class BodyEventHandler extends RawEventHandler {
 
     @Override
     public String handle(@NotNull String event, @NotNull Context context) {
-        logger.debug("Gateway Request event conversion started...");
+        logger.debug("API Event conversion started...");
         final long requestStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
         final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
-        final String requestBody;
-        if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcArgs.getRight())) {
-            requestBody = event;
+        final Class<?> inputArgument = funcArgs.getRight();
+        final String eventBody;
+        if (BodyEvent.class.isAssignableFrom(inputArgument)) {
+            eventBody = event;
         } else {
-            final APIGatewayV2HTTPEvent httpEvent = converter.convertToType(event, APIGatewayV2HTTPEvent.class);
-            final String body = httpEvent.getBody();
-            requestBody = (httpEvent.isBase64Encoded()) ? Base64Utils.decode(body) : body;
+            final BodyBase64Event bodyEvent = converter.convertToType(event, BodyBase64Event.class);
+            eventBody = (BodyBase64Event.class.isAssignableFrom(inputArgument) && bodyEvent.isBase64Encoded())
+                    ? bodyEvent.getBodyDecoded()
+                    : bodyEvent.getBody();
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("API Gateway request event conversion took: {} millis", TimeUtils.timeTook(requestStart));
-            logger.debug("API Gateway request event body: {}", requestBody);
+            final String eventName = inputArgument.getSimpleName();
+            logger.debug("{} API Event conversion took: {} millis", eventName, TimeUtils.timeTook(requestStart));
+            logger.debug("{} API Event body: {}", eventName, eventBody);
         }
 
-        final Object functionOutput = super.handle(requestBody, context);
+        final Object functionOutput = super.handle(eventBody, context);
 
-        logger.debug("API Gateway response event conversion started...");
+        logger.debug("API Event conversion started...");
         final long outputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
-        final APIGatewayV2HTTPResponse responseEvent = getFunctionResponseEvent(functionOutput);
+        final Object response = getFunctionResponseEvent(functionOutput, funcArgs.getLeft());
         if (logger.isDebugEnabled()) {
-            logger.debug("API Gateway response event conversion took: {} millis", TimeUtils.timeTook(outputStart));
-            logger.debug("API Gateway response event body: {}", responseEvent.getBody());
+            final String eventName = inputArgument.getSimpleName();
+            logger.debug("{} API Event conversion took: {} millis", eventName, TimeUtils.timeTook(outputStart));
+            logger.debug("{} API Event body: {}", eventName, response);
         }
 
-        return converter.convertToJson(responseEvent);
+        return converter.convertToJson(response);
     }
 
-    private @NotNull APIGatewayV2HTTPResponse getFunctionResponseEvent(Object functionOutput) {
-        if (functionOutput == null)
-            return new APIGatewayV2HTTPResponse();
+    private Object getFunctionResponseEvent(Object funcOutValue, Class<?> funcInputArg) {
+        if (funcOutValue instanceof APIGatewayProxyResponse
+                || funcOutValue instanceof APIGatewayV2HTTPResponse
+                || funcOutValue instanceof APIGatewayV2WebSocketResponse
+                || funcOutValue instanceof LoadBalancerResponse)
+            return funcOutValue;
 
-        if (functionOutput instanceof APIGatewayV2HTTPResponse)
-            return (APIGatewayV2HTTPResponse) functionOutput;
+        if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputArg)) {
+            return new APIGatewayProxyResponse().setBody(funcOutValue);
+        } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputArg)) {
+            return new APIGatewayV2HTTPResponse().setBody(funcOutValue);
+        } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputArg)) {
+            return new APIGatewayV2WebSocketResponse().setBody(funcOutValue);
+        } else if (LoadBalancerRequest.class.isAssignableFrom(funcInputArg)) {
+            return new LoadBalancerResponse().setBody(funcOutValue);
+        }
 
-        final APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
-        final String body = (functionOutput instanceof String)
-                ? (String) functionOutput
-                : converter.convertToJson(functionOutput);
-
-        response.setBody(body);
-        return response;
+        return funcOutValue;
     }
 }

@@ -1,31 +1,12 @@
 package io.aws.lambda.runtime.invoker;
 
-import io.aws.lambda.events.BodyEncodedEvent;
-import io.aws.lambda.events.BodyEvent;
-import io.aws.lambda.events.KafkaEvent;
-import io.aws.lambda.events.SNSEvent;
-import io.aws.lambda.events.SQSEvent;
-import io.aws.lambda.events.dynamodb.AttributeValue;
-import io.aws.lambda.events.dynamodb.DynamodbEvent;
-import io.aws.lambda.events.dynamodb.DynamodbTimeWindowEvent;
-import io.aws.lambda.events.dynamodb.Identity;
-import io.aws.lambda.events.dynamodb.StreamRecord;
-import io.aws.lambda.events.gateway.APIGatewayCustomAuthorizerEvent;
-import io.aws.lambda.events.gateway.APIGatewayProxyEvent;
-import io.aws.lambda.events.gateway.APIGatewayProxyResponse;
-import io.aws.lambda.events.gateway.APIGatewayV2CustomAuthorizerEvent;
-import io.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
-import io.aws.lambda.events.gateway.APIGatewayV2HTTPResponse;
-import io.aws.lambda.events.gateway.APIGatewayV2WebSocketEvent;
-import io.aws.lambda.events.gateway.APIGatewayV2WebSocketResponse;
-import io.aws.lambda.events.s3.S3BatchEvent;
-import io.aws.lambda.events.s3.S3BatchResponse;
-import io.aws.lambda.events.s3.S3Event;
-import io.aws.lambda.events.s3.S3EventNotification;
-import io.aws.lambda.events.s3.S3ObjectLambdaEvent;
+import io.aws.lambda.events.*;
+import io.aws.lambda.events.dynamodb.*;
+import io.aws.lambda.events.gateway.*;
+import io.aws.lambda.events.s3.*;
 import io.aws.lambda.runtime.LambdaContext;
-import io.aws.lambda.runtime.context.RuntimeContext;
 import io.aws.lambda.runtime.config.RuntimeVariables;
+import io.aws.lambda.runtime.context.RuntimeContext;
 import io.aws.lambda.runtime.error.ContextException;
 import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.http.AwsHttpClient;
@@ -111,7 +92,7 @@ import java.util.function.Supplier;
                 SQSEvent.MessageAttribute.class,
                 SQSEvent.SQSMessage.class,
                 BodyEvent.class,
-                BodyEncodedEvent.class
+                BodyBase64Event.class
         })
 public class AwsEventInvoker {
 

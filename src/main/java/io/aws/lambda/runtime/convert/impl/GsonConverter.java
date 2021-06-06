@@ -29,6 +29,9 @@ public class GsonConverter implements Converter {
 
     @Override
     public @NotNull String convertToJson(@NotNull Object o) {
+        if (o instanceof String)
+            return ((String) o);
+
         return mapper.toJson(o);
     }
 }
