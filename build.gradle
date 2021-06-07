@@ -94,7 +94,7 @@ publishing {
                 description = "Fast, Lightweight and GraalVM compatible AWS Lambda Runtime with DI."
 
                 license {
-                    name = "MIT License"
+                    name = "Apache License 2.0"
                     url = "https://github.com/GoodforGod/$artifactId/blob/master/LICENSE"
                     distribution = "repo"
                 }
