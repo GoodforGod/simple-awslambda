@@ -12,7 +12,6 @@ import io.aws.lambda.runtime.handler.EventHandler;
 import io.aws.lambda.runtime.model.Pair;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import io.micronaut.core.annotation.Introspected;
-import io.micronaut.core.annotation.TypeHint;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -29,28 +28,6 @@ import static io.aws.lambda.runtime.http.impl.NativeAwsHttpClient.MEDIA_TYPE_JSO
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-@TypeHint(
-        accessType = { TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS, TypeHint.AccessType.ALL_PUBLIC },
-        value = {
-                APIGatewayProxyEvent.class,
-                APIGatewayProxyEvent.RequestIdentity.class,
-                APIGatewayProxyEvent.ProxyRequestContext.class,
-                APIGatewayProxyResponse.class,
-                APIGatewayV2HTTPEvent.class,
-                APIGatewayV2HTTPEvent.RequestContext.class,
-                APIGatewayV2HTTPEvent.RequestContext.Http.class,
-                APIGatewayV2HTTPEvent.RequestContext.CognitoIdentity.class,
-                APIGatewayV2HTTPEvent.RequestContext.Authorizer.class,
-                APIGatewayV2HTTPEvent.RequestContext.Authorizer.JWT.class,
-                APIGatewayV2HTTPResponse.class,
-                APIGatewayV2WebSocketEvent.class,
-                APIGatewayV2WebSocketEvent.RequestContext.class,
-                APIGatewayV2WebSocketEvent.RequestIdentity.class,
-                APIGatewayV2WebSocketResponse.class,
-
-                BodyEvent.class,
-                BodyBase64Event.class
-        })
 @Introspected
 @Singleton
 public class BodyEventHandler extends AbstractEventHandler implements EventHandler {
