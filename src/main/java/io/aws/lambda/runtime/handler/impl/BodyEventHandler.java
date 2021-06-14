@@ -1,15 +1,15 @@
 package io.aws.lambda.runtime.handler.impl;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.aws.lambda.events.BodyBase64Event;
 import io.aws.lambda.events.BodyEvent;
 import io.aws.lambda.events.gateway.*;
 import io.aws.lambda.events.system.LoadBalancerRequest;
 import io.aws.lambda.events.system.LoadBalancerResponse;
-import io.aws.lambda.runtime.Lambda;
 import io.aws.lambda.runtime.convert.Converter;
 import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.model.Pair;
+import io.aws.lambda.runtime.model.Function;
 import io.aws.lambda.runtime.utils.TimeUtils;
 import io.micronaut.core.annotation.Introspected;
 import org.jetbrains.annotations.NotNull;
@@ -34,12 +34,12 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
     private static final Map<String, String> DEFAULT_HEADERS = Map.of(CONTENT_TYPE, MEDIA_TYPE_JSON);
 
-    private final Lambda function;
+    private final RequestHandler requestHandler;
 
     @Inject
-    public BodyEventHandler(Lambda function, Converter converter) {
+    public BodyEventHandler(RequestHandler requestHandler, Converter converter) {
         super(converter);
-        this.function = function;
+        this.requestHandler = requestHandler;
     }
 
     @SuppressWarnings("unchecked")
@@ -48,14 +48,13 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         logger.debug("API Event conversion started...");
         final long requestStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
-        final Pair<Class, Class> funcArgs = getInterfaceGenericType(function);
-        final Class<?> inputArgument = funcArgs.getRight();
+        final Function function = getFunctionArguments(requestHandler);
         final String eventBody;
-        if (BodyEvent.class.isAssignableFrom(inputArgument)) {
+        if (BodyEvent.class.isAssignableFrom(function.getInput())) {
             eventBody = event;
         } else {
             final BodyBase64Event bodyEvent = converter.convertToType(event, BodyBase64Event.class);
-            eventBody = (BodyBase64Event.class.isAssignableFrom(inputArgument) && bodyEvent.isBase64Encoded())
+            eventBody = (BodyBase64Event.class.isAssignableFrom(function.getInput()) && bodyEvent.isBase64Encoded())
                     ? bodyEvent.getBodyDecoded()
                     : bodyEvent.getBody();
         }
@@ -67,7 +66,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
         logger.debug("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
-        final Object functionInput = getFunctionInput(funcArgs.getRight(), eventBody, context);
+        final Object functionInput = getFunctionInput(function.getInput(), eventBody, context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
             logger.debug("Function input: {}", functionInput);
@@ -75,22 +74,26 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
         logger.debug("Function processing started...");
         final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
-        final Object functionOutput = function.handle(functionInput, context);
+        final Object functionOutput = requestHandler.handleRequest(functionInput, context);
         if (logger.isInfoEnabled())
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
 
         logger.debug("API Event conversion started...");
         final long outputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
-        final Object response = getFunctionResponseEvent(functionOutput, funcArgs.getLeft());
+        final Object response = getFunctionOutput(functionOutput, function.getInput(), function.getOutput(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("API Event conversion took: {} millis", TimeUtils.timeTook(outputStart));
             logger.debug("API Event body: {}", response);
         }
 
-        return converter.convertToJson(response);
+        return (response == null) ? null : converter.convertToJson(response);
     }
 
-    private Object getFunctionResponseEvent(Object funcOutValue, Class<?> funcInputArg) {
+    @Override
+    protected Object getFunctionOutput(Object funcOutValue,
+                                       @NotNull Class<?> funcInputType,
+                                       @NotNull Class<?> funcOutputType,
+                                       @NotNull Context context) {
         if (funcOutValue instanceof APIGatewayProxyResponse
                 || funcOutValue instanceof APIGatewayV2HTTPResponse
                 || funcOutValue instanceof APIGatewayV2WebSocketResponse
@@ -100,13 +103,13 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         if (funcOutValue instanceof String)
             return funcOutValue;
 
-        if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputArg)) {
+        if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayProxyResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
-        } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputArg)) {
+        } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2HTTPResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
-        } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputArg)) {
+        } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2WebSocketResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
-        } else if (LoadBalancerRequest.class.isAssignableFrom(funcInputArg)) {
+        } else if (LoadBalancerRequest.class.isAssignableFrom(funcInputType)) {
             return new LoadBalancerResponse().setBody(funcOutValue).setHeaders(DEFAULT_HEADERS);
         }
 
