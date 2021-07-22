@@ -25,10 +25,14 @@ public class NativeAwsHttpClient implements AwsHttpClient {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String MEDIA_TYPE_JSON = "application/json";
 
-    private static final HttpClient CLIENT = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMinutes(5))
-            .followRedirects(HttpClient.Redirect.NORMAL)
-            .build();
+    private final HttpClient client;
+
+    public NativeAwsHttpClient() {
+        this.client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofMinutes(5))
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build();
+    }
 
     @Override
     public AwsHttpResponse get(URI uri) {
@@ -68,7 +72,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
 
     private AwsHttpResponse sendAndResponse(HttpRequest request) {
         try {
-            final HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             return new NativeHttpResponse(response);
         } catch (Exception e) {
             throw new StatusException(e.getMessage(), 500);
@@ -77,7 +81,7 @@ public class NativeAwsHttpClient implements AwsHttpClient {
 
     private void sendAndForget(HttpRequest request) {
         try {
-            CLIENT.send(request, HttpResponse.BodyHandlers.discarding());
+            client.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception e) {
             throw new StatusException(e.getMessage(), 500);
         }
