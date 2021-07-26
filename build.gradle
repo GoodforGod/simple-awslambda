@@ -49,7 +49,7 @@ dependencies {
 
     api "com.google.code.gson:gson:2.8.7"
     api "com.github.goodforgod:gson-datetime-adapters:1.0.0"
-    api "com.github.goodforgod:aws-lambda-java-events:0.9.0-SNAPSHOT"
+    api "com.github.goodforgod:aws-lambda-java-events:1.0.0"
 
     api "com.amazonaws:aws-lambda-java-core:1.2.1"
 
