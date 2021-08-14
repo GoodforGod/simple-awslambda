@@ -1,7 +1,7 @@
-package io.aws.lambda.runtime;
+package io.aws.lambda.simple.runtime;
 
-import io.aws.lambda.runtime.handler.EventHandler;
-import io.aws.lambda.runtime.handler.impl.RawEventHandler;
+import io.aws.lambda.simple.runtime.handler.EventHandler;
+import io.aws.lambda.simple.runtime.handler.impl.JsonEventHandler;
 import io.micronaut.context.ApplicationContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,17 +12,17 @@ import java.util.Collections;
  * @author GoodforGod
  * @since 27.10.2020
  */
-class EventHandlerTests extends Assertions {
+class JsonEventHandlerTests extends Assertions {
 
     @Test
     void handled() {
         try (final ApplicationContext context = ApplicationContext.run()) {
-            final EventHandler handler = context.getBean(RawEventHandler.class);
+            final EventHandler handler = context.getBean(JsonEventHandler.class);
 
-            final String json = "{\"name\":\"bob\"}";
+            final String json = "{\"name\":\"Steeven King\"}";
             final String response = handler.handle(json, LambdaContext.ofHeaders(Collections.emptyMap()));
             assertNotNull(response);
-            assertEquals("response for bob", response);
+            assertTrue(response.contains("Hello - Steeven King"));
         }
     }
 }
