@@ -1,6 +1,6 @@
-# AWS Lambda Runtime
+# Simple Lambda
 
-AWS Lambda Runtime with Micronaut DI context support and GraalVM native compatibility.
+Simple-Lambda is small, lightweight, GraalVM optimized AWS Lambda Runtime with DI.
 
 Allow building smallest and fastest native lambdas with DI support.
 
@@ -9,7 +9,7 @@ Allow building smallest and fastest native lambdas with DI support.
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:aws-lambda-runtime:2.0.0-SNAPSHOT'
+    compile 'com.github.goodforgod:simple-lambda:0.9.0-SNAPSHOT'
 }
 ```
 
@@ -17,8 +17,8 @@ dependencies {
 ```xml
 <dependency>
     <groupId>com.github.goodforgod</groupId>
-    <artifactId>aws-lambda-runtime</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <artifactId>simple-lambda</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -43,14 +43,14 @@ public class MyLambda implements Lambda<String, String> {
 There two runtimes available for Lambda execution, choose runtime as main class for correct execution.
 
 Available runtimes:
-- **io.aws.lambda.runtime.AwsLambdaRuntime** (Process requests as is)
-- **io.aws.lambda.runtime.AwsBodyLambdaRuntime** (Processes requests with body like [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
+- **AwsLambdaRuntime** (Process requests as is)
+- **AwsBodyLambdaRuntime** (Processes requests with body like [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
 
 #### Gradle
 
 How to set runtime as main class in *build.gradle* for *jar* execution:
 ```groovy
-mainClassName = "io.aws.lambda.runtime.AwsLambdaRuntime"
+mainClassName = "AwsLambdaRuntime"
 ```
 
 For GraalVM check [corresponding](#graalvm) section.
@@ -142,5 +142,5 @@ public class GatewayLambda implements Lambda<Book, User> {
 Just place *native-image.properties* in resource folder as [GraalVM specify](https://docs.oracle.com/en/graalvm/enterprise/19/guide/reference/native-image/configuration.html) with runtime as main class:
 ```text
 Args = -H:Name=lambda \
-       -H:Class=io.aws.lambda.runtime.AwsLambdaRuntime
+       -H:Class=AwsLambdaRuntime
 ```
