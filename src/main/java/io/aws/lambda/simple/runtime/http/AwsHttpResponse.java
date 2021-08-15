@@ -2,8 +2,10 @@ package io.aws.lambda.simple.runtime.http;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -11,18 +13,38 @@ import java.util.Map;
  */
 public interface AwsHttpResponse {
 
+    /**
+     * @return http code
+     */
     int code();
 
-    String body();
+    /**
+     * @return body as {@link InputStream}
+     */
+    @NotNull
+    InputStream body();
 
+    /**
+     * @return body as {@link java.nio.charset.StandardCharsets#UTF_8} String
+     */
+    @NotNull
+    String bodyAsString();
+
+    /**
+     * @return http header multi map
+     */
     @NotNull
     Map<String, List<String>> headers();
 
+    /**
+     * @return http header flat map
+     */
     @NotNull
     Map<String, String> headerFirstValues();
 
-    @NotNull
-    String headerAnyOrThrow(@NotNull String name);
-
-    String headerAny(@NotNull String name);
+    /**
+     * @param name header name
+     * @return header value or {@link Optional#empty()}
+     */
+    Optional<String> headerFirst(@NotNull String name);
 }

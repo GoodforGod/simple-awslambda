@@ -4,7 +4,7 @@ package io.aws.lambda.simple.runtime.error;
  * @author Anton Kurako (GoodforGod)
  * @since 28.10.2020
  */
-public class StatusException extends LambdaException {
+public class StatusException extends RuntimeException {
 
     private final int httpCode;
 
@@ -19,6 +19,6 @@ public class StatusException extends LambdaException {
     }
 
     public int getHttpCode() {
-        return httpCode;
+        return (httpCode <= 100 || httpCode >= 600) ? 500 : httpCode;
     }
 }

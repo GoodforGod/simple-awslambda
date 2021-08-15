@@ -1,21 +1,25 @@
 package io.aws.lambda.simple.runtime.http.impl;
 
 import io.aws.lambda.simple.runtime.http.AwsHttpResponse;
+import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public class NativeHttpResponse implements AwsHttpResponse {
+public class NativeAwsHttpResponse implements AwsHttpResponse {
 
-    private final java.net.http.HttpResponse<String> httpResponse;
+    private final HttpResponse<InputStream> httpResponse;
 
-    public NativeHttpResponse(java.net.http.HttpResponse<String> httpResponse) {
+    public NativeAwsHttpResponse(HttpResponse<InputStream> httpResponse) {
         this.httpResponse = httpResponse;
     }
 
@@ -25,8 +29,13 @@ public class NativeHttpResponse implements AwsHttpResponse {
     }
 
     @Override
-    public String body() {
+    public @NotNull InputStream body() {
         return httpResponse.body();
+    }
+
+    @Override
+    public @NotNull String bodyAsString() {
+        return InputStreamUtils.getInputAsStringUTF8(body());
     }
 
     @Override
@@ -42,13 +51,7 @@ public class NativeHttpResponse implements AwsHttpResponse {
     }
 
     @Override
-    public @NotNull String headerAnyOrThrow(@NotNull String name) {
-        return httpResponse.headers().firstValue(name)
-                .orElseThrow(() -> new IllegalArgumentException("Header not found with name: " + name));
-    }
-
-    @Override
-    public String headerAny(@NotNull String name) {
-        return httpResponse.headers().firstValue(name).orElse(null);
+    public Optional<String> headerFirst(@NotNull String name) {
+        return httpResponse.headers().firstValue(name);
     }
 }

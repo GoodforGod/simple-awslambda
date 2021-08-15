@@ -1,12 +1,12 @@
 package io.aws.lambda.simple.runtime.utils;
 
 /**
- * Basic String Utils
- *
  * @author Anton Kurako (GoodforGod)
  * @since 15.2.2021
  */
 public class StringUtils {
+
+    private StringUtils() {}
 
     public static boolean isEmpty(String s) {
         return s == null || s.isEmpty();

@@ -4,9 +4,9 @@ import io.aws.lambda.events.BodyBase64Event;
 import io.aws.lambda.events.BodyEvent;
 import io.aws.lambda.events.gateway.*;
 import io.aws.lambda.simple.runtime.convert.impl.GsonConverter;
-import io.aws.lambda.simple.runtime.handler.Function;
+import io.aws.lambda.simple.runtime.handler.RequestFunction;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
-import io.aws.lambda.simple.runtime.handler.impl.JsonEventHandler;
+import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.http.impl.NativeAwsHttpClient;
 import io.micronaut.core.annotation.Introspected;
 
@@ -21,9 +21,9 @@ import io.micronaut.core.annotation.Introspected;
         MicronautGsonConfiguration.class,
         MicronautGsonFactory.class,
         NativeAwsHttpClient.class,
-        JsonEventHandler.class,
+        InputEventHandler.class,
         BodyEventHandler.class,
-        Function.class,
+        RequestFunction.class,
 
         APIGatewayProxyEvent.class,
         APIGatewayProxyEvent.RequestIdentity.class,

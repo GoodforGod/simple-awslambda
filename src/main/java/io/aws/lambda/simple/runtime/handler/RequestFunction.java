@@ -1,13 +1,20 @@
 package io.aws.lambda.simple.runtime.handler;
 
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class Function {
+/**
+ * Represent {@link RequestHandler} type errasure
+ *
+ * @author Anton Kurako (GoodforGod)
+ * @since 14.06.2021
+ */
+public class RequestFunction {
 
     private final Class<?> input;
     private final Class<?> output;
 
-    public Function(Class<?> input, Class<?> output) {
+    public RequestFunction(Class<?> input, Class<?> output) {
         this.input = input;
         this.output = output;
     }
@@ -22,6 +29,6 @@ public class Function {
 
     @Override
     public String toString() {
-        return "[input=" + input + ", output=" + output + ']';
+        return "[input=" + input.getName() + ", output=" + output.getName() + ']';
     }
 }
