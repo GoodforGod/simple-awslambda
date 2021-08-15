@@ -69,7 +69,7 @@ public abstract class AbstractEventHandler implements EventHandler {
     protected <T extends RequestHandler> RequestFunction getFunctionArguments(T t) {
         final Class[] args = ReflectionUtils.resolveInterfaceTypeArguments(t.getClass(), RequestHandler.class);
         if (args.length < 2)
-            throw new IllegalArgumentException(
+            throw new IllegalStateException(
                     "Lambda interface is not correctly implemented, interface generic types must be set for input and output!");
 
         return new RequestFunction(args[0], args[1]);

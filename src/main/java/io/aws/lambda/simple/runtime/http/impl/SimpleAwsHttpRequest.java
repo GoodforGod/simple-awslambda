@@ -57,4 +57,9 @@ public class SimpleAwsHttpRequest implements AwsHttpRequest {
     public @NotNull Map<String, List<String>> headers() {
         return headers;
     }
+
+    @Override
+    public String toString() {
+        return "[body=" + body + ", headers=" + headers + ']';
+    }
 }

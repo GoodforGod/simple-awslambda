@@ -31,7 +31,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
 
     @SuppressWarnings("unchecked")
     public String handle(@NotNull InputStream eventStream, @NotNull Context context) {
-        logger.debug("Function input conversion started...");
+        logger.trace("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
         final RequestFunction function = getFunctionArguments(requestHandler);
@@ -44,13 +44,14 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
             logger.debug("Function input: {}", functionInput);
         }
 
-        logger.debug("Function processing started...");
+        logger.trace("Function processing started...");
         final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         final Object functionOutput = requestHandler.handleRequest(functionInput, context);
-        if (logger.isInfoEnabled())
+        if (logger.isInfoEnabled()) {
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
+        }
 
-        logger.debug("Function output conversion started...");
+        logger.trace("Function output conversion started...");
         final long outputStart = TimeUtils.getTime();
         final Object response = getFunctionOutput(functionOutput, function.getInput(), function.getOutput(), context);
         if (logger.isDebugEnabled()) {

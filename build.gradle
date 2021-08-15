@@ -28,12 +28,12 @@ spotless {
 }
 
 micronaut {
-    version "2.5.12"
+    version("2.5.12")
     processing {
-        incremental true
-        module project.name
-        group project.group
-        annotations "io.aws.lambda.runtime.*"
+        incremental(true)
+        module(project.name)
+        group(project.group)
+        annotations("io.aws.lambda.runtime.*")
     }
 }
 

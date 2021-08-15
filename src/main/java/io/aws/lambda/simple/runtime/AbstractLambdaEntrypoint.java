@@ -1,13 +1,13 @@
 package io.aws.lambda.simple.runtime;
 
-import io.aws.lambda.simple.runtime.context.RuntimeContext;
+import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
 import io.aws.lambda.simple.runtime.micronaut.MicronautRuntimeContext;
 import io.aws.lambda.simple.runtime.runtime.DefaultLambdaEventRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract Simple Lambda Runtime
+ * Abstract Simple Lambda Entrypoint
  *
  * @author Anton Kurako (GoodforGod)
  * @since 14.08.2021

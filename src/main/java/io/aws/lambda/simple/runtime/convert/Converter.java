@@ -11,6 +11,5 @@ public interface Converter {
     @NotNull
     <T> T convertToType(@NotNull String json, @NotNull Class<T> type);
 
-    @NotNull
-    String convertToJson(@NotNull Object o);
+    String convertToJson(Object o);
 }

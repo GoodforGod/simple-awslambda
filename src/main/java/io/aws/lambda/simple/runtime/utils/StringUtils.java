@@ -8,12 +8,12 @@ public class StringUtils {
 
     private StringUtils() {}
 
-    public static boolean isEmpty(String s) {
-        return s == null || s.isEmpty();
+    public static boolean isEmpty(String value) {
+        return value == null || value.isEmpty();
     }
 
-    public static boolean isNotEmpty(String s) {
-        return s != null && !s.isEmpty();
+    public static boolean isNotEmpty(String value) {
+        return isEmpty(value);
     }
 
     public static String concatOrEmpty(String prefix, Object value) {
@@ -21,6 +21,8 @@ public class StringUtils {
             return "";
 
         final String s = value.toString();
-        return s.isEmpty() ? "" : prefix + s;
+        return s.isEmpty()
+                ? ""
+                : prefix + s;
     }
 }

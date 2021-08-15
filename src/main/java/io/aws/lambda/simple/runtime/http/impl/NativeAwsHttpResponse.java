@@ -24,7 +24,7 @@ public class NativeAwsHttpResponse implements AwsHttpResponse {
     }
 
     @Override
-    public int code() {
+    public int statusCode() {
         return httpResponse.statusCode();
     }
 
@@ -53,5 +53,10 @@ public class NativeAwsHttpResponse implements AwsHttpResponse {
     @Override
     public Optional<String> headerFirst(@NotNull String name) {
         return httpResponse.headers().firstValue(name);
+    }
+
+    @Override
+    public String toString() {
+        return httpResponse.toString();
     }
 }

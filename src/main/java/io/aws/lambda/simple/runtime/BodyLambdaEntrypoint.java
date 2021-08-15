@@ -5,7 +5,7 @@ import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
 import io.aws.lambda.simple.runtime.runtime.DefaultLambdaEventRuntime;
 
 /**
- * AWS Lambda Runtime main entry point for Lambda {@link BodyEvent}.
+ * AWS Lambda Entrypoint for Lambda {@link BodyEvent}.
  *
  * @see BodyEventHandler
  * @author Anton Kurako (GoodforGod)

@@ -43,16 +43,4 @@ public interface RuntimeVariables {
      * Root=1-5bef4de7-ad49b0e87f6ef6c87fc2e700;Parent=9a9197af755a6419;Sampled=1.
      */
     String LAMBDA_RUNTIME_TRACE_ID = "lambda-runtime-trace-id";
-
-    /**
-     * For invocations from the AWS Mobile SDK, data about the client application
-     * and device.
-     */
-    String LAMBDA_RUNTIME_CLIENT_CONTEXT = "lambda-runtime-client-context";
-
-    /**
-     * For invocations from the AWS Mobile SDK, data about the Amazon Cognito
-     * identity provider.
-     */
-    String LAMBDA_RUNTIME_COGNITO_IDENTITY = "lambda-runtime-cognito-identity";
 }

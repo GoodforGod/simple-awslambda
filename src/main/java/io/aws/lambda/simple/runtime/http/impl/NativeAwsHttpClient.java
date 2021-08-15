@@ -25,12 +25,16 @@ import java.util.stream.Stream;
 @Singleton
 public class NativeAwsHttpClient implements AwsHttpClient {
 
+    private static final HttpClient.Version DEFAULT_VERSION = HttpClient.Version.HTTP_2;
+    private static final Duration DEFAULT_DURATION = Duration.ofMinutes(10);
+
     private final HttpClient client;
 
     public NativeAwsHttpClient() {
         this.client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofMinutes(5))
                 .followRedirects(HttpClient.Redirect.NORMAL)
+                .connectTimeout(DEFAULT_DURATION)
+                .version(DEFAULT_VERSION)
                 .build();
     }
 
@@ -42,22 +46,22 @@ public class NativeAwsHttpClient implements AwsHttpClient {
 
     @Override
     public @NotNull AwsHttpResponse post(@NotNull URI uri,
-                                         AwsHttpRequest request) {
+                                         @NotNull AwsHttpRequest request) {
         final HttpRequest httpRequest = getPostRequest(uri, request);
         return sendAndResponse(httpRequest);
     }
 
     @Override
-    public void postAndForget(@NotNull URI uri,
-                              AwsHttpRequest request) {
+    public int postAndForget(@NotNull URI uri,
+                             @NotNull AwsHttpRequest request) {
         final HttpRequest httpRequest = getPostRequest(uri, request);
-        sendAndForget(httpRequest);
+        return sendAndForget(httpRequest).statusCode();
     }
 
     private HttpRequest getGetRequest(@NotNull URI uri) {
         return HttpRequest.newBuilder(uri)
-                .timeout(Duration.ofSeconds(10))
-                .version(HttpClient.Version.HTTP_2)
+                .timeout(DEFAULT_DURATION)
+                .version(DEFAULT_VERSION)
                 .build();
     }
 
@@ -70,8 +74,8 @@ public class NativeAwsHttpClient implements AwsHttpClient {
         final String[] headers = getRequestHeaders(request);
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
                 .POST(publisher)
-                .timeout(Duration.ofSeconds(10))
-                .version(HttpClient.Version.HTTP_2);
+                .timeout(DEFAULT_DURATION)
+                .version(DEFAULT_VERSION);
 
         return (headers != null)
                 ? builder.headers(headers).build()
@@ -98,9 +102,9 @@ public class NativeAwsHttpClient implements AwsHttpClient {
         }
     }
 
-    private void sendAndForget(HttpRequest request) {
+    private HttpResponse<Void> sendAndForget(HttpRequest request) {
         try {
-            client.send(request, HttpResponse.BodyHandlers.discarding());
+            return client.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception e) {
             throw new StatusException(e.getMessage(), e, 500);
         }

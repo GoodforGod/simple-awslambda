@@ -4,7 +4,7 @@ import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.runtime.DefaultLambdaEventRuntime;
 
 /**
- * AWS Lambda Runtime main entry point for direct lambda request\response.
+ * AWS Lambda Entrypoint for Lambda direct input event.
  *
  * @see InputEventHandler
  * @author Anton Kurako (GoodforGod)

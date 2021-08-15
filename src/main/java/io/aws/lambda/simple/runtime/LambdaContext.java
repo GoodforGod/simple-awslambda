@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * Implementation of {@link Context} runtime context
+ *
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
  */

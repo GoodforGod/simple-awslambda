@@ -29,10 +29,9 @@ public class GsonConverter implements Converter {
     }
 
     @Override
-    public @NotNull String convertToJson(@NotNull Object o) {
-        if (o instanceof String)
-            return ((String) o);
-
-        return gson.toJson(o);
+    public String convertToJson(Object o) {
+        return (o instanceof String)
+                ? ((String) o)
+                : gson.toJson(o);
     }
 }

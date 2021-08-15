@@ -3,7 +3,6 @@ package io.aws.lambda.simple.runtime.runtime;
 import io.aws.lambda.simple.runtime.LambdaContext;
 import io.aws.lambda.simple.runtime.config.RuntimeVariables;
 import io.aws.lambda.simple.runtime.config.SimpleLoggerRefresher;
-import io.aws.lambda.simple.runtime.context.RuntimeContext;
 import io.aws.lambda.simple.runtime.error.LambdaException;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.http.AwsHttpClient;
@@ -29,10 +28,6 @@ import java.util.function.Supplier;
  */
 public class DefaultLambdaEventRuntime {
 
-    private static final String INIT_ERROR = "/2018-06-01/runtime/init/error";
-    private static final String INVOCATION_URI = "/2018-06-01/runtime/invocation/";
-    private static final String INVOCATION_NEXT_URI = INVOCATION_URI + "next";
-
     private static final Logger logger = LoggerFactory.getLogger(DefaultLambdaEventRuntime.class);
 
     /**
@@ -47,7 +42,7 @@ public class DefaultLambdaEventRuntime {
             logger.error(e.getMessage(), e);
             final URI apiEndpoint = getRuntimeApiEndpoint();
             final AwsHttpClient httpClient = new NativeAwsHttpClient();
-            httpClient.postAndForget(apiEndpoint.resolve(INIT_ERROR), getErrorResponse(e));
+            httpClient.postAndForget(apiEndpoint.resolve(RuntimeVariables.INIT_ERROR), getErrorResponse(e));
         }
     }
 
@@ -72,12 +67,12 @@ public class DefaultLambdaEventRuntime {
             }
 
             final URI invocationUri = getInvocationNextUri(apiEndpoint);
-            logger.debug("Event invocation URI: {}", invocationUri);
+            logger.debug("AWS Event Invocation URI: {}", invocationUri);
 
             while (!Thread.currentThread().isInterrupted()) {
                 logger.trace("Invoking next event...");
                 final AwsHttpResponse requestEvent = httpClient.get(invocationUri);
-                logger.debug("Event received with httpCode '{}'", requestEvent.code());
+                logger.debug("Event received with httpCode '{}'", requestEvent.statusCode());
 
                 final LambdaContext requestContext = LambdaContext.ofHeadersMulti(requestEvent.headers());
                 if (StringUtils.isEmpty(requestContext.getAwsRequestId()))
@@ -93,7 +88,7 @@ public class DefaultLambdaEventRuntime {
         } catch (Exception e) {
             logger.error("Function Initialization error occurred", e);
             final AwsHttpClient httpClient = new NativeAwsHttpClient();
-            final URI errorUri = apiEndpoint.resolve(INIT_ERROR);
+            final URI errorUri = apiEndpoint.resolve(RuntimeVariables.INIT_ERROR);
             logger.debug("Responding to AWS Runtime Init Error URI: {}", errorUri);
             httpClient.postAndForget(errorUri, getErrorResponse(e));
         }
@@ -120,7 +115,7 @@ public class DefaultLambdaEventRuntime {
             if (logger.isDebugEnabled()) {
                 final String responseBody = awsResponse.bodyAsString();
                 logger.debug("AWS Invocation responded with httpCode '{}' and body: {}",
-                        awsResponse.code(), responseBody);
+                        awsResponse.statusCode(), responseBody);
             }
         } catch (Exception e) {
             logger.error("Function Invocation error occurred", e);
@@ -147,7 +142,7 @@ public class DefaultLambdaEventRuntime {
      *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationNextUri(URI apiEndpoint) {
-        return apiEndpoint.resolve(INVOCATION_NEXT_URI);
+        return apiEndpoint.resolve(RuntimeVariables.INVOCATION_NEXT_URI);
     }
 
     /**
@@ -160,7 +155,7 @@ public class DefaultLambdaEventRuntime {
      *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationResponseUri(URI apiEndpoint, String requestId) {
-        return apiEndpoint.resolve(INVOCATION_URI + requestId + "/response");
+        return apiEndpoint.resolve(RuntimeVariables.INVOCATION_URI + requestId + "/response");
     }
 
     /**
@@ -174,7 +169,7 @@ public class DefaultLambdaEventRuntime {
      *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationErrorUri(URI apiEndpoint, String requestId) {
-        return apiEndpoint.resolve(INVOCATION_URI + requestId + "/error");
+        return apiEndpoint.resolve(RuntimeVariables.INVOCATION_URI + requestId + "/error");
     }
 
     private static URI getRuntimeApiEndpoint() {

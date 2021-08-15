@@ -14,9 +14,9 @@ import java.util.Optional;
 public interface AwsHttpResponse {
 
     /**
-     * @return http code
+     * @return http response status code
      */
-    int code();
+    int statusCode();
 
     /**
      * @return body as {@link InputStream}

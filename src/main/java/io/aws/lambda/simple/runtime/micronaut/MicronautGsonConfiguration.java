@@ -5,7 +5,6 @@ import io.aws.lambda.simple.runtime.convert.impl.GsonConverter;
 import io.gson.adapters.config.GsonConfiguration;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.core.annotation.Introspected;
 
 /**
  * Configuration for {@link Gson} in Micronaut DI.
@@ -14,7 +13,6 @@ import io.micronaut.core.annotation.Introspected;
  * @author Anton Kurako (GoodforGod)
  * @since 25.04.2021
  */
-@Introspected
 @ConfigurationProperties("gson")
 public class MicronautGsonConfiguration {
 

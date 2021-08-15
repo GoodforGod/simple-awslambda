@@ -39,7 +39,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
     @SuppressWarnings("unchecked")
     @Override
     public String handle(@NotNull InputStream eventStream, @NotNull Context context) {
-        logger.debug("Function input event conversion started...");
+        logger.trace("Function input event conversion started...");
         final long requestStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
         final String event = getInputAsString(eventStream);
@@ -52,9 +52,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
             eventBody = event;
         } else {
             final BodyBase64Event<?> bodyEvent = converter.convertToType(event, BodyBase64Event.class);
-            eventBody = (BodyBase64Event.class.isAssignableFrom(function.getInput()) && bodyEvent.isBase64Encoded())
-                    ? bodyEvent.getBodyDecoded()
-                    : bodyEvent.getBody();
+            eventBody = (bodyEvent.isBase64Encoded()) ? bodyEvent.getBodyDecoded() : bodyEvent.getBody();
         }
 
         if (logger.isDebugEnabled()) {
@@ -62,7 +60,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
             logger.debug("Function input event: {}", eventBody);
         }
 
-        logger.debug("Function input conversion started...");
+        logger.trace("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
         final Object functionInput = getFunctionInput(function.getInput(), eventBody, context);
         if (logger.isDebugEnabled()) {
@@ -70,13 +68,14 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
             logger.debug("Function input: {}", functionInput);
         }
 
-        logger.debug("Function processing started...");
+        logger.trace("Function processing started...");
         final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         final Object functionOutput = requestHandler.handleRequest(functionInput, context);
-        if (logger.isInfoEnabled())
+        if (logger.isInfoEnabled()) {
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
+        }
 
-        logger.debug("Function output event conversion started...");
+        logger.trace("Function output event conversion started...");
         final long outputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
         final Object response = getFunctionOutput(functionOutput, function.getInput(), function.getOutput(), context);
         if (logger.isDebugEnabled()) {
