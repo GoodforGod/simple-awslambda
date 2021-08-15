@@ -4,11 +4,14 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.aws.lambda.simple.runtime.convert.Converter;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
-import io.aws.lambda.simple.runtime.handler.Function;
+import io.aws.lambda.simple.runtime.handler.RequestFunction;
+import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
 import io.aws.lambda.simple.runtime.utils.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -25,12 +28,23 @@ public abstract class AbstractEventHandler implements EventHandler {
     }
 
     protected @NotNull Object getFunctionInput(@NotNull Class<?> funcInputType,
+                                               @NotNull InputStream funcInputValue,
+                                               @NotNull Context context) {
+        if (InputStream.class.equals(funcInputType))
+            return funcInputType;
+
+        final String inputAsString = getInputAsString(funcInputValue);
+        return getFunctionInput(funcInputType, inputAsString, context);
+    }
+
+    protected @NotNull Object getFunctionInput(@NotNull Class<?> funcInputType,
                                                @NotNull String funcInputValue,
                                                @NotNull Context context) {
-        if (String.class.equals(funcInputType))
+        logger.debug("Converting input to '{}' for {}", funcInputType, context);
+
+        if (String.class.equals(funcInputType) || Object.class.equals(funcInputType))
             return funcInputValue;
 
-        logger.debug("Converting input to '{}' for {}", funcInputType, context);
         return converter.convertToType(funcInputValue, funcInputType);
     }
 
@@ -42,19 +56,22 @@ public abstract class AbstractEventHandler implements EventHandler {
 
         if (funcOutValue == null)
             return null;
-
         if (funcOutValue instanceof String)
             return funcOutValue;
 
         return converter.convertToJson(funcOutValue);
     }
 
-    protected <T extends RequestHandler> Function getFunctionArguments(T t) {
+    protected String getInputAsString(InputStream inputStream) {
+        return InputStreamUtils.getInputAsStringUTF8(inputStream);
+    }
+
+    protected <T extends RequestHandler> RequestFunction getFunctionArguments(T t) {
         final Class[] args = ReflectionUtils.resolveInterfaceTypeArguments(t.getClass(), RequestHandler.class);
         if (args.length < 2)
             throw new IllegalArgumentException(
                     "Lambda interface is not correctly implemented, interface generic types must be set for input and output!");
 
-        return new Function(args[0], args[1]);
+        return new RequestFunction(args[0], args[1]);
     }
 }

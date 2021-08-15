@@ -1,26 +1,29 @@
 package io.aws.lambda.simple.runtime;
 
 import io.aws.lambda.simple.runtime.handler.EventHandler;
-import io.aws.lambda.simple.runtime.handler.impl.JsonEventHandler;
+import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
+import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
 import io.micronaut.context.ApplicationContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.InputStream;
 import java.util.Collections;
 
 /**
  * @author GoodforGod
  * @since 27.10.2020
  */
-class JsonEventHandlerTests extends Assertions {
+class InputEventHandlerTests extends Assertions {
 
     @Test
     void handled() {
         try (final ApplicationContext context = ApplicationContext.run()) {
-            final EventHandler handler = context.getBean(JsonEventHandler.class);
+            final EventHandler handler = context.getBean(InputEventHandler.class);
 
             final String json = "{\"name\":\"Steeven King\"}";
-            final String response = handler.handle(json, LambdaContext.ofHeaders(Collections.emptyMap()));
+            final InputStream inputStream = InputStreamUtils.getStringUTF8AsInputStream(json);
+            final String response = handler.handle(inputStream, LambdaContext.ofHeaders(Collections.emptyMap()));
             assertNotNull(response);
             assertTrue(response.contains("Hello - Steeven King"));
         }

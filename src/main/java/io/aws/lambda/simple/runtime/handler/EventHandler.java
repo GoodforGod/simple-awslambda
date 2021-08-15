@@ -1,10 +1,14 @@
 package io.aws.lambda.simple.runtime.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
+
 /**
- * Handle event for AWS Lambda
+ * Process event as input stream and add logic for conversation, transformation,
+ * normalization of events before processing them in {@link RequestHandler}
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
@@ -12,9 +16,9 @@ import org.jetbrains.annotations.NotNull;
 public interface EventHandler {
 
     /**
-     * @param event   to handle
-     * @param context of the request
-     * @return response representation as string
+     * @param eventStream to handler
+     * @param context     of the request
+     * @return response representation as JSON
      */
-    String handle(@NotNull String event, @NotNull Context context);
+    String handle(@NotNull InputStream eventStream, @NotNull Context context);
 }
