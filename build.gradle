@@ -33,7 +33,7 @@ micronaut {
         incremental(true)
         module(project.name)
         group(project.group)
-        annotations("io.aws.lambda.runtime.*")
+        annotations("io.aws.lambda.simple.runtime.*")
     }
 }
 
