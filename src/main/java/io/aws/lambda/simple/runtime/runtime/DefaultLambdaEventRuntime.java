@@ -5,11 +5,11 @@ import io.aws.lambda.simple.runtime.config.RuntimeVariables;
 import io.aws.lambda.simple.runtime.config.SimpleLoggerRefresher;
 import io.aws.lambda.simple.runtime.error.LambdaException;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
-import io.aws.lambda.simple.runtime.http.AwsHttpClient;
-import io.aws.lambda.simple.runtime.http.AwsHttpRequest;
-import io.aws.lambda.simple.runtime.http.AwsHttpResponse;
-import io.aws.lambda.simple.runtime.http.impl.NativeAwsHttpClient;
-import io.aws.lambda.simple.runtime.http.impl.SimpleAwsHttpRequest;
+import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
+import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
+import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
+import io.aws.lambda.simple.runtime.http.impl.NativeSimpleHttpClient;
+import io.aws.lambda.simple.runtime.http.impl.StringSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.utils.StringUtils;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +41,7 @@ public class DefaultLambdaEventRuntime {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             final URI apiEndpoint = getRuntimeApiEndpoint();
-            final AwsHttpClient httpClient = new NativeAwsHttpClient();
+            final SimpleHttpClient httpClient = new NativeSimpleHttpClient();
             httpClient.postAndForget(apiEndpoint.resolve(RuntimeVariables.INIT_ERROR), getErrorResponse(e));
         }
     }
@@ -60,7 +60,7 @@ public class DefaultLambdaEventRuntime {
         final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         try (final RuntimeContext context = contextSupplier.get()) {
             final EventHandler eventHandler = context.getBean(eventHandlerType);
-            final AwsHttpClient httpClient = context.getBean(AwsHttpClient.class);
+            final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
 
             if (logger.isInfoEnabled()) {
                 logger.info("RuntimeContext startup took: {} millis", TimeUtils.timeTook(contextStart));
@@ -71,33 +71,33 @@ public class DefaultLambdaEventRuntime {
 
             while (!Thread.currentThread().isInterrupted()) {
                 logger.trace("Invoking next event...");
-                final AwsHttpResponse requestEvent = httpClient.get(invocationUri);
+                final SimpleHttpResponse requestEvent = httpClient.get(invocationUri);
                 logger.debug("Event received with httpCode '{}'", requestEvent.statusCode());
 
-                final LambdaContext requestContext = LambdaContext.ofHeadersMulti(requestEvent.headers());
+                final LambdaContext requestContext = LambdaContext.ofHeadersMulti(requestEvent.headersMultiValues());
                 if (StringUtils.isEmpty(requestContext.getAwsRequestId()))
                     throw new IllegalStateException("AWS Request ID is not present!");
 
                 logger.debug("Event received for {}", requestContext);
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Event headers: {}", requestEvent.headerFirstValues());
+                    logger.trace("Event headers: {}", requestEvent.headers());
                 }
 
                 processRequestEvent(requestEvent, requestContext, eventHandler, httpClient, apiEndpoint);
             }
         } catch (Exception e) {
             logger.error("Function Initialization error occurred", e);
-            final AwsHttpClient httpClient = new NativeAwsHttpClient();
+            final SimpleHttpClient httpClient = new NativeSimpleHttpClient();
             final URI errorUri = apiEndpoint.resolve(RuntimeVariables.INIT_ERROR);
             logger.debug("Responding to AWS Runtime Init Error URI: {}", errorUri);
             httpClient.postAndForget(errorUri, getErrorResponse(e));
         }
     }
 
-    private void processRequestEvent(AwsHttpResponse httpRequest,
+    private void processRequestEvent(SimpleHttpResponse httpRequest,
                                      LambdaContext requestContext,
                                      EventHandler eventHandler,
-                                     AwsHttpClient httpClient,
+                                     SimpleHttpClient httpClient,
                                      URI apiEndpoint) {
         try (final InputStream eventStream = httpRequest.body()) {
             final String responseEvent = eventHandler.handle(eventStream, requestContext);
@@ -106,8 +106,8 @@ public class DefaultLambdaEventRuntime {
             logger.debug("Responding to AWS Invocation URI: {}", responseUri);
             final long respondingStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
 
-            final SimpleAwsHttpRequest responseHttpEvent = SimpleAwsHttpRequest.ofJson(responseEvent);
-            final AwsHttpResponse awsResponse = httpClient.post(responseUri, responseHttpEvent);
+            final StringSimpleHttpRequest responseHttpEvent = StringSimpleHttpRequest.ofJson(responseEvent);
+            final SimpleHttpResponse awsResponse = httpClient.post(responseUri, responseHttpEvent);
             if (logger.isInfoEnabled()) {
                 logger.info("Responding to AWS Invocation took: {} millis", TimeUtils.timeTook(respondingStart));
             }
@@ -181,8 +181,8 @@ public class DefaultLambdaEventRuntime {
         return URI.create("http://" + runtimeApiEndpoint);
     }
 
-    private static AwsHttpRequest getErrorResponse(Throwable e) {
+    private static SimpleHttpRequest getErrorResponse(Throwable e) {
         final String body = "{\"errorMessage\":\"" + e.getMessage() + "\", \"errorType\":\"" + e.getClass().getSimpleName() + "\"}";
-        return SimpleAwsHttpRequest.ofJson(body);
+        return StringSimpleHttpRequest.ofJson(body);
     }
 }

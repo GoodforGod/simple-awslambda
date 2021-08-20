@@ -6,7 +6,7 @@ import io.aws.lambda.events.gateway.*;
 import io.aws.lambda.simple.runtime.convert.impl.GsonConverter;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
-import io.aws.lambda.simple.runtime.http.impl.NativeAwsHttpClient;
+import io.aws.lambda.simple.runtime.http.impl.NativeSimpleHttpClient;
 import io.micronaut.core.annotation.Introspected;
 
 /**
@@ -19,7 +19,7 @@ import io.micronaut.core.annotation.Introspected;
         GsonConverter.class,
         MicronautGsonConfiguration.class,
         MicronautGsonFactory.class,
-        NativeAwsHttpClient.class,
+        NativeSimpleHttpClient.class,
         InputEventHandler.class,
         BodyEventHandler.class,
 

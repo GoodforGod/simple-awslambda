@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public interface AwsHttpResponse {
+public interface SimpleHttpResponse {
 
     /**
      * @return http response status code
@@ -34,13 +34,13 @@ public interface AwsHttpResponse {
      * @return http header multi map
      */
     @NotNull
-    Map<String, List<String>> headers();
+    Map<String, List<String>> headersMultiValues();
 
     /**
      * @return http header flat map
      */
     @NotNull
-    Map<String, String> headerFirstValues();
+    Map<String, String> headers();
 
     /**
      * @param name header name

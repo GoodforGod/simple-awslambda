@@ -1,7 +1,6 @@
 package io.aws.lambda.simple.runtime.http.impl;
 
-import io.aws.lambda.simple.runtime.http.AwsHttpResponse;
-import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
+import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
@@ -15,11 +14,11 @@ import java.util.stream.Collectors;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public class NativeAwsHttpResponse implements AwsHttpResponse {
+public class NativeVoidSimpleHttpResponse implements SimpleHttpResponse {
 
-    private final HttpResponse<InputStream> httpResponse;
+    private final HttpResponse<Void> httpResponse;
 
-    public NativeAwsHttpResponse(HttpResponse<InputStream> httpResponse) {
+    public NativeVoidSimpleHttpResponse(HttpResponse<Void> httpResponse) {
         this.httpResponse = httpResponse;
     }
 
@@ -30,22 +29,22 @@ public class NativeAwsHttpResponse implements AwsHttpResponse {
 
     @Override
     public @NotNull InputStream body() {
-        return httpResponse.body();
+        return InputStream.nullInputStream();
     }
 
     @Override
     public @NotNull String bodyAsString() {
-        return InputStreamUtils.getInputAsStringUTF8(body());
+        return "";
     }
 
     @Override
-    public @NotNull Map<String, List<String>> headers() {
+    public @NotNull Map<String, List<String>> headersMultiValues() {
         return httpResponse.headers().map();
     }
 
     @Override
-    public @NotNull Map<String, String> headerFirstValues() {
-        return headers().entrySet().stream()
+    public @NotNull Map<String, String> headers() {
+        return headersMultiValues().entrySet().stream()
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().iterator().next()));
     }
