@@ -1,7 +1,7 @@
 package io.aws.lambda.simple.runtime.config;
 
 /**
- * Description
+ * AWS Lambda Runtime Environment variables
  *
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
