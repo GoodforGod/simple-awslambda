@@ -3,7 +3,6 @@ package io.aws.lambda.simple.runtime.runtime;
 import io.aws.lambda.simple.runtime.LambdaContext;
 import io.aws.lambda.simple.runtime.config.RuntimeVariables;
 import io.aws.lambda.simple.runtime.config.SimpleLoggerRefresher;
-import io.aws.lambda.simple.runtime.error.LambdaException;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
@@ -29,22 +28,6 @@ import java.util.function.Supplier;
 public class DefaultLambdaEventRuntime {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultLambdaEventRuntime.class);
-
-    /**
-     * @param contextType      type of RuntimeContext instance
-     * @param eventHandlerType type of EventHandler processor
-     */
-    public void execute(@NotNull Class<? extends RuntimeContext> contextType,
-                        @NotNull Class<? extends EventHandler> eventHandlerType) {
-        try (RuntimeContext context = getInstance(contextType)) {
-            execute(() -> context, eventHandlerType);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            final URI apiEndpoint = getRuntimeApiEndpoint();
-            final SimpleHttpClient httpClient = new NativeSimpleHttpClient();
-            httpClient.postAndForget(apiEndpoint.resolve(RuntimeVariables.INIT_ERROR), getErrorResponse(e));
-        }
-    }
 
     /**
      * @param contextSupplier  RuntimeContext instance supplier
@@ -122,14 +105,6 @@ public class DefaultLambdaEventRuntime {
             final URI uri = getInvocationErrorUri(apiEndpoint, requestContext.getAwsRequestId());
             logger.debug("Responding to AWS Invocation Error URI: {}", uri);
             httpClient.postAndForget(uri, getErrorResponse(e));
-        }
-    }
-
-    private static <T> T getInstance(Class<T> type) {
-        try {
-            return type.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new LambdaException("Context can not be instantiated through constructor due to: " + e.getMessage());
         }
     }
 
