@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Converter {
 
     @NotNull
-    <T> T convertToType(@NotNull String json, @NotNull Class<T> type);
+    <T> T fromJson(@NotNull String json, @NotNull Class<T> type);
 
-    String convertToJson(Object o);
+    String toJson(Object o);
 }

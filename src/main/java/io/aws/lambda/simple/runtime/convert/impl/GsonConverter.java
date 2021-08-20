@@ -24,14 +24,12 @@ public class GsonConverter implements Converter {
     }
 
     @Override
-    public @NotNull <T> T convertToType(@NotNull String json, @NotNull Class<T> type) {
+    public @NotNull <T> T fromJson(@NotNull String json, @NotNull Class<T> type) {
         return gson.fromJson(json, type);
     }
 
     @Override
-    public String convertToJson(Object o) {
-        return (o instanceof String)
-                ? ((String) o)
-                : gson.toJson(o);
+    public String toJson(Object o) {
+        return gson.toJson(o);
     }
 }

@@ -45,7 +45,7 @@ public abstract class AbstractEventHandler implements EventHandler {
         if (String.class.equals(funcInputType) || Object.class.equals(funcInputType))
             return funcInputValue;
 
-        return converter.convertToType(funcInputValue, funcInputType);
+        return converter.fromJson(funcInputValue, funcInputType);
     }
 
     protected Object getFunctionOutput(Object funcOutValue,
@@ -59,7 +59,7 @@ public abstract class AbstractEventHandler implements EventHandler {
         if (funcOutValue instanceof String)
             return funcOutValue;
 
-        return converter.convertToJson(funcOutValue);
+        return converter.toJson(funcOutValue);
     }
 
     protected String getInputAsString(InputStream inputStream) {

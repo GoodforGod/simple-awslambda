@@ -10,7 +10,7 @@ import io.aws.lambda.events.system.LoadBalancerResponse;
 import io.aws.lambda.simple.runtime.convert.Converter;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.RequestFunction;
-import io.aws.lambda.simple.runtime.http.impl.SimpleAwsHttpRequest;
+import io.aws.lambda.simple.runtime.http.impl.StringSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +51,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         if (BodyEvent.class.isAssignableFrom(function.getInput())) {
             eventBody = event;
         } else {
-            final BodyBase64Event<?> bodyEvent = converter.convertToType(event, BodyBase64Event.class);
+            final BodyBase64Event<?> bodyEvent = converter.fromJson(event, BodyBase64Event.class);
             eventBody = (bodyEvent.isBase64Encoded()) ? bodyEvent.getBodyDecoded() : bodyEvent.getBody();
         }
 
@@ -83,7 +83,9 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
             logger.debug("Function output event: {}", response);
         }
 
-        return (response == null) ? null : converter.convertToJson(response);
+        return (response == null)
+                ? null
+                : converter.toJson(response);
     }
 
     @Override
@@ -101,13 +103,13 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
             return funcOutValue;
 
         if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputType)) {
-            return new APIGatewayProxyResponse().setBody(funcOutValue).setHeaders(SimpleAwsHttpRequest.JSON_HEADERS);
+            return new APIGatewayProxyResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
         } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputType)) {
-            return new APIGatewayV2HTTPResponse().setBody(funcOutValue).setHeaders(SimpleAwsHttpRequest.JSON_HEADERS);
+            return new APIGatewayV2HTTPResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
         } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputType)) {
-            return new APIGatewayV2WebSocketResponse().setBody(funcOutValue).setHeaders(SimpleAwsHttpRequest.JSON_HEADERS);
+            return new APIGatewayV2WebSocketResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
         } else if (LoadBalancerRequest.class.isAssignableFrom(funcInputType)) {
-            return new LoadBalancerResponse().setBody(funcOutValue).setHeaders(SimpleAwsHttpRequest.JSON_HEADERS);
+            return new LoadBalancerResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
         }
 
         return funcOutValue;

@@ -26,7 +26,7 @@ class BodyEventHandlerTests extends Assertions {
 
             final String body = "{\"name\":\"Steeven King\"}";
             final APIGatewayV2HTTPEvent requestEvent = new APIGatewayV2HTTPEvent().setBody(body);
-            final String json = converter.convertToJson(requestEvent);
+            final String json = converter.toJson(requestEvent);
             final InputStream inputStream = InputStreamUtils.getStringUTF8AsInputStream(json);
 
             final String response = handler.handle(inputStream, LambdaContext.ofHeaders(Collections.emptyMap()));
