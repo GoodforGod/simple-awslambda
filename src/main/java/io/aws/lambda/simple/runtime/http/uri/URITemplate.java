@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Helper for building URI (Micronaut copycat of UriBuilder)
+ *
  * @author Anton Kurako (GoodforGod)
  * @since 21.08.2021
  */
@@ -18,9 +20,9 @@ class URITemplate implements Comparable<URITemplate> {
     private static final String STRING_PATTERN_SCHEME = "([^:/?#]+):";
     private static final String STRING_PATTERN_USER_INFO = "([^@\\[/?#]*)";
     private static final String STRING_PATTERN_HOST_IPV4 = "[^\\[{/?#:]*";
-    private static final String STRING_PATTERN_HOST_IPV6 = "\\[[\\p{XDigit}\\:\\.]*[%\\p{Alnum}]*\\]";
+    private static final String STRING_PATTERN_HOST_IPV6 = "\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]";
     private static final String STRING_PATTERN_HOST = "(" + STRING_PATTERN_HOST_IPV6 + "|" + STRING_PATTERN_HOST_IPV4 + ")";
-    private static final String STRING_PATTERN_PORT = "(\\d*(?:\\{[^/]+?\\})?)";
+    private static final String STRING_PATTERN_PORT = "(\\d*(?:\\{[^/]+?})?)";
     private static final String STRING_PATTERN_PATH = "([^#]*)";
     private static final String STRING_PATTERN_QUERY = "([^#]*)";
     private static final String STRING_PATTERN_REMAINING = "(.*)";
@@ -37,7 +39,7 @@ class URITemplate implements Comparable<URITemplate> {
 
     // Regex patterns that matches URIs. See RFC 3986, appendix B
     static final Pattern PATTERN_SCHEME = Pattern.compile("^" + STRING_PATTERN_SCHEME + "//.*");
-    static final Pattern PATTERN_FULL_PATH = Pattern.compile("^([^#\\?]*)(\\?([^#]*))?(\\#(.*))?$");
+    static final Pattern PATTERN_FULL_PATH = Pattern.compile("^([^#?]*)(\\?([^#]*))?(#(.*))?$");
     static final Pattern PATTERN_FULL_URI = Pattern.compile(
             "^(" + STRING_PATTERN_SCHEME + ")?" + "(//(" + STRING_PATTERN_USER_INFO + "@)?" + STRING_PATTERN_HOST + "(:"
                     + STRING_PATTERN_PORT +
@@ -128,85 +130,6 @@ class URITemplate implements Comparable<URITemplate> {
         this.segments.addAll(segments);
     }
 
-    /**
-     * @return The number of segments that are variable
-     */
-    public long getVariableSegmentCount() {
-        return segments.stream().filter(PathSegment::isVariable).count();
-    }
-
-    /**
-     * @return The number of path segments that are variable
-     */
-    public long getPathVariableSegmentCount() {
-        return segments.stream().filter(PathSegment::isVariable).filter(s -> !s.isQuerySegment()).count();
-    }
-
-    /**
-     * @return The number of segments that are raw
-     */
-    public long getRawSegmentCount() {
-        return segments.stream().filter(segment -> !segment.isVariable()).count();
-    }
-
-    /**
-     * @return The number of segments that are raw
-     */
-    public int getRawSegmentLength() {
-        return segments.stream()
-                .filter(segment -> !segment.isVariable())
-                .map(CharSequence::length)
-                .reduce(Integer::sum)
-                .orElse(0);
-    }
-
-    /**
-     * Nests another URI template with this template.
-     *
-     * @param uriTemplate The URI template. If it does not begin with forward slash
-     *                    it will automatically be appended with forward slash
-     * @return The new URI template
-     */
-    public URITemplate nest(CharSequence uriTemplate) {
-        return nest(uriTemplate, new Object[0]);
-    }
-
-    /**
-     * Expand the string with the given parameters.
-     *
-     * @param parameters The parameters
-     * @return The expanded URI
-     */
-    public String expand(Map<String, String> parameters) {
-        StringBuilder builder = new StringBuilder(templateString.length());
-        boolean anyPreviousHasContent = false;
-        boolean anyPreviousHasOperator = false;
-        boolean queryParameter = false;
-        for (PathSegment segment : segments) {
-            String result = segment.expand(parameters, anyPreviousHasContent, anyPreviousHasOperator);
-            if (result == null) {
-                continue;
-            }
-            if (segment instanceof UriTemplateParser.VariablePathSegment) {
-                UriTemplateParser.VariablePathSegment varPathSegment = (UriTemplateParser.VariablePathSegment) segment;
-                if (varPathSegment.isQuerySegment && !queryParameter) {
-                    // reset anyPrevious* when we reach query parameters
-                    queryParameter = true;
-                    anyPreviousHasContent = false;
-                    anyPreviousHasOperator = false;
-                }
-                final char operator = varPathSegment.getOperator();
-                if (operator != OPERATOR_NONE && result.contains(String.valueOf(operator))) {
-                    anyPreviousHasOperator = true;
-                }
-                anyPreviousHasContent = anyPreviousHasContent || result.length() > 0;
-            }
-            builder.append(result);
-        }
-
-        return builder.toString();
-    }
-
     @Override
     public String toString() {
         return toString(pathSegment -> true);
@@ -279,28 +202,6 @@ class URITemplate implements Comparable<URITemplate> {
      */
     public static URITemplate of(String uri) {
         return new URITemplate(uri);
-    }
-
-    /**
-     * Nests another URI template with this template.
-     *
-     * @param uriTemplate     The URI template. If it does not begin with forward
-     *                        slash it will automatically be appended with forward
-     *                        slash
-     * @param parserArguments The parsed arguments
-     * @return The new URI template
-     */
-    protected URITemplate nest(CharSequence uriTemplate, Object... parserArguments) {
-        if (uriTemplate == null) {
-            return this;
-        }
-        int len = uriTemplate.length();
-        if (len == 0) {
-            return this;
-        }
-
-        List<PathSegment> newSegments = buildNestedSegments(uriTemplate, len, parserArguments);
-        return newUriTemplate(uriTemplate, newSegments);
     }
 
     /**

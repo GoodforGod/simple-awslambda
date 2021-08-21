@@ -7,7 +7,7 @@ import java.nio.charset.*;
 import java.util.*;
 
 /**
- * Please Add Description Here.
+ * Helper for building URI (Micronaut copycat of UriBuilder)
  *
  * @author Anton Kurako (GoodforGod)
  * @since 21.08.2021

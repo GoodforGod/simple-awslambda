@@ -17,6 +17,8 @@ import static io.aws.lambda.simple.runtime.http.uri.URITemplate.PATTERN_FULL_PAT
 import static io.aws.lambda.simple.runtime.http.uri.URITemplate.PATTERN_FULL_URI;
 
 /**
+ * Helper for building URI (Micronaut copycat of UriBuilder)
+ *
  * @author Anton Kurako (GoodforGod)
  * @since 21.08.2021
  */
@@ -36,7 +38,7 @@ class DefaultURIBuilder implements URIBuilder {
      * 
      * @param uri The URI
      */
-    DefaultURIBuilder(URI uri) {
+    DefaultURIBuilder(@NotNull URI uri) {
         this.scheme = uri.getScheme();
         this.userInfo = uri.getRawUserInfo();
         this.authority = uri.getRawAuthority();
@@ -58,11 +60,11 @@ class DefaultURIBuilder implements URIBuilder {
     }
 
     /**
-     * Constructor for charsequence.
+     * Constructor for char sequence.
      *
      * @param uri The URI
      */
-    DefaultURIBuilder(CharSequence uri) {
+    DefaultURIBuilder(@NotNull CharSequence uri) {
         if (URITemplate.PATTERN_SCHEME.matcher(uri).matches()) {
             Matcher matcher = PATTERN_FULL_URI.matcher(uri);
 
@@ -169,7 +171,7 @@ class DefaultURIBuilder implements URIBuilder {
     @NotNull
     @Override
     public DefaultURIBuilder path(@Nullable String path) {
-        if (StringUtils.isEmpty(path)) {
+        if (StringUtils.isNotEmpty(path)) {
             final int len = this.path.length();
             final boolean endsWithSlash = len > 0 && this.path.charAt(len - 1) == '/';
             if (endsWithSlash) {
@@ -234,7 +236,7 @@ class DefaultURIBuilder implements URIBuilder {
     @Override
     public URI build() {
         try {
-            return new URI(reconstructAsString(null));
+            return new URI(reconstructAsString());
         } catch (URISyntaxException e) {
             throw new LambdaException(e);
         }
@@ -245,15 +247,11 @@ class DefaultURIBuilder implements URIBuilder {
         return build().toString();
     }
 
-    private String reconstructAsString(Map<String, String> values) {
+    private String reconstructAsString() {
         StringBuilder builder = new StringBuilder();
         String scheme = this.scheme;
         String host = this.host;
         if (StringUtils.isNotEmpty(scheme)) {
-            if (isTemplate(scheme, values)) {
-                scheme = URITemplate.of(scheme).expand(values);
-            }
-
             builder.append(scheme).append(":");
         }
 
@@ -266,16 +264,16 @@ class DefaultURIBuilder implements URIBuilder {
                 String userInfo = this.userInfo;
                 if (userInfo.contains(":")) {
                     final String[] sa = userInfo.split(":");
-                    userInfo = expandOrEncode(sa[0], values) + ":" + expandOrEncode(sa[1], values);
+                    userInfo = expandOrEncode(sa[0]) + ":" + expandOrEncode(sa[1]);
                 } else {
-                    userInfo = expandOrEncode(userInfo, values);
+                    userInfo = expandOrEncode(userInfo);
                 }
                 builder.append(userInfo);
                 builder.append("@");
             }
 
             if (hasHost) {
-                host = expandOrEncode(host, values);
+                host = expandOrEncode(host);
                 builder.append(host);
             }
 
@@ -285,7 +283,7 @@ class DefaultURIBuilder implements URIBuilder {
         } else {
             String authority = this.authority;
             if (StringUtils.isNotEmpty(authority)) {
-                authority = expandOrEncode(authority, values);
+                authority = expandOrEncode(authority);
                 builder.append("//").append(authority);
             }
         }
@@ -297,21 +295,17 @@ class DefaultURIBuilder implements URIBuilder {
             }
 
             String pathStr = path.toString();
-            if (isTemplate(pathStr, values)) {
-                pathStr = URITemplate.of(pathStr).expand(values);
-            }
-
             builder.append(pathStr);
         }
 
         if (!queryParams.isEmpty()) {
             builder.append('?');
-            builder.append(buildQueryParams(values));
+            builder.append(buildQueryParams());
         }
 
         String fragment = this.fragment;
         if (StringUtils.isNotEmpty(fragment)) {
-            fragment = expandOrEncode(fragment, values);
+            fragment = expandOrEncode(fragment);
             if (fragment.charAt(0) != '#') {
                 builder.append('#');
             }
@@ -322,22 +316,18 @@ class DefaultURIBuilder implements URIBuilder {
         return builder.toString();
     }
 
-    private boolean isTemplate(String value, Map<String, String> values) {
-        return values != null && value.indexOf('{') > -1;
-    }
-
-    private String buildQueryParams(Map<String, String> values) {
+    private String buildQueryParams() {
         if (!queryParams.isEmpty()) {
             StringBuilder builder = new StringBuilder();
             final Iterator<Map.Entry<String, List<String>>> nameIterator = queryParams.entrySet().iterator();
             while (nameIterator.hasNext()) {
                 Map.Entry<String, List<String>> entry = nameIterator.next();
                 String rawName = entry.getKey();
-                String name = expandOrEncode(rawName, values);
+                String name = expandOrEncode(rawName);
 
                 final Iterator<String> i = entry.getValue().iterator();
                 while (i.hasNext()) {
-                    String v = expandOrEncode(i.next(), values);
+                    String v = expandOrEncode(i.next());
                     builder.append(name).append('=').append(v);
                     if (i.hasNext()) {
                         builder.append('&');
@@ -355,10 +345,8 @@ class DefaultURIBuilder implements URIBuilder {
         return null;
     }
 
-    private String expandOrEncode(String value, Map<String, String> values) {
-        return isTemplate(value, values)
-                ? URITemplate.of(value).expand(values)
-                : encode(value);
+    private String expandOrEncode(String value) {
+        return encode(value);
     }
 
     private String encode(String userInfo) {
