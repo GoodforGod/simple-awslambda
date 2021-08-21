@@ -12,6 +12,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * Native {@link HttpResponse} wrapper with body as {@link InputStream} for
+ * {@link SimpleHttpResponse}
+ *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
@@ -19,7 +22,7 @@ public class NativeInputStreamSimpleHttpResponse implements SimpleHttpResponse {
 
     private final HttpResponse<InputStream> httpResponse;
 
-    public NativeInputStreamSimpleHttpResponse(HttpResponse<InputStream> httpResponse) {
+    public NativeInputStreamSimpleHttpResponse(@NotNull HttpResponse<InputStream> httpResponse) {
         this.httpResponse = httpResponse;
     }
 

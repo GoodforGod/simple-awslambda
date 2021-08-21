@@ -6,19 +6,24 @@ package io.aws.lambda.simple.runtime.error;
  */
 public class StatusException extends RuntimeException {
 
-    private final int httpCode;
+    private final int statusCode;
 
-    public StatusException(String message, int httpCode) {
+    public StatusException(String message, int statusCode) {
         super(message);
-        this.httpCode = httpCode;
+        this.statusCode = statusCode;
     }
 
-    public StatusException(String message, Throwable cause, int httpCode) {
+    public StatusException(Throwable throwable, int statusCode) {
+        super(throwable);
+        this.statusCode = statusCode;
+    }
+
+    public StatusException(String message, Throwable cause, int statusCode) {
         super(message, cause);
-        this.httpCode = httpCode;
+        this.statusCode = statusCode;
     }
 
-    public int getHttpCode() {
-        return (httpCode <= 100 || httpCode >= 600) ? 500 : httpCode;
+    public int statusCode() {
+        return (statusCode <= 100 || statusCode >= 600) ? 500 : statusCode;
     }
 }

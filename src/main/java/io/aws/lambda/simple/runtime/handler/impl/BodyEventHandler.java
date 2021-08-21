@@ -93,23 +93,22 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
                                        @NotNull Class<?> funcInputType,
                                        @NotNull Class<?> funcOutputType,
                                        @NotNull Context context) {
-        if (funcOutValue instanceof APIGatewayProxyResponse
+        if (funcOutValue instanceof String
+                || funcOutValue instanceof LoadBalancerResponse
+                || funcOutValue instanceof APIGatewayProxyResponse
                 || funcOutValue instanceof APIGatewayV2HTTPResponse
-                || funcOutValue instanceof APIGatewayV2WebSocketResponse
-                || funcOutValue instanceof LoadBalancerResponse)
+                || funcOutValue instanceof APIGatewayV2WebSocketResponse) {
             return funcOutValue;
+        }
 
-        if (funcOutValue instanceof String)
-            return funcOutValue;
-
-        if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputType)) {
+        if (LoadBalancerRequest.class.isAssignableFrom(funcInputType)) {
+            return new LoadBalancerResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+        } else if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayProxyResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
         } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2HTTPResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
         } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2WebSocketResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
-        } else if (LoadBalancerRequest.class.isAssignableFrom(funcInputType)) {
-            return new LoadBalancerResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
         }
 
         return funcOutValue;

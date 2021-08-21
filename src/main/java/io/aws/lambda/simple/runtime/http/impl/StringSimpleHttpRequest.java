@@ -4,9 +4,7 @@ import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -24,7 +22,7 @@ public class StringSimpleHttpRequest implements SimpleHttpRequest {
     private final String body;
     private final Map<String, String> headers;
 
-    public StringSimpleHttpRequest(String body, @NotNull Map<String, String> headers) {
+    private StringSimpleHttpRequest(String body, @NotNull Map<String, String> headers) {
         this.body = body;
         this.headers = headers;
     }
@@ -42,11 +40,6 @@ public class StringSimpleHttpRequest implements SimpleHttpRequest {
     }
 
     public static StringSimpleHttpRequest ofString(String value, @NotNull Map<String, String> headers) {
-        final Map<String, List<String>> headersMulti = headers.isEmpty()
-                ? Collections.emptyMap()
-                : headers.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> List.of(e.getValue())));
-
         return new StringSimpleHttpRequest(value, headers);
     }
 

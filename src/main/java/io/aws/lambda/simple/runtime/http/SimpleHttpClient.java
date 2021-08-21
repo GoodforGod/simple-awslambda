@@ -22,7 +22,7 @@ public interface SimpleHttpClient {
      */
     @NotNull
     default SimpleHttpResponse get(@NotNull URI uri) {
-        return method(GET, uri, StringSimpleHttpRequest.empty());
+        return method(METHOD_GET, uri, StringSimpleHttpRequest.empty());
     }
 
     /**
@@ -35,7 +35,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse get(@NotNull URI uri,
                                    @NotNull Map<String, String> headers) {
-        return method(GET, uri, StringSimpleHttpRequest.ofHeaders(headers));
+        return method(METHOD_GET, uri, StringSimpleHttpRequest.ofHeaders(headers));
     }
 
     /**
@@ -48,7 +48,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse post(@NotNull URI uri,
                                     @NotNull SimpleHttpRequest request) {
-        return method(POST, uri, request);
+        return method(METHOD_POST, uri, request);
     }
 
     /**
@@ -61,7 +61,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse postAndForget(@NotNull URI uri,
                                              @NotNull SimpleHttpRequest request) {
-        return methodAndForget(POST, uri, request);
+        return methodAndForget(METHOD_POST, uri, request);
     }
 
     /**
@@ -74,7 +74,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse put(@NotNull URI uri,
                                    @NotNull SimpleHttpRequest request) {
-        return method(PUT, uri, request);
+        return method(METHOD_PUT, uri, request);
     }
 
     /**
@@ -87,7 +87,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse putAndForget(@NotNull URI uri,
                                             @NotNull SimpleHttpRequest request) {
-        return methodAndForget(PUT, uri, request);
+        return methodAndForget(METHOD_PUT, uri, request);
     }
 
     /**
@@ -100,7 +100,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse patch(@NotNull URI uri,
                                      @NotNull SimpleHttpRequest request) {
-        return method(PATCH, uri, request);
+        return method(METHOD_PATCH, uri, request);
     }
 
     /**
@@ -113,7 +113,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse patchAndForget(@NotNull URI uri,
                                               @NotNull SimpleHttpRequest request) {
-        return methodAndForget(PATCH, uri, request);
+        return methodAndForget(METHOD_PATCH, uri, request);
     }
 
     /**
@@ -126,7 +126,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse delete(@NotNull URI uri,
                                       @NotNull SimpleHttpRequest request) {
-        return method(DELETE, uri, request);
+        return method(METHOD_DELETE, uri, request);
 
     }
 
@@ -140,7 +140,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse deleteAndForget(@NotNull URI uri,
                                                @NotNull SimpleHttpRequest request) {
-        return methodAndForget(DELETE, uri, request);
+        return methodAndForget(METHOD_DELETE, uri, request);
     }
 
     /**

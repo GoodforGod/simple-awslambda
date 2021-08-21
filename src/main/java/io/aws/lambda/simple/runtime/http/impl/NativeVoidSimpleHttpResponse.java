@@ -11,14 +11,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * Native {@link HttpResponse} wrapper without body for
+ * {@link SimpleHttpResponse}
+ *
  * @author Anton Kurako (GoodforGod)
- * @since 7.11.2020
+ * @since 20.08.2020
  */
 public class NativeVoidSimpleHttpResponse implements SimpleHttpResponse {
 
     private final HttpResponse<Void> httpResponse;
 
-    public NativeVoidSimpleHttpResponse(HttpResponse<Void> httpResponse) {
+    public NativeVoidSimpleHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
         this.httpResponse = httpResponse;
     }
 

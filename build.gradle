@@ -91,7 +91,7 @@ publishing {
             pom {
                 name = "Simple Lambda"
                 url = "https://github.com/GoodforGod/$artifactId"
-                description = "Fast, Lightweight and GraalVM optimized AWS Lambda Runtime with DI."
+                description = "Fast, Lightweight and GraalVM optimized AWS Lambda runtime with DI."
 
                 license {
                     name = "Apache License 2.0"

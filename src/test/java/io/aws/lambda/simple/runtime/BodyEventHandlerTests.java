@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
-import java.util.Collections;
+import java.util.UUID;
 
 /**
  * @author GoodforGod
@@ -19,7 +19,7 @@ import java.util.Collections;
 class BodyEventHandlerTests extends Assertions {
 
     @Test
-    void handled() {
+    void bodyEventHandled() {
         try (final ApplicationContext context = ApplicationContext.run()) {
             final EventHandler handler = context.getBean(BodyEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
@@ -29,7 +29,7 @@ class BodyEventHandlerTests extends Assertions {
             final String json = converter.toJson(requestEvent);
             final InputStream inputStream = InputStreamUtils.getStringUTF8AsInputStream(json);
 
-            final String response = handler.handle(inputStream, LambdaContext.ofHeaders(Collections.emptyMap()));
+            final String response = handler.handle(inputStream, LambdaContext.ofRequestId(UUID.randomUUID().toString()));
             assertNotNull(response);
             assertTrue(response.contains("Hello - Steeven King"));
         }

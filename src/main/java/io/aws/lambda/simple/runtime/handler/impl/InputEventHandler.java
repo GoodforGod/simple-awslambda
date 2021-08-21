@@ -59,6 +59,8 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
             logger.debug("Function output: {}", response);
         }
 
-        return (response == null) ? null : response.toString();
+        return (response == null)
+                ? null
+                : response.toString();
     }
 }

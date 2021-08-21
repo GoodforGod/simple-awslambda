@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
-import java.util.Collections;
+import java.util.UUID;
 
 /**
  * @author GoodforGod
@@ -17,13 +17,13 @@ import java.util.Collections;
 class InputEventHandlerTests extends Assertions {
 
     @Test
-    void handled() {
+    void inputEventHandled() {
         try (final ApplicationContext context = ApplicationContext.run()) {
             final EventHandler handler = context.getBean(InputEventHandler.class);
 
             final String json = "{\"name\":\"Steeven King\"}";
             final InputStream inputStream = InputStreamUtils.getStringUTF8AsInputStream(json);
-            final String response = handler.handle(inputStream, LambdaContext.ofHeaders(Collections.emptyMap()));
+            final String response = handler.handle(inputStream, LambdaContext.ofRequestId(UUID.randomUUID().toString()));
             assertNotNull(response);
             assertTrue(response.contains("Hello - Steeven King"));
         }

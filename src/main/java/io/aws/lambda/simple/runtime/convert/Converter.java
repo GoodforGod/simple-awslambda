@@ -3,6 +3,8 @@ package io.aws.lambda.simple.runtime.convert;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Simple JSON converter
+ *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */

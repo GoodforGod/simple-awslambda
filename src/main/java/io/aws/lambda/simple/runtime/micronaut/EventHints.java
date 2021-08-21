@@ -5,6 +5,12 @@ import io.aws.lambda.events.BodyEvent;
 import io.aws.lambda.events.gateway.*;
 import io.micronaut.core.annotation.TypeHint;
 
+/**
+ * Hints for GraalVM reflection for DTOs.
+ *
+ * @author Anton Kurako (GoodforGod)
+ * @since 08.06.2021
+ */
 @TypeHint(
         accessType = { TypeHint.AccessType.ALL_PUBLIC },
         value = {

@@ -31,7 +31,7 @@ public class MicronautRuntimeContext implements RuntimeContext {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         context.close();
     }
 }

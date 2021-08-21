@@ -11,18 +11,4 @@ public class StringUtils {
     public static boolean isEmpty(String value) {
         return value == null || value.isEmpty();
     }
-
-    public static boolean isNotEmpty(String value) {
-        return isEmpty(value);
-    }
-
-    public static String concatOrEmpty(String prefix, Object value) {
-        if (value == null)
-            return "";
-
-        final String s = value.toString();
-        return s.isEmpty()
-                ? ""
-                : prefix + s;
-    }
 }
