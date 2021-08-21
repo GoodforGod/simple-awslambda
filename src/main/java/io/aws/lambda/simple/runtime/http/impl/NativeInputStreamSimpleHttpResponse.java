@@ -36,6 +36,9 @@ public class NativeInputStreamSimpleHttpResponse implements SimpleHttpResponse {
         return httpResponse.body();
     }
 
+    /**
+     * @return body as {@link java.nio.charset.StandardCharsets#UTF_8} String
+     */
     @Override
     public @NotNull String bodyAsString() {
         return InputStreamUtils.getInputAsStringUTF8(body());

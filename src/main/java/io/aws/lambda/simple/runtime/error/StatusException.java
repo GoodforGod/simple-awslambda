@@ -8,17 +8,17 @@ public class StatusException extends RuntimeException {
 
     private final int statusCode;
 
-    public StatusException(String message, int statusCode) {
+    public StatusException(int statusCode, String message) {
         super(message);
         this.statusCode = statusCode;
     }
 
-    public StatusException(Throwable throwable, int statusCode) {
+    public StatusException(int statusCode, Throwable throwable) {
         super(throwable);
         this.statusCode = statusCode;
     }
 
-    public StatusException(String message, Throwable cause, int statusCode) {
+    public StatusException(int statusCode, String message, Throwable cause) {
         super(message, cause);
         this.statusCode = statusCode;
     }

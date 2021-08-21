@@ -4,11 +4,14 @@ import io.aws.lambda.simple.runtime.http.impl.StringSimpleHttpRequest;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Map;
 
 import static io.aws.lambda.simple.runtime.http.impl.NativeSimpleHttpClient.*;
 
 /**
+ * Simple Http Client
+ *
  * @author Anton Kurako (GoodforGod)
  * @since 27.10.2020
  */
@@ -22,7 +25,7 @@ public interface SimpleHttpClient {
      */
     @NotNull
     default SimpleHttpResponse get(@NotNull URI uri) {
-        return method(METHOD_GET, uri, StringSimpleHttpRequest.empty());
+        return execute(METHOD_GET, uri, StringSimpleHttpRequest.empty());
     }
 
     /**
@@ -35,7 +38,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse get(@NotNull URI uri,
                                    @NotNull Map<String, String> headers) {
-        return method(METHOD_GET, uri, StringSimpleHttpRequest.ofHeaders(headers));
+        return execute(METHOD_GET, uri, StringSimpleHttpRequest.ofHeaders(headers));
     }
 
     /**
@@ -48,7 +51,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse post(@NotNull URI uri,
                                     @NotNull SimpleHttpRequest request) {
-        return method(METHOD_POST, uri, request);
+        return execute(METHOD_POST, uri, request);
     }
 
     /**
@@ -61,7 +64,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse postAndForget(@NotNull URI uri,
                                              @NotNull SimpleHttpRequest request) {
-        return methodAndForget(METHOD_POST, uri, request);
+        return executeAndForget(METHOD_POST, uri, request);
     }
 
     /**
@@ -74,7 +77,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse put(@NotNull URI uri,
                                    @NotNull SimpleHttpRequest request) {
-        return method(METHOD_PUT, uri, request);
+        return execute(METHOD_PUT, uri, request);
     }
 
     /**
@@ -87,7 +90,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse putAndForget(@NotNull URI uri,
                                             @NotNull SimpleHttpRequest request) {
-        return methodAndForget(METHOD_PUT, uri, request);
+        return executeAndForget(METHOD_PUT, uri, request);
     }
 
     /**
@@ -100,7 +103,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse patch(@NotNull URI uri,
                                      @NotNull SimpleHttpRequest request) {
-        return method(METHOD_PATCH, uri, request);
+        return execute(METHOD_PATCH, uri, request);
     }
 
     /**
@@ -113,7 +116,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse patchAndForget(@NotNull URI uri,
                                               @NotNull SimpleHttpRequest request) {
-        return methodAndForget(METHOD_PATCH, uri, request);
+        return executeAndForget(METHOD_PATCH, uri, request);
     }
 
     /**
@@ -126,7 +129,7 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse delete(@NotNull URI uri,
                                       @NotNull SimpleHttpRequest request) {
-        return method(METHOD_DELETE, uri, request);
+        return execute(METHOD_DELETE, uri, request);
 
     }
 
@@ -140,32 +143,66 @@ public interface SimpleHttpClient {
     @NotNull
     default SimpleHttpResponse deleteAndForget(@NotNull URI uri,
                                                @NotNull SimpleHttpRequest request) {
-        return methodAndForget(METHOD_DELETE, uri, request);
+        return executeAndForget(METHOD_DELETE, uri, request);
     }
 
     /**
      * Executes specified HTTP method
      *
-     * @param method  http method name
-     * @param uri     to execute http request against
-     * @param request parameters to execute request with
+     * @param httpMethod http method name
+     * @param uri        to execute http request against
+     * @param request    parameters to execute request with
      * @return http response
      */
     @NotNull
-    SimpleHttpResponse method(@NotNull String method,
-                              @NotNull URI uri,
-                              @NotNull SimpleHttpRequest request);
+    default SimpleHttpResponse execute(@NotNull String httpMethod,
+                                       @NotNull URI uri,
+                                       @NotNull SimpleHttpRequest request) {
+        return execute(httpMethod, uri, DEFAULT_TIMEOUT, request);
+    }
 
     /**
      * Executes specified HTTP method
      *
-     * @param method  http method name
-     * @param uri     to execute http request against
-     * @param request parameters to execute request with
+     * @param httpMethod http method name
+     * @param uri        to execute http request against
+     * @param request    parameters to execute request with
      * @return http response without response body
      */
     @NotNull
-    SimpleHttpResponse methodAndForget(@NotNull String method,
-                                       @NotNull URI uri,
-                                       @NotNull SimpleHttpRequest request);
+    default SimpleHttpResponse executeAndForget(@NotNull String httpMethod,
+                                                @NotNull URI uri,
+                                                @NotNull SimpleHttpRequest request) {
+        return executeAndForget(httpMethod, uri, DEFAULT_TIMEOUT, request);
+    }
+
+    /**
+     * Executes specified HTTP method
+     *
+     * @param httpMethod http method name
+     * @param uri        to execute http request against
+     * @param timeout    for http response
+     * @param request    parameters to execute request with
+     * @return http response
+     */
+    @NotNull
+    SimpleHttpResponse execute(@NotNull String httpMethod,
+                               @NotNull URI uri,
+                               @NotNull Duration timeout,
+                               @NotNull SimpleHttpRequest request);
+
+    /**
+     * Executes specified HTTP method
+     *
+     * @param httpMethod http method name
+     * @param uri        to execute http request against
+     * @param timeout    for http response
+     * @param request    parameters to execute request with
+     * @return http response without response body
+     */
+    @NotNull
+    SimpleHttpResponse executeAndForget(@NotNull String httpMethod,
+                                        @NotNull URI uri,
+                                        @NotNull Duration timeout,
+                                        @NotNull SimpleHttpRequest request);
 }

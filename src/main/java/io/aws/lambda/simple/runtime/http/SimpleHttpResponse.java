@@ -25,7 +25,7 @@ public interface SimpleHttpResponse {
     InputStream body();
 
     /**
-     * @return body as {@link java.nio.charset.StandardCharsets#UTF_8} String
+     * @return body as String
      */
     @NotNull
     String bodyAsString();

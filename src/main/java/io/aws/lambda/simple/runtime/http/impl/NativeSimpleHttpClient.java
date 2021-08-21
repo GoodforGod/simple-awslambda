@@ -25,8 +25,7 @@ import java.time.Duration;
 @Singleton
 public class NativeSimpleHttpClient implements SimpleHttpClient {
 
-    private static final HttpClient.Version DEFAULT_VERSION = HttpClient.Version.HTTP_2;
-    private static final Duration DEFAULT_DURATION = Duration.ofMinutes(10);
+    public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(5);
 
     public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
@@ -34,34 +33,44 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
     public static final String METHOD_PATCH = "PATCH";
     public static final String METHOD_DELETE = "DELETE";
 
+    private static final HttpClient.Version DEFAULT_VERSION = HttpClient.Version.HTTP_2;
+    private static final Duration DEFAULT_CONNECTION_TIMEOUT = Duration.ofMinutes(10);
+
     private final HttpClient client;
 
     public NativeSimpleHttpClient() {
-        this.client = HttpClient.newBuilder()
+        this.client = getClient();
+    }
+
+    protected HttpClient getClient() {
+        return HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.NORMAL)
-                .connectTimeout(DEFAULT_DURATION)
+                .connectTimeout(DEFAULT_CONNECTION_TIMEOUT)
                 .version(DEFAULT_VERSION)
                 .build();
     }
 
     @Override
-    public @NotNull SimpleHttpResponse method(@NotNull String method,
-                                              @NotNull URI uri,
-                                              @NotNull SimpleHttpRequest request) {
-        final HttpRequest httpRequest = createHttpRequest(uri, method, request);
+    public @NotNull SimpleHttpResponse execute(@NotNull String httpMethod,
+                                               @NotNull URI uri,
+                                               @NotNull Duration timeout,
+                                               @NotNull SimpleHttpRequest request) {
+        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
         return sendAndGetResponse(httpRequest);
     }
 
     @Override
-    public @NotNull SimpleHttpResponse methodAndForget(@NotNull String method,
-                                                       @NotNull URI uri,
-                                                       @NotNull SimpleHttpRequest request) {
-        final HttpRequest httpRequest = createHttpRequest(uri, method, request);
+    public @NotNull SimpleHttpResponse executeAndForget(@NotNull String httpMethod,
+                                                        @NotNull URI uri,
+                                                        @NotNull Duration timeout,
+                                                        @NotNull SimpleHttpRequest request) {
+        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
         return sendAndDiscardResponse(httpRequest);
     }
 
     private HttpRequest createHttpRequest(@NotNull URI uri,
                                           @NotNull String httpMethod,
+                                          @NotNull Duration timeout,
                                           @NotNull SimpleHttpRequest request) {
         final String bodyAsString = request.body();
         final HttpRequest.BodyPublisher publisher = StringUtils.isEmpty(bodyAsString)
@@ -70,7 +79,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
 
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
                 .method(httpMethod, publisher)
-                .timeout(DEFAULT_DURATION)
+                .timeout(timeout)
                 .version(DEFAULT_VERSION);
 
         if (!request.headers().isEmpty())
@@ -84,7 +93,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
             final HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
             return new NativeInputStreamSimpleHttpResponse(response);
         } catch (Exception e) {
-            throw new StatusException(e, 500);
+            throw new StatusException(500, e);
         }
     }
 
@@ -93,7 +102,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
             final HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
             return new NativeVoidSimpleHttpResponse(response);
         } catch (Exception e) {
-            throw new StatusException(e, 500);
+            throw new StatusException(500, e);
         }
     }
 }

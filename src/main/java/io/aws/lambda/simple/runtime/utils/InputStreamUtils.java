@@ -19,7 +19,7 @@ public class InputStreamUtils {
         try {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new StatusException(e, 500);
+            throw new StatusException(500, e);
         }
     }
 
