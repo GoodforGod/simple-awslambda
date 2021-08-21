@@ -6,7 +6,7 @@ import io.aws.lambda.events.gateway.*;
 import io.aws.lambda.simple.runtime.convert.impl.GsonConverter;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
-import io.aws.lambda.simple.runtime.http.impl.NativeSimpleHttpClient;
+import io.aws.lambda.simple.runtime.http.client.NativeSimpleHttpClient;
 import io.micronaut.core.annotation.Introspected;
 
 /**

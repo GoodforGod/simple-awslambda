@@ -4,7 +4,7 @@ package io.aws.lambda.simple.runtime.error;
  * @author Anton Kurako (GoodforGod)
  * @since 28.10.2020
  */
-public class StatusException extends RuntimeException {
+public class StatusException extends LambdaException {
 
     private final int statusCode;
 

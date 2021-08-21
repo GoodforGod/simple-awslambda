@@ -1,13 +1,13 @@
 package io.aws.lambda.simple.runtime.http;
 
-import io.aws.lambda.simple.runtime.http.impl.StringSimpleHttpRequest;
+import io.aws.lambda.simple.runtime.http.client.StringSimpleHttpRequest;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
 
-import static io.aws.lambda.simple.runtime.http.impl.NativeSimpleHttpClient.*;
+import static io.aws.lambda.simple.runtime.http.client.NativeSimpleHttpClient.*;
 
 /**
  * Simple Http Client

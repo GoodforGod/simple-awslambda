@@ -1,6 +1,6 @@
 package io.aws.lambda.simple.runtime.utils;
 
-import io.aws.lambda.simple.runtime.error.StatusException;
+import io.aws.lambda.simple.runtime.error.LambdaException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class InputStreamUtils {
         try {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new StatusException(500, e);
+            throw new LambdaException(e);
         }
     }
 

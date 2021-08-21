@@ -8,7 +8,11 @@ public class StringUtils {
 
     private StringUtils() {}
 
-    public static boolean isEmpty(String value) {
-        return value == null || value.isEmpty();
+    public static boolean isEmpty(CharSequence value) {
+        return value == null || value.length() == 0;
+    }
+
+    public static boolean isNotEmpty(CharSequence value) {
+        return !isEmpty(value);
     }
 }

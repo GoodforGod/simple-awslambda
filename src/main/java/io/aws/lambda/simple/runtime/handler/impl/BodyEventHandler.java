@@ -10,7 +10,7 @@ import io.aws.lambda.events.system.LoadBalancerResponse;
 import io.aws.lambda.simple.runtime.convert.Converter;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.RequestFunction;
-import io.aws.lambda.simple.runtime.http.impl.StringSimpleHttpRequest;
+import io.aws.lambda.simple.runtime.http.client.StringSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 

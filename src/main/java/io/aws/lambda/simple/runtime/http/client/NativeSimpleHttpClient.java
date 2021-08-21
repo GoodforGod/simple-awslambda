@@ -1,4 +1,4 @@
-package io.aws.lambda.simple.runtime.http.impl;
+package io.aws.lambda.simple.runtime.http.client;
 
 import io.aws.lambda.simple.runtime.error.StatusException;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;

@@ -1,4 +1,4 @@
-package io.aws.lambda.simple.runtime.http.impl;
+package io.aws.lambda.simple.runtime.http.client;
 
 import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
 import org.jetbrains.annotations.NotNull;
