@@ -3,12 +3,15 @@ package io.aws.lambda.simple.runtime;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
+import io.aws.lambda.simple.runtime.utils.SubscriberUtils;
 import io.micronaut.context.ApplicationContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.UUID;
+import java.util.concurrent.Flow.Publisher;
 
 /**
  * @author GoodforGod
@@ -21,11 +24,15 @@ class InputEventHandlerTests extends Assertions {
         try (final ApplicationContext context = ApplicationContext.run()) {
             final EventHandler handler = context.getBean(InputEventHandler.class);
 
-            final String json = "{\"name\":\"Steeven King\"}";
-            final InputStream inputStream = InputStreamUtils.getStringUTF8AsInputStream(json);
-            final String response = handler.handle(inputStream, LambdaContext.ofRequestId(UUID.randomUUID().toString()));
-            assertNotNull(response);
-            assertTrue(response.contains("Hello - Steeven King"));
+            final String eventAsString = "{\"name\":\"Steeven King\"}";
+            final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);
+
+            final Publisher<ByteBuffer> publisher = handler.handle(inputStream, LambdaContext.ofRequestId(UUID.randomUUID().toString()));
+            assertNotNull(publisher);
+
+            final String responseAsString = SubscriberUtils.getPublisherString(publisher);
+            assertNotNull(responseAsString);
+            assertTrue(responseAsString.contains("Hello - Steeven King"));
         }
     }
 }

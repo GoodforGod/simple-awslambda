@@ -2,6 +2,7 @@ package io.aws.lambda.simple.runtime.utils;
 
 import io.aws.lambda.simple.runtime.error.LambdaException;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,7 @@ public class InputStreamUtils {
 
     private InputStreamUtils() {}
 
-    public static String getInputAsStringUTF8(InputStream inputStream) {
+    public static String getStringUTF8FromInputStream(InputStream inputStream) {
         try {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -23,7 +24,9 @@ public class InputStreamUtils {
         }
     }
 
-    public static InputStream getStringUTF8AsInputStream(String value) {
-        return new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
+    public static InputStream getInputStreamFromStringUTF8(String value) {
+        return StringUtils.isEmpty(value)
+                ? InputStream.nullInputStream()
+                : new BufferedInputStream(new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8)));
     }
 }
