@@ -31,8 +31,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
         this.requestHandler = requestHandler;
     }
 
-    @SuppressWarnings("unchecked")
-    public Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
+    public @NotNull Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
         logger.trace("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
@@ -40,7 +39,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
         logger.debug("Function '{}' with input '{}' and output '{}'",
                 requestHandler.getClass().getName(), function.getInput().getName(), function.getOutput().getName());
 
-        final Object functionInput = getFunctionInput(function.getInput(), eventStream, context);
+        final Object functionInput = getFunctionInput(eventStream, function.getInput(), function.getOutput(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
             logger.debug("Function input: {}", functionInput);

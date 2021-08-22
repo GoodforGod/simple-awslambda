@@ -67,8 +67,8 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
                                           @NotNull Duration timeout,
                                           @NotNull SimpleHttpRequest request) {
         final Publisher<ByteBuffer> bufferPublisher = request.body();
-        final HttpRequest.BodyPublisher publisher = (bufferPublisher == null)
-                ? HttpRequest.BodyPublishers.noBody()
+        final HttpRequest.BodyPublisher publisher = (bufferPublisher instanceof HttpRequest.BodyPublisher)
+                ? (HttpRequest.BodyPublisher) bufferPublisher
                 : HttpRequest.BodyPublishers.fromPublisher(bufferPublisher);
 
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri)

@@ -3,7 +3,6 @@ package io.aws.lambda.simple.runtime.http.nativeclient;
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.http.HttpRequest;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.Map;
@@ -25,17 +24,13 @@ public class PublisherSimpleHttpRequest implements SimpleHttpRequest {
         this.headers = headers;
     }
 
-    public static PublisherSimpleHttpRequest ofPublisher(Publisher<ByteBuffer> publisher) {
+    public static PublisherSimpleHttpRequest ofPublisher(@NotNull Publisher<ByteBuffer> publisher) {
         return ofPublisher(publisher, Collections.emptyMap());
     }
 
-    public static PublisherSimpleHttpRequest ofPublisher(Publisher<ByteBuffer> publisher,
+    public static PublisherSimpleHttpRequest ofPublisher(@NotNull Publisher<ByteBuffer> publisher,
                                                          @NotNull Map<String, String> headers) {
-        final Publisher<ByteBuffer> requestPublisher = (publisher == null)
-                ? HttpRequest.BodyPublishers.noBody()
-                : publisher;
-
-        return new PublisherSimpleHttpRequest(requestPublisher, headers);
+        return new PublisherSimpleHttpRequest(publisher, headers);
     }
 
     @Override

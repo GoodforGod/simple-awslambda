@@ -39,33 +39,16 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         this.requestHandler = requestHandler;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
-        logger.trace("Function input event conversion started...");
-        final long requestStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
+    public @NotNull Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
+        logger.trace("Function input conversion started...");
+        final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
-        final String event = getInputAsString(eventStream);
         final RequestFunction function = getFunctionArguments(requestHandler);
         logger.debug("Function '{}' with input '{}' and output '{}'",
                 requestHandler.getClass().getName(), function.getInput().getName(), function.getOutput().getName());
 
-        final String eventBody;
-        if (BodyEvent.class.isAssignableFrom(function.getInput())) {
-            eventBody = event;
-        } else {
-            final BodyBase64Event<?> bodyEvent = converter.fromJson(event, BodyBase64Event.class);
-            eventBody = (bodyEvent.isBase64Encoded()) ? bodyEvent.getBodyDecoded() : bodyEvent.getBody();
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Function input event conversion took: {} millis", TimeUtils.timeTook(requestStart));
-            logger.debug("Function input event: {}", eventBody);
-        }
-
-        logger.trace("Function input conversion started...");
-        final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
-        final Object functionInput = getFunctionInput(function.getInput(), eventBody, context);
+        final Object functionInput = getFunctionInput(eventStream, function.getInput(), function.getOutput(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
             logger.debug("Function input: {}", functionInput);
@@ -90,18 +73,57 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
     }
 
     @Override
+    protected @NotNull Object getFunctionInput(@NotNull InputStream funcInputValue,
+                                               @NotNull Class<?> funcInputType,
+                                               @NotNull Class<?> funcOutputType,
+                                               @NotNull Context context) {
+        final String event = getInputAsString(funcInputValue);
+
+        final String eventBody;
+        if (BodyEvent.class.isAssignableFrom(funcInputType)) {
+            eventBody = event;
+        } else {
+            final BodyBase64Event<?> bodyEvent = converter.fromJson(event, BodyBase64Event.class);
+            eventBody = (bodyEvent.isBase64Encoded()) ? bodyEvent.getBodyDecoded() : bodyEvent.getBody();
+        }
+
+        return super.getFunctionInput(eventBody, funcInputType, funcOutputType, context);
+    }
+
+    /**
+     * @param funcOutValue   received from {@link RequestHandler}
+     * @param funcInputType  that is input argument class type of
+     *                       {@link RequestHandler}
+     * @param funcOutputType that is output argument class type of
+     *                       {@link RequestHandler}
+     * @param context        of request
+     * @return converted event output
+     */
+    @Override
     protected Object getFunctionOutput(Object funcOutValue,
                                        @NotNull Class<?> funcInputType,
                                        @NotNull Class<?> funcOutputType,
                                        @NotNull Context context) {
-        if (funcOutValue instanceof InputStream) {
+        if (funcOutValue instanceof InputStream
+                || funcOutValue instanceof Publisher
+                || funcOutValue instanceof byte[]) {
             return funcOutValue;
         }
 
         final Object wrappedEvent = tryWrapEvent(funcOutValue, funcInputType);
+        if (wrappedEvent == null)
+            return null;
+
         return converter.toJson(wrappedEvent);
     }
 
+    /**
+     * @param funcOutValue  received from {@link RequestHandler}
+     * @param funcInputType that is input argument class type of
+     *                      {@link RequestHandler}
+     * @return if argument type is one of AWS DTOs {@link BodyEvent} than result is
+     *         wrapped in corresponding type or outValue as is
+     */
     private Object tryWrapEvent(Object funcOutValue,
                                 @NotNull Class<?> funcInputType) {
         if (funcOutValue instanceof LoadBalancerResponse

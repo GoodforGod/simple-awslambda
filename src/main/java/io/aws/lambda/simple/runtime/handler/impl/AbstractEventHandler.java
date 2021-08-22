@@ -31,22 +31,24 @@ public abstract class AbstractEventHandler implements EventHandler {
         this.converter = converter;
     }
 
-    protected @NotNull Object getFunctionInput(@NotNull Class<?> funcInputType,
-                                               @NotNull InputStream funcInputValue,
+    protected @NotNull Object getFunctionInput(@NotNull InputStream funcInputValue,
+                                               @NotNull Class<?> funcInputType,
+                                               @NotNull Class<?> funcOutputType,
                                                @NotNull Context context) {
         if (InputStream.class.equals(funcInputType))
             return funcInputType;
 
         final String inputAsString = getInputAsString(funcInputValue);
-        return getFunctionInput(funcInputType, inputAsString, context);
+        return getFunctionInput(inputAsString, funcInputType, funcOutputType, context);
     }
 
-    protected @NotNull Object getFunctionInput(@NotNull Class<?> funcInputType,
-                                               @NotNull String funcInputValue,
+    protected @NotNull Object getFunctionInput(@NotNull String funcInputValue,
+                                               @NotNull Class<?> funcInputType,
+                                               @NotNull Class<?> funcOutputType,
                                                @NotNull Context context) {
-        logger.debug("Converting input to '{}' for {}", funcInputType, context);
+        logger.debug("Converting input to '{}' for {}", funcInputType.getName(), context);
 
-        if (String.class.equals(funcInputType) || Object.class.equals(funcInputType))
+        if (String.class.equals(funcInputType))
             return funcInputValue;
 
         return converter.fromJson(funcInputValue, funcInputType);
@@ -56,7 +58,7 @@ public abstract class AbstractEventHandler implements EventHandler {
                                        @NotNull Class<?> funcInputType,
                                        @NotNull Class<?> funcOutputType,
                                        @NotNull Context context) {
-        logger.debug("Converting output to '{}' for {}", funcOutputType, context);
+        logger.debug("Converting output to '{}' for {}", funcOutputType.getName(), context);
 
         if (funcOutValue == null)
             return null;
@@ -81,6 +83,10 @@ public abstract class AbstractEventHandler implements EventHandler {
         return new RequestFunction(args[0], args[1]);
     }
 
+    /**
+     * @param response to wrap into {@link Publisher}
+     * @return event wrapped in {@link Publisher}
+     */
     protected @NotNull Publisher<ByteBuffer> getResponsePublisher(Object response) {
         if (response == null)
             return HttpRequest.BodyPublishers.noBody();
