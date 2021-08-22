@@ -1,10 +1,14 @@
 package io.aws.lambda.simple.runtime;
 
+import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
 import io.aws.lambda.simple.runtime.micronaut.MicronautRuntimeContext;
-import io.aws.lambda.simple.runtime.runtime.DefaultLambdaEventRuntime;
+import io.aws.lambda.simple.runtime.runtime.SimpleLambdaRuntimeEventLoop;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.Supplier;
 
 /**
  * Abstract Simple Lambda Entrypoint
@@ -14,10 +18,35 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractLambdaEntrypoint {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractLambdaEntrypoint.class);
+
     protected AbstractLambdaEntrypoint() {}
 
-    protected static DefaultLambdaEventRuntime getDefaultRuntime() {
-        return new DefaultLambdaEventRuntime();
+    /**
+     * @param args             to setup default {@link RuntimeContext}
+     * @param eventHandlerType to handle lambda events in runtime
+     */
+    protected static void setupWithDefaultRuntimeContext(String[] args,
+                                                         @NotNull Class<? extends EventHandler> eventHandlerType) {
+        setup(eventHandlerType, () -> getDefaultRuntimeContext(args));
+    }
+
+    /**
+     * @param eventHandlerType       to handle lambda events in runtime
+     * @param runtimeContextSupplier provides Lambda {@link RuntimeContext}
+     */
+    protected static void setup(@NotNull Class<? extends EventHandler> eventHandlerType,
+                                @NotNull Supplier<RuntimeContext> runtimeContextSupplier) {
+        try {
+            final SimpleLambdaRuntimeEventLoop eventLoop = getDefaultRuntimeEventLoop();
+            eventLoop.execute(runtimeContextSupplier, eventHandlerType);
+        } catch (Exception e) {
+            handleInitializationError(e);
+        }
+    }
+
+    protected static SimpleLambdaRuntimeEventLoop getDefaultRuntimeEventLoop() {
+        return new SimpleLambdaRuntimeEventLoop();
     }
 
     protected static RuntimeContext getDefaultRuntimeContext(String[] args) {
