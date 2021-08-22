@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static io.aws.lambda.simple.runtime.http.nativeclient.NativeSimpleHttpClient.DEFAULT_TIMEOUT;
 
@@ -18,7 +19,7 @@ public interface SimpleHttpClient {
 
     /**
      * GET
-     * 
+     *
      * @param uri to execute http request against
      * @return http response
      */
@@ -42,7 +43,7 @@ public interface SimpleHttpClient {
 
     /**
      * GET
-     * 
+     *
      * @param uri     to execute http request against
      * @param headers to execute request with
      * @return http response
@@ -70,7 +71,7 @@ public interface SimpleHttpClient {
 
     /**
      * POST
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response
@@ -98,7 +99,7 @@ public interface SimpleHttpClient {
 
     /**
      * POST
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response without response body
@@ -126,7 +127,7 @@ public interface SimpleHttpClient {
 
     /**
      * PUT
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response
@@ -154,7 +155,7 @@ public interface SimpleHttpClient {
 
     /**
      * PUT
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response without response body
@@ -182,7 +183,7 @@ public interface SimpleHttpClient {
 
     /**
      * PATCH
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response
@@ -210,7 +211,7 @@ public interface SimpleHttpClient {
 
     /**
      * PATCH
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response without response body
@@ -238,7 +239,7 @@ public interface SimpleHttpClient {
 
     /**
      * DELETE
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response
@@ -267,7 +268,7 @@ public interface SimpleHttpClient {
 
     /**
      * DELETE
-     * 
+     *
      * @param uri     to execute http request against
      * @param request parameters to execute request with
      * @return http response without response body
@@ -382,4 +383,34 @@ public interface SimpleHttpClient {
                                         @NotNull URI uri,
                                         @NotNull SimpleHttpRequest request,
                                         @NotNull Duration timeout);
+
+    /**
+     * Executes specified HTTP method
+     *
+     * @param httpMethod http method name
+     * @param uri        to execute http request against
+     * @param timeout    for http response
+     * @param request    parameters to execute request with
+     * @return http response
+     */
+    @NotNull
+    CompletableFuture<SimpleHttpResponse> executeAsync(@NotNull CharSequence httpMethod,
+                                                       @NotNull URI uri,
+                                                       @NotNull SimpleHttpRequest request,
+                                                       @NotNull Duration timeout);
+
+    /**
+     * Executes specified HTTP method
+     *
+     * @param httpMethod http method name
+     * @param uri        to execute http request against
+     * @param timeout    for http response
+     * @param request    parameters to execute request with
+     * @return http response without response body
+     */
+    @NotNull
+    CompletableFuture<SimpleHttpResponse> executeAndForgetAsync(@NotNull CharSequence httpMethod,
+                                                                @NotNull URI uri,
+                                                                @NotNull SimpleHttpRequest request,
+                                                                @NotNull Duration timeout);
 }

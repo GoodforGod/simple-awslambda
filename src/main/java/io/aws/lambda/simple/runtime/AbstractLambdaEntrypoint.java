@@ -18,8 +18,6 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractLambdaEntrypoint {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractLambdaEntrypoint.class);
-
     protected AbstractLambdaEntrypoint() {}
 
     /**

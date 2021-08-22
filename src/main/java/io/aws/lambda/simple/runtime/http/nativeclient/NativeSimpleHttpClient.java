@@ -14,6 +14,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow.Publisher;
 
 /**
@@ -62,6 +63,24 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
         return sendAndDiscardResponse(httpRequest);
     }
 
+    @Override
+    public @NotNull CompletableFuture<SimpleHttpResponse> executeAsync(@NotNull CharSequence httpMethod,
+                                                                       @NotNull URI uri,
+                                                                       @NotNull SimpleHttpRequest request,
+                                                                       @NotNull Duration timeout) {
+        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
+        return sendAndDiscardResponseAsync(httpRequest);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<SimpleHttpResponse> executeAndForgetAsync(@NotNull CharSequence httpMethod,
+                                                                                @NotNull URI uri,
+                                                                                @NotNull SimpleHttpRequest request,
+                                                                                @NotNull Duration timeout) {
+        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
+        return sendAndDiscardResponseAsync(httpRequest);
+    }
+
     private HttpRequest createHttpRequest(@NotNull URI uri,
                                           @NotNull CharSequence httpMethod,
                                           @NotNull Duration timeout,
@@ -98,5 +117,15 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
         } catch (Exception e) {
             throw new StatusException(500, e);
         }
+    }
+
+    private CompletableFuture<SimpleHttpResponse> sendAndGetResponseAsync(HttpRequest request) {
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
+                .thenApply(NativeInputStreamSimpleHttpResponse::new);
+    }
+
+    private CompletableFuture<SimpleHttpResponse> sendAndDiscardResponseAsync(HttpRequest request) {
+        return client.sendAsync(request, HttpResponse.BodyHandlers.discarding())
+                .thenApply(NativeVoidSimpleHttpResponse::new);
     }
 }
