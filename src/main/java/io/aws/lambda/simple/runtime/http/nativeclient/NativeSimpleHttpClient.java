@@ -1,10 +1,9 @@
-package io.aws.lambda.simple.runtime.http.client;
+package io.aws.lambda.simple.runtime.http.nativeclient;
 
 import io.aws.lambda.simple.runtime.error.StatusException;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
 import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
-import io.aws.lambda.simple.runtime.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
@@ -13,8 +12,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.util.concurrent.Flow.Publisher;
 
 /**
  * Native Java implementation of {@link SimpleHttpClient} for {@link HttpClient}
@@ -27,14 +27,8 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
 
     public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(5);
 
-    public static final String METHOD_GET = "GET";
-    public static final String METHOD_POST = "POST";
-    public static final String METHOD_PUT = "PUT";
-    public static final String METHOD_PATCH = "PATCH";
-    public static final String METHOD_DELETE = "DELETE";
-
     private static final HttpClient.Version DEFAULT_VERSION = HttpClient.Version.HTTP_2;
-    private static final Duration DEFAULT_CONNECTION_TIMEOUT = Duration.ofMinutes(10);
+    private static final Duration DEFAULT_CONNECTION_TIMEOUT = Duration.ofMinutes(11);
 
     private final HttpClient client;
 
@@ -51,34 +45,34 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
     }
 
     @Override
-    public @NotNull SimpleHttpResponse execute(@NotNull String httpMethod,
+    public @NotNull SimpleHttpResponse execute(@NotNull CharSequence httpMethod,
                                                @NotNull URI uri,
-                                               @NotNull Duration timeout,
-                                               @NotNull SimpleHttpRequest request) {
+                                               @NotNull SimpleHttpRequest request,
+                                               @NotNull Duration timeout) {
         final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
         return sendAndGetResponse(httpRequest);
     }
 
     @Override
-    public @NotNull SimpleHttpResponse executeAndForget(@NotNull String httpMethod,
+    public @NotNull SimpleHttpResponse executeAndForget(@NotNull CharSequence httpMethod,
                                                         @NotNull URI uri,
-                                                        @NotNull Duration timeout,
-                                                        @NotNull SimpleHttpRequest request) {
+                                                        @NotNull SimpleHttpRequest request,
+                                                        @NotNull Duration timeout) {
         final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
         return sendAndDiscardResponse(httpRequest);
     }
 
     private HttpRequest createHttpRequest(@NotNull URI uri,
-                                          @NotNull String httpMethod,
+                                          @NotNull CharSequence httpMethod,
                                           @NotNull Duration timeout,
                                           @NotNull SimpleHttpRequest request) {
-        final String bodyAsString = request.body();
-        final HttpRequest.BodyPublisher publisher = StringUtils.isEmpty(bodyAsString)
+        final Publisher<ByteBuffer> bufferPublisher = request.body();
+        final HttpRequest.BodyPublisher publisher = (bufferPublisher == null)
                 ? HttpRequest.BodyPublishers.noBody()
-                : HttpRequest.BodyPublishers.ofString(bodyAsString, StandardCharsets.UTF_8);
+                : HttpRequest.BodyPublishers.fromPublisher(bufferPublisher);
 
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
-                .method(httpMethod, publisher)
+                .method(httpMethod.toString(), publisher)
                 .timeout(timeout)
                 .version(DEFAULT_VERSION);
 

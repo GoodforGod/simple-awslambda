@@ -12,6 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.net.http.HttpRequest;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Flow.Publisher;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -56,6 +60,8 @@ public abstract class AbstractEventHandler implements EventHandler {
 
         if (funcOutValue == null)
             return null;
+        if (funcOutValue instanceof InputStream)
+            return funcOutValue;
         if (funcOutValue instanceof String)
             return funcOutValue;
 
@@ -63,7 +69,7 @@ public abstract class AbstractEventHandler implements EventHandler {
     }
 
     protected String getInputAsString(InputStream inputStream) {
-        return InputStreamUtils.getInputAsStringUTF8(inputStream);
+        return InputStreamUtils.getStringUTF8FromInputStream(inputStream);
     }
 
     protected <T extends RequestHandler> RequestFunction getFunctionArguments(T t) {
@@ -73,5 +79,18 @@ public abstract class AbstractEventHandler implements EventHandler {
                     "Lambda interface is not correctly implemented, interface generic types must be set for input and output!");
 
         return new RequestFunction(args[0], args[1]);
+    }
+
+    protected @NotNull Publisher<ByteBuffer> getResponsePublisher(Object response) {
+        if (response == null)
+            return HttpRequest.BodyPublishers.noBody();
+        if (response instanceof Publisher)
+            return (Publisher<ByteBuffer>) response;
+        if (response instanceof InputStream)
+            return HttpRequest.BodyPublishers.ofInputStream(() -> (InputStream) response);
+        if (response instanceof byte[])
+            return HttpRequest.BodyPublishers.ofByteArray((byte[]) response);
+
+        return HttpRequest.BodyPublishers.ofString(response.toString(), StandardCharsets.UTF_8);
     }
 }

@@ -10,13 +10,16 @@ import io.aws.lambda.events.system.LoadBalancerResponse;
 import io.aws.lambda.simple.runtime.convert.Converter;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.RequestFunction;
-import io.aws.lambda.simple.runtime.http.client.StringSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.concurrent.Flow.Publisher;
+
+import static io.aws.lambda.simple.runtime.http.nativeclient.StringSimpleHttpRequest.JSON_HEADERS;
 
 /**
  * AWS Lambda Gateway Handler for handling requests coming from events that
@@ -38,7 +41,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
     @SuppressWarnings("unchecked")
     @Override
-    public String handle(@NotNull InputStream eventStream, @NotNull Context context) {
+    public Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
         logger.trace("Function input event conversion started...");
         final long requestStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
@@ -83,9 +86,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
             logger.debug("Function output event: {}", response);
         }
 
-        return (response == null)
-                ? null
-                : converter.toJson(response);
+        return getResponsePublisher(response);
     }
 
     @Override
@@ -93,8 +94,17 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
                                        @NotNull Class<?> funcInputType,
                                        @NotNull Class<?> funcOutputType,
                                        @NotNull Context context) {
-        if (funcOutValue instanceof String
-                || funcOutValue instanceof LoadBalancerResponse
+        if (funcOutValue instanceof InputStream) {
+            return funcOutValue;
+        }
+
+        final Object wrappedEvent = tryWrapEvent(funcOutValue, funcInputType);
+        return converter.toJson(wrappedEvent);
+    }
+
+    private Object tryWrapEvent(Object funcOutValue,
+                                @NotNull Class<?> funcInputType) {
+        if (funcOutValue instanceof LoadBalancerResponse
                 || funcOutValue instanceof APIGatewayProxyResponse
                 || funcOutValue instanceof APIGatewayV2HTTPResponse
                 || funcOutValue instanceof APIGatewayV2WebSocketResponse) {
@@ -102,13 +112,21 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         }
 
         if (LoadBalancerRequest.class.isAssignableFrom(funcInputType)) {
-            return new LoadBalancerResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+            return new LoadBalancerResponse()
+                    .setBody(funcOutValue)
+                    .setHeaders(JSON_HEADERS);
         } else if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputType)) {
-            return new APIGatewayProxyResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+            return new APIGatewayProxyResponse()
+                    .setBody(funcOutValue)
+                    .setHeaders(JSON_HEADERS);
         } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputType)) {
-            return new APIGatewayV2HTTPResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+            return new APIGatewayV2HTTPResponse()
+                    .setBody(funcOutValue)
+                    .setHeaders(JSON_HEADERS);
         } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputType)) {
-            return new APIGatewayV2WebSocketResponse().setBody(funcOutValue).setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+            return new APIGatewayV2WebSocketResponse()
+                    .setBody(funcOutValue)
+                    .setHeaders(JSON_HEADERS);
         }
 
         return funcOutValue;

@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.concurrent.Flow.Publisher;
 
 /**
  * AWS Lambda Handler for handling raw event as it was passed to lambda.
@@ -30,7 +32,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
     }
 
     @SuppressWarnings("unchecked")
-    public String handle(@NotNull InputStream eventStream, @NotNull Context context) {
+    public Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
         logger.trace("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
@@ -59,8 +61,6 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
             logger.debug("Function output: {}", response);
         }
 
-        return (response == null)
-                ? null
-                : response.toString();
+        return getResponsePublisher(response);
     }
 }

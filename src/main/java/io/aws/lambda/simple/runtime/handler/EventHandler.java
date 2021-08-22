@@ -5,6 +5,8 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.concurrent.Flow.Publisher;
 
 /**
  * Process event as input stream and add logic for conversation, transformation,
@@ -20,5 +22,6 @@ public interface EventHandler {
      * @param context     of the request
      * @return response representation as JSON
      */
-    String handle(@NotNull InputStream eventStream, @NotNull Context context);
+    @NotNull
+    Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context);
 }
