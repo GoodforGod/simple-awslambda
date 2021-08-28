@@ -4,9 +4,9 @@ import io.aws.lambda.simple.runtime.error.StatusException;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
 import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
+import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Singleton;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;

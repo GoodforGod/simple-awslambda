@@ -2,10 +2,9 @@ package io.aws.lambda.simple.runtime.convert.impl;
 
 import com.google.gson.Gson;
 import io.aws.lambda.simple.runtime.convert.Converter;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * {@link Gson} converter implementation

@@ -3,9 +3,8 @@ package io.aws.lambda.simple.runtime.micronaut;
 import com.google.gson.Gson;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 /**
  * Factory for {@link Gson} that is used in Micronaut DI.

@@ -7,8 +7,8 @@ import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
 import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
-import io.aws.lambda.simple.runtime.http.nativeclient.PublisherSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.http.nativeclient.NativeSimpleHttpClient;
+import io.aws.lambda.simple.runtime.http.nativeclient.PublisherSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.http.nativeclient.StringSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.utils.StringUtils;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
@@ -96,8 +96,8 @@ public class SimpleLambdaRuntimeEventLoop {
 
             final SimpleHttpRequest responseHttpEvent = PublisherSimpleHttpRequest.ofPublisher(responsePublisher);
             final SimpleHttpResponse awsResponse = httpClient.post(responseUri, responseHttpEvent, DEFAULT_TIMEOUT);
-            if (logger.isInfoEnabled()) {
-                logger.info("Responding to AWS Invocation took: {} millis", TimeUtils.timeTook(respondingStart));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Responding to AWS Invocation took: {} millis", TimeUtils.timeTook(respondingStart));
             }
 
             if (logger.isDebugEnabled()) {
