@@ -4,10 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.micronaut.core.annotation.Introspected;
 import jakarta.inject.Singleton;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.UUID;
 
 /**
  * @author Anton Kurako (GoodforGod)
