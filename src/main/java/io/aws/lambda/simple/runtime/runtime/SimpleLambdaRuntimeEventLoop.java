@@ -12,16 +12,15 @@ import io.aws.lambda.simple.runtime.http.nativeclient.PublisherSimpleHttpRequest
 import io.aws.lambda.simple.runtime.http.nativeclient.StringSimpleHttpRequest;
 import io.aws.lambda.simple.runtime.utils.StringUtils;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.concurrent.Flow.Publisher;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Runtime event loop for AWS Lambda event handling

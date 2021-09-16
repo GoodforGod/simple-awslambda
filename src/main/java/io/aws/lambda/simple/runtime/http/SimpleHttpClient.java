@@ -1,13 +1,12 @@
 package io.aws.lambda.simple.runtime.http;
 
-import org.jetbrains.annotations.NotNull;
+import static io.aws.lambda.simple.runtime.http.nativeclient.NativeSimpleHttpClient.DEFAULT_TIMEOUT;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import static io.aws.lambda.simple.runtime.http.nativeclient.NativeSimpleHttpClient.DEFAULT_TIMEOUT;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Simple Http Client

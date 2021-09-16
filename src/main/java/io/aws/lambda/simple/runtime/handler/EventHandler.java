@@ -2,11 +2,10 @@ package io.aws.lambda.simple.runtime.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow.Publisher;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Process event as input stream and add logic for conversation, transformation,

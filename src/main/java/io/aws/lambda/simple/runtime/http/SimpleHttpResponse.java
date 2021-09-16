@@ -1,11 +1,10 @@
 package io.aws.lambda.simple.runtime.http;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Anton Kurako (GoodforGod)

@@ -2,6 +2,7 @@ package io.aws.lambda.simple.runtime.convert.impl;
 
 import com.google.gson.Gson;
 import io.aws.lambda.simple.runtime.convert.Converter;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,11 @@ public class GsonConverter implements Converter {
     @Inject
     public GsonConverter(Gson gson) {
         this.gson = gson;
+    }
+
+    @PostConstruct
+    public void setup() {
+        System.out.println("POST");
     }
 
     @Override

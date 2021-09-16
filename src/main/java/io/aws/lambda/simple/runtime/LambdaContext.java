@@ -7,11 +7,10 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import io.aws.lambda.simple.runtime.config.ContextVariables;
 import io.aws.lambda.simple.runtime.config.RuntimeVariables;
 import io.aws.lambda.simple.runtime.utils.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Implementation of {@link Context} runtime context

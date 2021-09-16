@@ -1,5 +1,7 @@
 package io.aws.lambda.simple.runtime.handler.impl;
 
+import static io.aws.lambda.simple.runtime.http.nativeclient.StringSimpleHttpRequest.JSON_HEADERS;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.aws.lambda.events.BodyBase64Event;
@@ -13,13 +15,10 @@ import io.aws.lambda.simple.runtime.handler.RequestFunction;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow.Publisher;
-
-import static io.aws.lambda.simple.runtime.http.nativeclient.StringSimpleHttpRequest.JSON_HEADERS;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * AWS Lambda Gateway Handler for handling requests coming from events that

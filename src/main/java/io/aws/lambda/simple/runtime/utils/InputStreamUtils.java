@@ -1,7 +1,6 @@
 package io.aws.lambda.simple.runtime.utils;
 
 import io.aws.lambda.simple.runtime.error.LambdaException;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

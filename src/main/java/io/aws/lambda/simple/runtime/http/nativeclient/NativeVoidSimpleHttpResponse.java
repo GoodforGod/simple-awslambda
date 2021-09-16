@@ -1,14 +1,13 @@
 package io.aws.lambda.simple.runtime.http.nativeclient;
 
 import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Native {@link HttpResponse} wrapper without body for

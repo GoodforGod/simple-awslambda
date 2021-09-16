@@ -4,11 +4,10 @@ import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.micronaut.MicronautRuntimeContext;
 import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
 import io.aws.lambda.simple.runtime.runtime.SimpleLambdaRuntimeEventLoop;
+import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.function.Supplier;
 
 /**
  * Abstract Simple Lambda Entrypoint

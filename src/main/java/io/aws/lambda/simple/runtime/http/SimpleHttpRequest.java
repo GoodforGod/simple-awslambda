@@ -1,12 +1,11 @@
 package io.aws.lambda.simple.runtime.http;
 
 import io.aws.lambda.simple.runtime.http.nativeclient.StringSimpleHttpRequest;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Anton Kurako (GoodforGod)

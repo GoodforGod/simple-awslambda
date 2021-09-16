@@ -1,14 +1,13 @@
 package io.aws.lambda.simple.runtime.http.nativeclient;
 
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handles {@link InputStream} as http request

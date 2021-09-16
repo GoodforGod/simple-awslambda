@@ -5,8 +5,6 @@ import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
 import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
 import jakarta.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow.Publisher;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Native Java implementation of {@link SimpleHttpClient} for {@link HttpClient}

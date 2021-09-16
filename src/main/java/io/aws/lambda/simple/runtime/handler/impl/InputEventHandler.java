@@ -8,11 +8,10 @@ import io.aws.lambda.simple.runtime.handler.RequestFunction;
 import io.aws.lambda.simple.runtime.utils.TimeUtils;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow.Publisher;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * AWS Lambda Handler for handling raw event as it was passed to lambda.
