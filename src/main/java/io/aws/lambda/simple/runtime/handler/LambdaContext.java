@@ -1,4 +1,4 @@
-package io.aws.lambda.simple.runtime;
+package io.aws.lambda.simple.runtime.handler;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;

@@ -1,9 +1,9 @@
 package io.aws.lambda.simple.runtime.runtime;
 
-import io.aws.lambda.simple.runtime.LambdaContext;
 import io.aws.lambda.simple.runtime.config.RuntimeVariables;
 import io.aws.lambda.simple.runtime.config.SimpleLoggerRefresher;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
+import io.aws.lambda.simple.runtime.handler.LambdaContext;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
 import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;

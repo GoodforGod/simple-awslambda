@@ -3,6 +3,7 @@ package io.aws.lambda.simple.runtime;
 import io.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
 import io.aws.lambda.simple.runtime.convert.Converter;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
+import io.aws.lambda.simple.runtime.handler.LambdaContext;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
 import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
 import io.aws.lambda.simple.runtime.utils.SubscriberUtils;
