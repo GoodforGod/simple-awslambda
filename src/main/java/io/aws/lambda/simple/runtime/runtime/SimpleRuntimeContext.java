@@ -9,6 +9,7 @@ import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.nativeclient.NativeSimpleHttpClient;
 import io.gson.adapters.config.GsonConfiguration;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,64 +19,55 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 22.08.2021
  */
-public abstract class SimpleRuntimeContext implements RuntimeContext {
+public class SimpleRuntimeContext implements RuntimeContext {
 
-    private SimpleHttpClient httpClient;
-    private Converter converter;
+    private final SimpleHttpClient httpClient;
+    private final Converter converter;
+    private final RequestHandler requestHandler;
+
     private EventHandler eventHandler;
-    private RequestHandler requestHandler;
+
+    public SimpleRuntimeContext(String[] args, @NotNull RequestHandler requestHandler) {
+        Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
+        this.requestHandler = requestHandler;
+        this.httpClient = new NativeSimpleHttpClient();
+        this.converter = new GsonConverter(new GsonConfiguration().builder().create());
+    }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getBean(@NotNull Class<T> beanType) {
-        if (SimpleHttpClient.class.equals(beanType) || NativeSimpleHttpClient.class.equals(beanType)) {
-            if (httpClient == null)
-                httpClient = new NativeSimpleHttpClient();
+        if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
             return (T) httpClient;
         }
 
-        if (Converter.class.equals(beanType) || GsonConverter.class.equals(beanType)) {
-            if (converter == null)
-                converter = new GsonConverter(new GsonConfiguration().builder().create());
+        if (Converter.class.isAssignableFrom(beanType)) {
             return (T) converter;
         }
 
-        if (EventHandler.class.equals(beanType) && eventHandler != null) {
+        if (EventHandler.class.isAssignableFrom(beanType)) {
+            if (eventHandler == null) {
+                if (InputEventHandler.class.isAssignableFrom(beanType)) {
+                    this.eventHandler = new InputEventHandler(requestHandler, converter);
+                } else if (BodyEventHandler.class.isAssignableFrom(beanType)) {
+                    this.eventHandler = new BodyEventHandler(requestHandler, converter);
+                } else {
+                    throw new IllegalStateException("Unknown EventHandler type implementation: " + beanType);
+                }
+            }
+
             return (T) this.eventHandler;
         }
 
-        if (InputEventHandler.class.equals(beanType)) {
-            if (eventHandler == null) {
-                final RequestHandler handler = getBean(RequestHandler.class);
-                this.eventHandler = new InputEventHandler(handler, converter);
-            }
-            return (T) eventHandler;
-        }
-
-        if (BodyEventHandler.class.equals(beanType)) {
-            if (eventHandler == null) {
-                final RequestHandler handler = getBean(RequestHandler.class);
-                this.eventHandler = new BodyEventHandler(handler, converter);
-            }
-            return (T) eventHandler;
-        }
-
-        if (RequestHandler.class.equals(beanType)) {
-            if (requestHandler == null)
-                this.requestHandler = createRequestHandler();
+        if (RequestHandler.class.isAssignableFrom(beanType)) {
             return (T) requestHandler;
         }
 
         return null;
     }
 
-    /**
-     * @return instance of {@link RequestHandler} implementation
-     */
-    protected abstract @NotNull RequestHandler createRequestHandler();
-
     @Override
-    public void close() throws Exception {
+    public void close() {
         // do nothing
     }
 }
