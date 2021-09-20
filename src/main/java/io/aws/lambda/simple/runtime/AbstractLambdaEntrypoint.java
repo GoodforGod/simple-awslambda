@@ -1,8 +1,11 @@
 package io.aws.lambda.simple.runtime;
 
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
+import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
 import io.aws.lambda.simple.runtime.runtime.SimpleLambdaRuntimeEventLoop;
+import io.aws.lambda.simple.runtime.runtime.SimpleRuntimeContext;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -27,11 +30,31 @@ public abstract class AbstractLambdaEntrypoint {
         }
     }
 
+    /**
+     * @param args passed to entrypoint by AWS
+     * @return {@link RequestHandler} implementation
+     */
     @NotNull
-    protected abstract Class<? extends EventHandler> getEventHandlerType(String[] args);
+    protected abstract RequestHandler getRequestHandler(String[] args);
 
+    /**
+     * @param args passed to entrypoint by AWS
+     * @return Type of {@link EventHandler} implementation that will be responsible
+     *         for handing event processing
+     */
     @NotNull
-    protected abstract RuntimeContext getRuntimeContext(String[] args);
+    protected Class<? extends EventHandler> getEventHandlerType(String[] args) {
+        return InputEventHandler.class;
+    }
+
+    /**
+     * @param args passed to entrypoint by AWS
+     * @return {@link RuntimeContext} implementation for Lambda
+     */
+    @NotNull
+    protected RuntimeContext getRuntimeContext(String[] args) {
+        return new SimpleRuntimeContext(args, getRequestHandler(args));
+    }
 
     @NotNull
     protected SimpleLambdaRuntimeEventLoop getDefaultRuntimeEventLoop() {

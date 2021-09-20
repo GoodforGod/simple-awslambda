@@ -1,5 +1,6 @@
 package io.aws.lambda.simple.runtime;
 
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.aws.lambda.events.BodyEvent;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
@@ -28,5 +29,10 @@ public class BodyLambdaEntrypoint extends AbstractLambdaEntrypoint {
     @Override
     public @NotNull RuntimeContext getRuntimeContext(String[] args) {
         return new MicronautRuntimeContext(args);
+    }
+
+    @Override
+    protected @NotNull RequestHandler getRequestHandler(String[] args) {
+        throw new UnsupportedOperationException("Entrypoint doesn't support manual RequestHandler configuration!");
     }
 }
