@@ -62,7 +62,7 @@ public abstract class AbstractLambdaEntrypoint {
     }
 
     protected void handleInitializationError(Throwable e) {
-        final Logger logger = LoggerFactory.getLogger(InputLambdaEntrypoint.class);
+        final Logger logger = LoggerFactory.getLogger(AbstractLambdaEntrypoint.class);
         logger.error(e.getMessage(), e);
         System.exit(1);
     }
