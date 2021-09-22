@@ -33,5 +33,5 @@ import io.micronaut.core.annotation.TypeHint;
                 BodyEvent.class,
                 BodyBase64Event.class
         })
-interface EventHints {
+interface MicronautEventHints {
 }

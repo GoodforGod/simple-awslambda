@@ -13,18 +13,18 @@ import jakarta.inject.Singleton;
  * @since 14.08.2021
  */
 @Factory
-public class MicronautGsonFactory {
+class MicronautGsonFactory {
 
     private final MicronautGsonConfiguration gsonConfiguration;
 
     @Inject
-    public MicronautGsonFactory(MicronautGsonConfiguration gsonConfiguration) {
+    MicronautGsonFactory(MicronautGsonConfiguration gsonConfiguration) {
         this.gsonConfiguration = gsonConfiguration;
     }
 
     @Singleton
     @Bean
-    public Gson get() {
+    Gson get() {
         return gsonConfiguration.getConfiguration().builder().create();
     }
 }

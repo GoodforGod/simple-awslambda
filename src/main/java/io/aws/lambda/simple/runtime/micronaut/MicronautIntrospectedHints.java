@@ -42,5 +42,5 @@ import io.micronaut.core.annotation.Introspected;
         BodyEvent.class,
         BodyBase64Event.class
 })
-public interface IntrospectedHints {
+interface MicronautIntrospectedHints {
 }

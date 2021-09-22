@@ -21,7 +21,7 @@ public class MicronautRuntimeContext implements RuntimeContext {
                 .banner(false)
                 .defaultEnvironments(Environment.FUNCTION, Environment.AMAZON_EC2, Environment.CLOUD)
                 .args(args)
-                .packages("io.aws.lambda.simple.runtime")
+                .packages("io.aws.lambda.simple")
                 .start();
     }
 

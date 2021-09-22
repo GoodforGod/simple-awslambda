@@ -37,10 +37,6 @@ public class SimpleRuntimeContext implements RuntimeContext {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getBean(@NotNull Class<T> beanType) {
-        if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
-            return (T) httpClient;
-        }
-
         if (Converter.class.isAssignableFrom(beanType)) {
             return (T) converter;
         }
@@ -57,6 +53,10 @@ public class SimpleRuntimeContext implements RuntimeContext {
             }
 
             return (T) this.eventHandler;
+        }
+
+        if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
+            return (T) httpClient;
         }
 
         if (RequestHandler.class.isAssignableFrom(beanType)) {

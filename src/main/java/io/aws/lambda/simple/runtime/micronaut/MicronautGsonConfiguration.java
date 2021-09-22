@@ -14,7 +14,7 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  * @since 25.04.2021
  */
 @ConfigurationProperties("gson")
-public class MicronautGsonConfiguration {
+class MicronautGsonConfiguration {
 
     @ConfigurationBuilder
     private final GsonConfiguration configuration = new GsonConfiguration();
