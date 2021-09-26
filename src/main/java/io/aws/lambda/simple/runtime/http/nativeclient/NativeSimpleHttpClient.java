@@ -68,7 +68,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
                                                                        @NotNull SimpleHttpRequest request,
                                                                        @NotNull Duration timeout) {
         final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
-        return sendAndDiscardResponseAsync(httpRequest);
+        return sendAndGetResponseAsync(httpRequest);
     }
 
     @Override
