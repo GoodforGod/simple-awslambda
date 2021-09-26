@@ -21,17 +21,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SimpleRuntimeContext implements RuntimeContext {
 
-    private final SimpleHttpClient httpClient;
-    private final Converter converter;
+    private final SimpleHttpClient httpClient = new NativeSimpleHttpClient();
+    private final Converter converter = new GsonConverter(new GsonConfiguration().builder().create());
     private final RequestHandler requestHandler;
 
     private EventHandler eventHandler;
 
-    public SimpleRuntimeContext(String[] args, @NotNull RequestHandler requestHandler) {
+    public SimpleRuntimeContext(@NotNull RequestHandler requestHandler) {
         Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
         this.requestHandler = requestHandler;
-        this.httpClient = new NativeSimpleHttpClient();
-        this.converter = new GsonConverter(new GsonConfiguration().builder().create());
     }
 
     @SuppressWarnings("unchecked")

@@ -2,12 +2,14 @@ package io.aws.lambda.simple.runtime;
 
 import io.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
 import io.aws.lambda.simple.runtime.convert.Converter;
+import io.aws.lambda.simple.runtime.example.HelloWorldLambda;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.LambdaContext;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
+import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
+import io.aws.lambda.simple.runtime.runtime.SimpleRuntimeContext;
 import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
 import io.aws.lambda.simple.runtime.utils.SubscriberUtils;
-import io.micronaut.context.ApplicationContext;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.UUID;
@@ -23,7 +25,7 @@ class BodyEventHandlerTests extends Assertions {
 
     @Test
     void bodyEventHandled() {
-        try (final ApplicationContext context = ApplicationContext.run()) {
+        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda())) {
             final EventHandler handler = context.getBean(BodyEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
 
@@ -38,6 +40,8 @@ class BodyEventHandlerTests extends Assertions {
             final String responseAsString = SubscriberUtils.getPublisherString(publisher);
             assertNotNull(responseAsString);
             assertTrue(responseAsString.contains("Hello - Steeven King"));
+        } catch (Exception e) {
+            fail(e);
         }
     }
 }

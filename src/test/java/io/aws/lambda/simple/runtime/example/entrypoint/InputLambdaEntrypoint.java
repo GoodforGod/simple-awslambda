@@ -1,10 +1,10 @@
-package io.aws.lambda.simple.runtime;
+package io.aws.lambda.simple.runtime.example.entrypoint;
 
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import io.aws.lambda.simple.runtime.AbstractLambdaEntrypoint;
+import io.aws.lambda.simple.runtime.example.HelloWorldLambda;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
-import io.aws.lambda.simple.runtime.micronaut.MicronautRuntimeContext;
-import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,12 +26,7 @@ public class InputLambdaEntrypoint extends AbstractLambdaEntrypoint {
     }
 
     @Override
-    public @NotNull RuntimeContext getRuntimeContext(String[] args) {
-        return new MicronautRuntimeContext(args);
-    }
-
-    @Override
     protected @NotNull RequestHandler getRequestHandler(String[] args) {
-        throw new UnsupportedOperationException("Entrypoint doesn't support manual RequestHandler configuration!");
+        return new HelloWorldLambda();
     }
 }

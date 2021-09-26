@@ -1,11 +1,13 @@
 package io.aws.lambda.simple.runtime;
 
+import io.aws.lambda.simple.runtime.example.HelloWorldLambda;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.LambdaContext;
 import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
+import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
+import io.aws.lambda.simple.runtime.runtime.SimpleRuntimeContext;
 import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
 import io.aws.lambda.simple.runtime.utils.SubscriberUtils;
-import io.micronaut.context.ApplicationContext;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.UUID;
@@ -21,7 +23,7 @@ class InputEventHandlerTests extends Assertions {
 
     @Test
     void inputEventHandled() {
-        try (final ApplicationContext context = ApplicationContext.run()) {
+        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda())) {
             final EventHandler handler = context.getBean(InputEventHandler.class);
 
             final String eventAsString = "{\"name\":\"Steeven King\"}";
@@ -33,6 +35,8 @@ class InputEventHandlerTests extends Assertions {
             final String responseAsString = SubscriberUtils.getPublisherString(publisher);
             assertNotNull(responseAsString);
             assertTrue(responseAsString.contains("Hello - Steeven King"));
+        } catch (Exception e) {
+            fail(e);
         }
     }
 }

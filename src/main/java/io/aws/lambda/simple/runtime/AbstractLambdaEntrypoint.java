@@ -53,7 +53,7 @@ public abstract class AbstractLambdaEntrypoint {
      */
     @NotNull
     protected RuntimeContext getRuntimeContext(String[] args) {
-        return new SimpleRuntimeContext(args, getRequestHandler(args));
+        return new SimpleRuntimeContext(getRequestHandler(args));
     }
 
     @NotNull
