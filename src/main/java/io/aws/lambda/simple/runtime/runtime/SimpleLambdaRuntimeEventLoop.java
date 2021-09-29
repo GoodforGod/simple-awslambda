@@ -1,7 +1,7 @@
 package io.aws.lambda.simple.runtime.runtime;
 
 import io.aws.lambda.simple.runtime.config.RuntimeVariables;
-import io.aws.lambda.simple.runtime.config.SimpleLoggerRefresher;
+import io.aws.lambda.simple.runtime.config.SimpleLambdaDefaultLogLevelRefresher;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.LambdaContext;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
@@ -39,7 +39,7 @@ public final class SimpleLambdaRuntimeEventLoop {
      */
     public void execute(@NotNull Supplier<RuntimeContext> contextSupplier,
                         @NotNull Class<? extends EventHandler> eventHandlerType) {
-        SimpleLoggerRefresher.refresh();
+        SimpleLambdaDefaultLogLevelRefresher.refresh();
 
         final URI apiEndpoint = getRuntimeApiEndpoint();
         logger.debug("AWS Runtime API Endpoint URI: {}", apiEndpoint);
@@ -59,6 +59,7 @@ public final class SimpleLambdaRuntimeEventLoop {
             while (!Thread.currentThread().isInterrupted()) {
                 logger.trace("Invoking next event...");
                 final SimpleHttpResponse requestEvent = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
+                SimpleLambdaDefaultLogLevelRefresher.refresh();
                 logger.debug("Event received with httpCode '{}'", requestEvent.statusCode());
 
                 final LambdaContext requestContext = LambdaContext.ofHeadersMulti(requestEvent.headersMultiValues());
@@ -66,9 +67,7 @@ public final class SimpleLambdaRuntimeEventLoop {
                     throw new IllegalStateException("AWS Request ID is not present!");
 
                 logger.debug("Event received for {}", requestContext);
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Event headers: {}", requestEvent.headers());
-                }
+                logger.trace("Event headers: {}", requestEvent.headers());
 
                 processRequestEvent(requestEvent, requestContext, eventHandler, httpClient, apiEndpoint);
             }
