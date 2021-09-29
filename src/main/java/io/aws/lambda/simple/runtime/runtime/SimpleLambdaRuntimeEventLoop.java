@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public class SimpleLambdaRuntimeEventLoop {
+public final class SimpleLambdaRuntimeEventLoop {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleLambdaRuntimeEventLoop.class);
     private static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(11);

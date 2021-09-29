@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleLoggerRefresher {
 
-    private static final String LOGGING_ENV = "LAMBDA_LOGGING_LEVEL";
+    private static final String LOGGING_ENV = "SIMPLE_LAMBDA_DEFAULT_LOG_LEVEL";
     private static final String DEFAULT_LOGGING_PROPERTY = "org.slf4j.simpleLogger.defaultLogLevel";
 
     public enum LoggingLevel {

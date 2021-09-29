@@ -45,6 +45,6 @@ public class InputStreamSimpleHttpRequest implements SimpleHttpRequest {
 
     @Override
     public String toString() {
-        return "[inputStream=" + inputStream + ", headers=" + headers + ']';
+        return "[headers=" + headers + ']';
     }
 }

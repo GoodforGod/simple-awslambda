@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 14.06.2021
  */
-public class RequestFunction {
+public final class RequestFunction {
 
     private final Class<?> input;
     private final Class<?> output;

@@ -44,6 +44,6 @@ public class PublisherSimpleHttpRequest implements SimpleHttpRequest {
 
     @Override
     public String toString() {
-        return "[publisher=" + publisher + ", headers=" + headers + ']';
+        return "[headers=" + headers + ']';
     }
 }
