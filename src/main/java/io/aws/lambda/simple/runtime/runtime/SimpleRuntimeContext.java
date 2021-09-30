@@ -21,15 +21,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SimpleRuntimeContext implements RuntimeContext {
 
-    private final SimpleHttpClient httpClient = new NativeSimpleHttpClient();
-    private final Converter converter = new GsonConverter(new GsonConfiguration().builder().create());
+    private final SimpleHttpClient httpClient;
+    private final Converter converter;
     private final RequestHandler requestHandler;
+    private final EventHandler eventHandler;
 
-    private EventHandler eventHandler;
-
-    public SimpleRuntimeContext(@NotNull RequestHandler requestHandler) {
+    public SimpleRuntimeContext(@NotNull RequestHandler requestHandler,
+                                @NotNull Class<? extends EventHandler> eventHandlerType) {
         Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
+        this.httpClient = new NativeSimpleHttpClient();
+        this.converter = new GsonConverter(new GsonConfiguration().builder().create());
         this.requestHandler = requestHandler;
+        this.eventHandler = getEventHandler(eventHandlerType);
     }
 
     @SuppressWarnings("unchecked")
@@ -40,16 +43,6 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
 
         if (EventHandler.class.isAssignableFrom(beanType)) {
-            if (eventHandler == null) {
-                if (InputEventHandler.class.isAssignableFrom(beanType)) {
-                    this.eventHandler = new InputEventHandler(requestHandler, converter);
-                } else if (BodyEventHandler.class.isAssignableFrom(beanType)) {
-                    this.eventHandler = new BodyEventHandler(requestHandler, converter);
-                } else {
-                    throw new IllegalStateException("Unknown EventHandler type implementation: " + beanType);
-                }
-            }
-
             return (T) this.eventHandler;
         }
 
@@ -62,6 +55,16 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
 
         return null;
+    }
+
+    protected EventHandler getEventHandler(@NotNull Class<? extends EventHandler> eventHandlerType) {
+        if (InputEventHandler.class.isAssignableFrom(eventHandlerType)) {
+            return new InputEventHandler(requestHandler, converter);
+        } else if (BodyEventHandler.class.isAssignableFrom(eventHandlerType)) {
+            return new BodyEventHandler(requestHandler, converter);
+        } else {
+            throw new IllegalStateException("Unknown EventHandler type implementation: " + eventHandlerType);
+        }
     }
 
     @Override

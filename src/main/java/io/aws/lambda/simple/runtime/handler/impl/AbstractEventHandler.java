@@ -34,8 +34,9 @@ public abstract class AbstractEventHandler implements EventHandler {
                                                @NotNull Class<?> funcInputType,
                                                @NotNull Class<?> funcOutputType,
                                                @NotNull Context context) {
-        if (InputStream.class.equals(funcInputType))
+        if (InputStream.class.equals(funcInputType)) {
             return funcInputType;
+        }
 
         final String inputAsString = getInputAsString(funcInputValue);
         return getFunctionInput(inputAsString, funcInputType, funcOutputType, context);
@@ -47,8 +48,9 @@ public abstract class AbstractEventHandler implements EventHandler {
                                                @NotNull Context context) {
         logger.debug("Converting input to '{}' for {}", funcInputType.getName(), context);
 
-        if (String.class.equals(funcInputType))
+        if (String.class.equals(funcInputType)) {
             return funcInputValue;
+        }
 
         return converter.fromJson(funcInputValue, funcInputType);
     }
@@ -59,12 +61,13 @@ public abstract class AbstractEventHandler implements EventHandler {
                                        @NotNull Context context) {
         logger.debug("Converting output to '{}' for {}", funcOutputType.getName(), context);
 
-        if (funcOutValue == null)
+        if (funcOutValue == null) {
             return null;
-        if (funcOutValue instanceof InputStream)
+        } else if (funcOutValue instanceof InputStream) {
             return funcOutValue;
-        if (funcOutValue instanceof String)
+        } else if (funcOutValue instanceof String) {
             return funcOutValue;
+        }
 
         return converter.toJson(funcOutValue);
     }
@@ -75,9 +78,10 @@ public abstract class AbstractEventHandler implements EventHandler {
 
     protected <T extends RequestHandler> RequestFunction getFunctionArguments(T t) {
         final Class[] args = ReflectionUtils.resolveInterfaceTypeArguments(t.getClass(), RequestHandler.class);
-        if (args.length < 2)
+        if (args.length < 2) {
             throw new IllegalStateException(
                     "Lambda interface is not correctly implemented, interface generic types must be set for input and output!");
+        }
 
         return new RequestFunction(args[0], args[1]);
     }
@@ -87,14 +91,15 @@ public abstract class AbstractEventHandler implements EventHandler {
      * @return event wrapped in {@link Publisher}
      */
     protected @NotNull Publisher<ByteBuffer> getResponsePublisher(Object response) {
-        if (response == null)
+        if (response == null) {
             return HttpRequest.BodyPublishers.noBody();
-        if (response instanceof Publisher)
+        } else if (response instanceof Publisher) {
             return (Publisher<ByteBuffer>) response;
-        if (response instanceof InputStream)
+        } else if (response instanceof InputStream) {
             return HttpRequest.BodyPublishers.ofInputStream(() -> (InputStream) response);
-        if (response instanceof byte[])
+        } else if (response instanceof byte[]) {
             return HttpRequest.BodyPublishers.ofByteArray((byte[]) response);
+        }
 
         return HttpRequest.BodyPublishers.ofString(response.toString(), StandardCharsets.UTF_8);
     }

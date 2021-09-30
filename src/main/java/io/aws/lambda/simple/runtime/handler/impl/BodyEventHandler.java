@@ -110,8 +110,9 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         }
 
         final Object wrappedEvent = tryWrapEvent(funcOutValue, funcInputType);
-        if (wrappedEvent == null)
+        if (wrappedEvent == null) {
             return null;
+        }
 
         return converter.toJson(wrappedEvent);
     }
