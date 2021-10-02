@@ -3,7 +3,6 @@ package io.aws.lambda.simple.runtime;
 import io.aws.lambda.simple.runtime.example.HelloWorldLambda;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.LambdaContext;
-import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
 import io.aws.lambda.simple.runtime.runtime.SimpleRuntimeContext;
@@ -24,8 +23,8 @@ class InputEventHandlerTests extends Assertions {
 
     @Test
     void inputEventHandled() {
-        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda(), BodyEventHandler.class)) {
-            final EventHandler handler = context.getBean(InputEventHandler.class);
+        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda(), InputEventHandler.class)) {
+            final EventHandler handler = context.getBean(EventHandler.class);
 
             final String eventAsString = "{\"name\":\"Steeven King\"}";
             final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);

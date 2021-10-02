@@ -6,7 +6,6 @@ import io.aws.lambda.simple.runtime.example.HelloWorldLambda;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.LambdaContext;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
-import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.runtime.RuntimeContext;
 import io.aws.lambda.simple.runtime.runtime.SimpleRuntimeContext;
 import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
@@ -26,13 +25,13 @@ class BodyEventHandlerTests extends Assertions {
 
     @Test
     void bodyEventHandled() {
-        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda(), InputEventHandler.class)) {
-            final EventHandler handler = context.getBean(BodyEventHandler.class);
+        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda(), BodyEventHandler.class)) {
+            final EventHandler handler = context.getBean(EventHandler.class);
             final Converter converter = context.getBean(Converter.class);
 
             final String eventBody = "{\"name\":\"Steeven King\"}";
             final APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent().setBody(eventBody);
-            final String eventAsString = converter.toJson(event);
+            final String eventAsString = converter.toString(event);
             final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);
 
             final Publisher<ByteBuffer> publisher = handler.handle(inputStream, LambdaContext.ofRequestId(UUID.randomUUID().toString()));
