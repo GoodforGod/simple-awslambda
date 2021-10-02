@@ -44,7 +44,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
         final RequestFunction function = getFunctionArguments(requestHandler);
-        logger.debug("Function '{}' with input '{}' and output '{}'",
+        logger.debug("Function execution started '{}' with input '{}' and output '{}'",
                 requestHandler.getClass().getName(), function.getInput().getName(), function.getOutput().getName());
 
         final Object functionInput = getFunctionInput(eventStream, function.getInput(), function.getOutput(), context);
@@ -82,7 +82,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         if (BodyEvent.class.isAssignableFrom(funcInputType)) {
             eventBody = event;
         } else {
-            final BodyBase64Event<?> bodyEvent = converter.fromJson(event, BodyBase64Event.class);
+            final BodyBase64Event<?> bodyEvent = converter.fromString(event, BodyBase64Event.class);
             eventBody = (bodyEvent.isBase64Encoded()) ? bodyEvent.getBodyDecoded() : bodyEvent.getBody();
         }
 
@@ -114,7 +114,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
             return null;
         }
 
-        return converter.toJson(wrappedEvent);
+        return converter.toString(wrappedEvent);
     }
 
     /**

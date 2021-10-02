@@ -2,13 +2,13 @@ package io.aws.lambda.simple.runtime.runtime;
 
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.aws.lambda.simple.runtime.convert.Converter;
-import io.aws.lambda.simple.runtime.convert.impl.GsonConverter;
+import io.aws.lambda.simple.runtime.convert.gson.GsonConverter;
+import io.aws.lambda.simple.runtime.convert.gson.SimpleGsonFactory;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.BodyEventHandler;
 import io.aws.lambda.simple.runtime.handler.impl.InputEventHandler;
 import io.aws.lambda.simple.runtime.http.SimpleHttpClient;
 import io.aws.lambda.simple.runtime.http.nativeclient.NativeSimpleHttpClient;
-import io.gson.adapters.config.GsonConfiguration;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public class SimpleRuntimeContext implements RuntimeContext {
                                 @NotNull Class<? extends EventHandler> eventHandlerType) {
         Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
         this.httpClient = new NativeSimpleHttpClient();
-        this.converter = new GsonConverter(new GsonConfiguration().builder().create());
+        this.converter = new GsonConverter(new SimpleGsonFactory().getGson());
         this.requestHandler = requestHandler;
         this.eventHandler = getEventHandler(eventHandlerType);
     }

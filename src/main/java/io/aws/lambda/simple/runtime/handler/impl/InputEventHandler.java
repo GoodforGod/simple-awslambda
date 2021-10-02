@@ -35,7 +35,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
         final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
 
         final RequestFunction function = getFunctionArguments(requestHandler);
-        logger.debug("Function '{}' with input '{}' and output '{}'",
+        logger.debug("Function execution started '{}' with input '{}' and output '{}'",
                 requestHandler.getClass().getName(), function.getInput().getName(), function.getOutput().getName());
 
         final Object functionInput = getFunctionInput(eventStream, function.getInput(), function.getOutput(), context);

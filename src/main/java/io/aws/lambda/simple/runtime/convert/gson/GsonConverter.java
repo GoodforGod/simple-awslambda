@@ -1,4 +1,4 @@
-package io.aws.lambda.simple.runtime.convert.impl;
+package io.aws.lambda.simple.runtime.convert.gson;
 
 import com.google.gson.Gson;
 import io.aws.lambda.simple.runtime.convert.Converter;
@@ -7,7 +7,7 @@ import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link Gson} converter implementation
+ * JSON converter implementation based on {@link Gson}
  *
  * @author Anton Kurako (GoodforGod)
  * @since 22.3.2021
@@ -23,12 +23,12 @@ public class GsonConverter implements Converter {
     }
 
     @Override
-    public @NotNull <T> T fromJson(@NotNull String json, @NotNull Class<T> type) {
-        return gson.fromJson(json, type);
+    public @NotNull <T> T fromString(@NotNull String value, @NotNull Class<T> type) {
+        return gson.fromJson(value, type);
     }
 
     @Override
-    public String toJson(Object o) {
+    public String toString(Object o) {
         return gson.toJson(o);
     }
 }

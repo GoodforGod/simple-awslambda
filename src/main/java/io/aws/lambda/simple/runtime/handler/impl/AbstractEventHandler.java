@@ -5,6 +5,8 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.aws.lambda.simple.runtime.convert.Converter;
 import io.aws.lambda.simple.runtime.handler.EventHandler;
 import io.aws.lambda.simple.runtime.handler.RequestFunction;
+import io.aws.lambda.simple.runtime.http.SimpleHttpRequest;
+import io.aws.lambda.simple.runtime.http.SimpleHttpResponse;
 import io.aws.lambda.simple.runtime.utils.InputStreamUtils;
 import io.aws.lambda.simple.runtime.utils.ReflectionUtils;
 import java.io.InputStream;
@@ -52,7 +54,7 @@ public abstract class AbstractEventHandler implements EventHandler {
             return funcInputValue;
         }
 
-        return converter.fromJson(funcInputValue, funcInputType);
+        return converter.fromString(funcInputValue, funcInputType);
     }
 
     protected Object getFunctionOutput(Object funcOutValue,
@@ -67,9 +69,13 @@ public abstract class AbstractEventHandler implements EventHandler {
             return funcOutValue;
         } else if (funcOutValue instanceof String) {
             return funcOutValue;
+        } else if (funcOutValue instanceof SimpleHttpResponse) {
+            return ((SimpleHttpResponse) funcOutValue).body();
+        } else if (funcOutValue instanceof SimpleHttpRequest) {
+            return ((SimpleHttpRequest) funcOutValue).body();
         }
 
-        return converter.toJson(funcOutValue);
+        return converter.toString(funcOutValue);
     }
 
     protected String getInputAsString(InputStream inputStream) {
