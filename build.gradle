@@ -37,20 +37,18 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor "com.github.goodforgod:graalvm-hint-processor:0.9.0-SNAPSHOT"
+    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.9.0-SNAPSHOT"
 
+    implementation "io.goodforgod:graalvm-hint-annotations:0.9.0-SNAPSHOT"
+    implementation "io.goodforgod:gson-configuration:1.0.0-SNAPSHOT"
+    implementation "com.google.code.gson:gson:2.8.8"
+    implementation "org.jetbrains:annotations:22.0.0"
     implementation "jakarta.inject:jakarta.inject-api:2.0.0"
 
-    api "com.github.goodforgod:graalvm-hint-annotations:0.9.0-SNAPSHOT"
-    api "org.jetbrains:annotations:22.0.0"
-
-    api "org.slf4j:slf4j-api:1.7.32"
-    api "com.google.code.gson:gson:2.8.8"
-    api "com.github.goodforgod:gson-datetime-adapters:1.1.0"
-    api "com.github.goodforgod:uri-builder:1.0.0"
-
-    api "com.github.goodforgod:aws-lambda-java-events:1.0.0"
+    api "io.goodforgod:aws-lambda-java-events:1.0.0-SNAPSHOT"
+    api "io.goodforgod:uri-builder:1.0.0-SNAPSHOT"
     api "com.amazonaws:aws-lambda-java-core:1.2.1"
+    api "org.slf4j:slf4j-api:1.7.32"
 
     testRuntimeOnly "org.slf4j:slf4j-simple:1.7.30"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
@@ -115,7 +113,6 @@ publishing {
         }
     }
 }
-
 
 java {
     withJavadocJar()

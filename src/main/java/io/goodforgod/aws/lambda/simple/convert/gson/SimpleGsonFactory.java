@@ -1,7 +1,7 @@
 package io.goodforgod.aws.lambda.simple.convert.gson;
 
 import com.google.gson.Gson;
-import io.gson.adapters.config.GsonConfiguration;
+import io.goodforgod.gson.configuration.GsonConfiguration;
 import jakarta.inject.Singleton;
 import java.io.InputStream;
 import java.util.Properties;

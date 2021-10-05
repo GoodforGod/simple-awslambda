@@ -1,8 +1,8 @@
 package io.goodforgod.aws.lambda.simple.hint;
 
-import io.aws.lambda.events.BodyBase64Event;
-import io.aws.lambda.events.BodyEvent;
-import io.aws.lambda.events.gateway.*;
+import io.goodforgod.aws.lambda.events.BodyBase64Event;
+import io.goodforgod.aws.lambda.events.BodyEvent;
+import io.goodforgod.aws.lambda.events.gateway.*;
 import io.goodforgod.graalvm.hint.annotation.InitializationHint;
 import io.goodforgod.graalvm.hint.annotation.NativeImageHint;
 import io.goodforgod.graalvm.hint.annotation.TypeHint;

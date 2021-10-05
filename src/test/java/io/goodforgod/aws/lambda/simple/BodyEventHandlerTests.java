@@ -1,6 +1,6 @@
 package io.goodforgod.aws.lambda.simple;
 
-import io.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
+import io.goodforgod.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
 import io.goodforgod.aws.lambda.simple.example.HelloWorldLambda;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;

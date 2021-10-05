@@ -2,11 +2,11 @@ package io.goodforgod.aws.lambda.simple.handler.impl;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import io.aws.lambda.events.BodyBase64Event;
-import io.aws.lambda.events.BodyEvent;
-import io.aws.lambda.events.gateway.*;
-import io.aws.lambda.events.system.LoadBalancerRequest;
-import io.aws.lambda.events.system.LoadBalancerResponse;
+import io.goodforgod.aws.lambda.events.BodyBase64Event;
+import io.goodforgod.aws.lambda.events.BodyEvent;
+import io.goodforgod.aws.lambda.events.gateway.*;
+import io.goodforgod.aws.lambda.events.system.LoadBalancerRequest;
+import io.goodforgod.aws.lambda.events.system.LoadBalancerResponse;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
 import io.goodforgod.aws.lambda.simple.handler.RequestFunction;

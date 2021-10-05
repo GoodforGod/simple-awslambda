@@ -1,7 +1,7 @@
 package io.goodforgod.aws.lambda.simple.example.entrypoint;
 
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import io.aws.lambda.events.BodyEvent;
+import io.goodforgod.aws.lambda.events.BodyEvent;
 import io.goodforgod.aws.lambda.simple.AbstractLambdaEntrypoint;
 import io.goodforgod.aws.lambda.simple.example.HelloWorldLambda;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;

@@ -9,16 +9,16 @@ Allow building smallest and fastest native lambdas with DI support.
 **Gradle**
 ```groovy
 dependencies {
-    compile 'com.github.goodforgod:simple-lambda:0.9.0-SNAPSHOT'
+    implementation "io.goodforgod:simple-lambda:0.10.0-SNAPSHOT"
 }
 ```
 
 **Maven**
 ```xml
 <dependency>
-    <groupId>com.github.goodforgod</groupId>
+    <groupId>io.goodforgod</groupId>
     <artifactId>simple-lambda</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
 </dependency>
 ```
 
