@@ -2,10 +2,8 @@ package io.goodforgod.aws.lambda.simple.convert.gson;
 
 import com.google.gson.Gson;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
-import io.goodforgod.gson.configuration.GsonConfiguration;
+import io.goodforgod.gson.configuration.GsonFactory;
 import jakarta.inject.Singleton;
-import java.io.InputStream;
-import java.util.Properties;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,26 +16,10 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 public class GsonConverterPropertyFactory {
 
-    private static final String GSON_PROPERTIES = "gson.properties";
+    private final GsonFactory factory = new GsonFactory();
 
     @NotNull
     public Converter build() {
-        return new GsonConverter(getGsonConfiguration().builder().create());
-    }
-
-    private GsonConfiguration getGsonConfiguration() {
-        try {
-            try (InputStream resource = getClass().getClassLoader().getResourceAsStream(GSON_PROPERTIES)) {
-                if (resource != null) {
-                    final Properties properties = new Properties();
-                    properties.load(resource);
-                    return GsonConfiguration.ofProperties(properties);
-                } else {
-                    return new GsonConfiguration();
-                }
-            }
-        } catch (Exception e) {
-            return new GsonConfiguration();
-        }
+        return new GsonConverter(factory.build());
     }
 }

@@ -4,7 +4,7 @@ import io.goodforgod.aws.lambda.events.BodyBase64Event;
 import io.goodforgod.aws.lambda.events.BodyEvent;
 import io.goodforgod.aws.lambda.events.gateway.*;
 import io.goodforgod.graalvm.hint.annotation.InitializationHint;
-import io.goodforgod.graalvm.hint.annotation.NativeImageHint;
+import io.goodforgod.graalvm.hint.annotation.ResourceHint;
 import io.goodforgod.graalvm.hint.annotation.TypeHint;
 
 /**
@@ -21,6 +21,7 @@ import io.goodforgod.graalvm.hint.annotation.TypeHint;
                 APIGatewayV2HTTPEvent.class,
                 APIGatewayV2HTTPEvent.RequestContext.class,
                 APIGatewayV2HTTPEvent.RequestContext.Http.class,
+                APIGatewayV2HTTPEvent.RequestContext.IAM.class,
                 APIGatewayV2HTTPEvent.RequestContext.CognitoIdentity.class,
                 APIGatewayV2HTTPEvent.RequestContext.Authorizer.class,
                 APIGatewayV2HTTPEvent.RequestContext.Authorizer.JWT.class,
@@ -35,9 +36,14 @@ import io.goodforgod.graalvm.hint.annotation.TypeHint;
         })
 @InitializationHint(typeNames = {
         "io.goodforgod.aws.lambda.simple",
+        "io.goodforgod.gson.configuration",
+        "com.google.gson.Gson",
         "org.slf4j.impl",
         "org.slf4j.LoggerFactory"
 })
-@NativeImageHint(options = { "-H:+PrintClassInitialization", "-H:+InlineBeforeAnalysis" })
+@ResourceHint(patterns = {
+        "gson.properties",
+        "simplelogger.properties"
+})
 interface GraalVMHints {
 }
