@@ -2,8 +2,7 @@ package io.goodforgod.aws.lambda.simple.runtime;
 
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
-import io.goodforgod.aws.lambda.simple.convert.gson.GsonConverter;
-import io.goodforgod.aws.lambda.simple.convert.gson.SimpleGsonFactory;
+import io.goodforgod.aws.lambda.simple.convert.gson.GsonConverterPropertyFactory;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
 import io.goodforgod.aws.lambda.simple.handler.impl.BodyEventHandler;
 import io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler;
@@ -30,7 +29,7 @@ public class SimpleRuntimeContext implements RuntimeContext {
                                 @NotNull Class<? extends EventHandler> eventHandlerType) {
         Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
         this.httpClient = new NativeSimpleHttpClient();
-        this.converter = new GsonConverter(new SimpleGsonFactory().getGson());
+        this.converter = new GsonConverterPropertyFactory().build();
         this.requestHandler = requestHandler;
         this.eventHandler = getEventHandler(eventHandlerType);
     }

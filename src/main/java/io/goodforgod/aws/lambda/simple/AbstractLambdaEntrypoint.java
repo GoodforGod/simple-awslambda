@@ -6,6 +6,7 @@ import io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler;
 import io.goodforgod.aws.lambda.simple.runtime.RuntimeContext;
 import io.goodforgod.aws.lambda.simple.runtime.SimpleLambdaRuntimeEventLoop;
 import io.goodforgod.aws.lambda.simple.runtime.SimpleRuntimeContext;
+import java.util.Objects;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ public abstract class AbstractLambdaEntrypoint {
             final Supplier<RuntimeContext> runtimeContext = () -> getRuntimeContext(args);
             final Class<? extends EventHandler> handlerType = getEventHandlerType(args);
             final SimpleLambdaRuntimeEventLoop eventLoop = getDefaultRuntimeEventLoop();
+            Objects.requireNonNull(eventLoop, "Event loop runtime can't be nullable!");
+            Objects.requireNonNull(handlerType, "EventHandler can't be nullable!");
             eventLoop.execute(runtimeContext, handlerType);
         } catch (Exception e) {
             handleInitializationError(e);

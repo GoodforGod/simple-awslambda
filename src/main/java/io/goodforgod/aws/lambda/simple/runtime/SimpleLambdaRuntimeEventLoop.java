@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.Flow.Publisher;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
@@ -46,8 +47,12 @@ public final class SimpleLambdaRuntimeEventLoop {
 
         final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         try (final RuntimeContext context = contextSupplier.get()) {
+            Objects.requireNonNull(context, "RuntimeContext can't be nullable!");
+
             final EventHandler eventHandler = context.getBean(eventHandlerType);
             final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
+            Objects.requireNonNull(eventHandler, "EventHandler '" + eventHandlerType.getName() + "' implementation can't be nullable!");
+            Objects.requireNonNull(httpClient, "SimpleHttpClient implementation can't be nullable!");
 
             if (logger.isInfoEnabled()) {
                 logger.info("RuntimeContext startup took: {} millis", TimeUtils.timeTook(contextStart));
