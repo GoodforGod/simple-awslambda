@@ -6,7 +6,7 @@ package io.goodforgod.aws.lambda.simple.config;
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
  */
-public interface RuntimeVariables {
+public interface AwsRuntimeVariables {
 
     /**
      * AWS Lambda provides an HTTP API for custom runtimes to receive invocation

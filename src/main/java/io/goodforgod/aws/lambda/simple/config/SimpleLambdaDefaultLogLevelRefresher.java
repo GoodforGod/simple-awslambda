@@ -3,6 +3,7 @@ package io.goodforgod.aws.lambda.simple.config;
 import io.goodforgod.aws.lambda.simple.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 /**
  * Configures logging properties of {@link org.slf4j.Logger}
@@ -12,15 +13,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleLambdaDefaultLogLevelRefresher {
 
-    enum LoggingLevel {
-        TRACE,
-        DEBUG,
-        INFO,
-        WARN,
-        ERROR
-    }
-
-    private static final String LOGGING_ENV = "SIMPLE_LAMBDA_DEFAULT_LOG_LEVEL";
     private static final String DEFAULT_LOGGING_PROPERTY = "org.slf4j.simpleLogger.defaultLogLevel";
 
     private static String prevEnvLevel = null;
@@ -28,15 +20,17 @@ public class SimpleLambdaDefaultLogLevelRefresher {
     private SimpleLambdaDefaultLogLevelRefresher() {}
 
     public static void refresh() {
-        final String envLevel = System.getenv(LOGGING_ENV);
-        if (StringUtils.isEmpty(envLevel))
+        final String envLevel = System.getenv(SimpleLambdaContextVariables.LOGGING_LEVEL);
+        if (StringUtils.isEmpty(envLevel)) {
             return;
+        }
 
-        if (envLevel.equals(prevEnvLevel))
+        if (envLevel.equals(prevEnvLevel)) {
             return;
+        }
 
         try {
-            final LoggingLevel level = LoggingLevel.valueOf(envLevel);
+            final Level level = Level.valueOf(envLevel);
             System.setProperty(DEFAULT_LOGGING_PROPERTY, level.name().toLowerCase());
             prevEnvLevel = envLevel;
         } catch (IllegalArgumentException e) {

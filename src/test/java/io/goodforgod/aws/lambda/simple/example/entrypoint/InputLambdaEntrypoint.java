@@ -3,8 +3,9 @@ package io.goodforgod.aws.lambda.simple.example.entrypoint;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.lambda.simple.AbstractLambdaEntrypoint;
 import io.goodforgod.aws.lambda.simple.example.HelloWorldLambda;
-import io.goodforgod.aws.lambda.simple.handler.EventHandler;
 import io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler;
+import io.goodforgod.aws.lambda.simple.runtime.RuntimeContext;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,12 +22,12 @@ public class InputLambdaEntrypoint extends AbstractLambdaEntrypoint {
     }
 
     @Override
-    public @NotNull Class<? extends EventHandler> getEventHandlerType(String[] args) {
-        return InputEventHandler.class;
+    protected @NotNull Function<RuntimeContext, RequestHandler> getRequestHandler(String[] args) {
+        return context -> new HelloWorldLambda();
     }
 
     @Override
-    protected @NotNull RequestHandler getRequestHandler(String[] args) {
-        return new HelloWorldLambda();
+    public @NotNull String getEventHandler(String[] args) {
+        return InputEventHandler.QUALIFIER;
     }
 }

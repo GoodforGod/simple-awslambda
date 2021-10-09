@@ -23,8 +23,8 @@ class InputEventHandlerTests extends Assertions {
 
     @Test
     void inputEventHandled() {
-        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda(), InputEventHandler.class)) {
-            final EventHandler handler = context.getBean(EventHandler.class);
+        try (final RuntimeContext context = new SimpleRuntimeContext(c -> new HelloWorldLambda())) {
+            final EventHandler handler = context.getBean(InputEventHandler.class);
 
             final String eventAsString = "{\"name\":\"Steeven King\"}";
             final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);

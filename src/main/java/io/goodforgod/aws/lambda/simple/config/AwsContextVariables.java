@@ -8,7 +8,7 @@ package io.goodforgod.aws.lambda.simple.config;
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
  */
-public interface ContextVariables {
+public interface AwsContextVariables {
 
     /**
      * The handler location configured on the function.

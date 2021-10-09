@@ -4,8 +4,8 @@ import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import io.goodforgod.aws.lambda.simple.config.ContextVariables;
-import io.goodforgod.aws.lambda.simple.config.RuntimeVariables;
+import io.goodforgod.aws.lambda.simple.config.AwsContextVariables;
+import io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables;
 import io.goodforgod.aws.lambda.simple.utils.StringUtils;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class LambdaContext implements Context {
     }
 
     public static LambdaContext ofRequestId(@NotNull String requestId) {
-        return new LambdaContext(Map.of(RuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID, requestId));
+        return new LambdaContext(Map.of(AwsRuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID, requestId));
     }
 
     public static LambdaContext ofHeaders(@NotNull Map<String, String> headers) {
@@ -42,34 +42,38 @@ public class LambdaContext implements Context {
         return new LambdaContext(singleValueHeaders);
     }
 
+    public @NotNull Map<String, String> getHeaders() {
+        return headers;
+    }
+
     @Override
     public String getAwsRequestId() {
-        return headers.get(RuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID);
+        return headers.get(AwsRuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID);
     }
 
     @Override
     public String getLogGroupName() {
-        return getEnv(ContextVariables.AWS_LAMBDA_LOG_GROUP_NAME);
+        return getEnv(AwsContextVariables.AWS_LAMBDA_LOG_GROUP_NAME);
     }
 
     @Override
     public String getLogStreamName() {
-        return getEnv(ContextVariables.AWS_LAMBDA_LOG_STREAM_NAME);
+        return getEnv(AwsContextVariables.AWS_LAMBDA_LOG_STREAM_NAME);
     }
 
     @Override
     public String getFunctionName() {
-        return getEnv(ContextVariables.AWS_LAMBDA_FUNCTION_NAME);
+        return getEnv(AwsContextVariables.AWS_LAMBDA_FUNCTION_NAME);
     }
 
     @Override
     public String getFunctionVersion() {
-        return getEnv(ContextVariables.AWS_LAMBDA_FUNCTION_VERSION);
+        return getEnv(AwsContextVariables.AWS_LAMBDA_FUNCTION_VERSION);
     }
 
     @Override
     public String getInvokedFunctionArn() {
-        return headers.get(RuntimeVariables.LAMBDA_RUNTIME_INVOKED_FUNCTION_ARN);
+        return headers.get(AwsRuntimeVariables.LAMBDA_RUNTIME_INVOKED_FUNCTION_ARN);
     }
 
     @Override
@@ -84,7 +88,7 @@ public class LambdaContext implements Context {
 
     @Override
     public int getRemainingTimeInMillis() {
-        final String millis = headers.get(RuntimeVariables.LAMBDA_RUNTIME_DEADLINE_MS);
+        final String millis = headers.get(AwsRuntimeVariables.LAMBDA_RUNTIME_DEADLINE_MS);
         if (StringUtils.isEmpty(millis))
             return 0;
 
@@ -100,7 +104,7 @@ public class LambdaContext implements Context {
 
     @Override
     public int getMemoryLimitInMB() {
-        final String memory = getEnv(ContextVariables.AWS_LAMBDA_FUNCTION_MEMORY_SIZE);
+        final String memory = getEnv(AwsContextVariables.AWS_LAMBDA_FUNCTION_MEMORY_SIZE);
         if (StringUtils.isEmpty(memory))
             return 0;
 
@@ -135,6 +139,14 @@ public class LambdaContext implements Context {
 
     @Override
     public String toString() {
-        return "{\"AwsRequestID\":\"" + getAwsRequestId() + "\"}";
+        return "{\"AwsRequestID\":\"" + getAwsRequestId() + "\","
+                + "\"getLogGroupName\":\"" + getLogGroupName() + "\","
+                + "\"getLogStreamName\":\"" + getLogStreamName() + "\","
+                + "\"getFunctionName\":\"" + getFunctionName() + "\","
+                + "\"getFunctionVersion\":\"" + getFunctionVersion() + "\","
+                + "\"getInvokedFunctionArn\":\"" + getInvokedFunctionArn() + "\","
+                + "\"getRemainingTimeInMillis\":" + getRemainingTimeInMillis() + ","
+                + "\"getMemoryLimitInMB\":" + getMemoryLimitInMB() + ","
+                + "\"currentTime\":" + currentTime() + "}";
     }
 }

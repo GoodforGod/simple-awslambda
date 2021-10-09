@@ -4,6 +4,7 @@ import io.goodforgod.aws.lambda.simple.error.StatusException;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpClient;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpRequest;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpResponse;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.io.InputStream;
 import java.net.URI;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 27.10.2020
  */
+@Named("native")
 @Singleton
 public class NativeSimpleHttpClient implements SimpleHttpClient {
 

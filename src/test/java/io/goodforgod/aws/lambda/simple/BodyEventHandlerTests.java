@@ -25,8 +25,8 @@ class BodyEventHandlerTests extends Assertions {
 
     @Test
     void bodyEventHandled() {
-        try (final RuntimeContext context = new SimpleRuntimeContext(new HelloWorldLambda(), BodyEventHandler.class)) {
-            final EventHandler handler = context.getBean(EventHandler.class);
+        try (final RuntimeContext context = new SimpleRuntimeContext(c -> new HelloWorldLambda())) {
+            final EventHandler handler = context.getBean(BodyEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
 
             final String eventBody = "{\"name\":\"Steeven King\"}";

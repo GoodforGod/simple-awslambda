@@ -1,5 +1,7 @@
 package io.goodforgod.aws.lambda.simple.handler.impl;
 
+import static io.goodforgod.aws.lambda.simple.handler.impl.BodyEventHandler.QUALIFIER;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.lambda.events.BodyBase64Event;
@@ -13,6 +15,7 @@ import io.goodforgod.aws.lambda.simple.handler.RequestFunction;
 import io.goodforgod.aws.lambda.simple.http.nativeclient.StringSimpleHttpRequest;
 import io.goodforgod.aws.lambda.simple.utils.TimeUtils;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -26,8 +29,11 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
+@Named(QUALIFIER)
 @Singleton
 public class BodyEventHandler extends AbstractEventHandler implements EventHandler {
+
+    public static final String QUALIFIER = "body-event";
 
     private final RequestHandler requestHandler;
 
