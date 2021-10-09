@@ -9,6 +9,7 @@ import io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpClient;
 import io.goodforgod.aws.lambda.simple.http.nativeclient.NativeSimpleHttpClient;
 import java.util.Objects;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -23,26 +24,39 @@ public class SimpleRuntimeContext implements RuntimeContext {
     private final SimpleHttpClient httpClient;
     private final Converter converter;
     private final RequestHandler requestHandler;
-    private final EventHandler eventHandler;
+    private final InputEventHandler inputEventHandler;
+    private final BodyEventHandler bodyEventHandler;
 
-    public SimpleRuntimeContext(@NotNull RequestHandler requestHandler,
-                                @NotNull Class<? extends EventHandler> eventHandlerType) {
-        Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
+    public SimpleRuntimeContext(@NotNull Function<RuntimeContext, RequestHandler> requestHandlerFunction) {
+        Objects.requireNonNull(requestHandlerFunction, "RequestHandler can't be nullable!");
         this.httpClient = new NativeSimpleHttpClient();
         this.converter = new GsonConverterPropertyFactory().build();
-        this.requestHandler = requestHandler;
-        this.eventHandler = getEventHandler(eventHandlerType);
+        this.requestHandler = requestHandlerFunction.apply(this);
+        this.inputEventHandler = new InputEventHandler(requestHandler, converter);
+        this.bodyEventHandler = new BodyEventHandler(requestHandler, converter);
+    }
+
+    @Override
+    public <T> T getBean(@NotNull Class<T> beanType) {
+        return getBean(beanType, null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getBean(@NotNull Class<T> beanType) {
+    public <T> T getBean(@NotNull Class<T> beanType, String qualifier) {
         if (Converter.class.isAssignableFrom(beanType)) {
             return (T) converter;
         }
 
         if (EventHandler.class.isAssignableFrom(beanType)) {
-            return (T) this.eventHandler;
+            if (InputEventHandler.class.isAssignableFrom(beanType) || InputEventHandler.QUALIFIER.equals(qualifier)) {
+                return (T) this.inputEventHandler;
+            } else if (BodyEventHandler.class.isAssignableFrom(beanType) || BodyEventHandler.QUALIFIER.equals(qualifier)) {
+                return (T) this.bodyEventHandler;
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unknown EventHandler type is requested for qualifier: " + qualifier + ", and type " + beanType);
+            }
         }
 
         if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
@@ -54,16 +68,6 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
 
         return null;
-    }
-
-    protected EventHandler getEventHandler(@NotNull Class<? extends EventHandler> eventHandlerType) {
-        if (InputEventHandler.class.isAssignableFrom(eventHandlerType)) {
-            return new InputEventHandler(requestHandler, converter);
-        } else if (BodyEventHandler.class.isAssignableFrom(eventHandlerType)) {
-            return new BodyEventHandler(requestHandler, converter);
-        } else {
-            throw new IllegalStateException("Unknown EventHandler type implementation: " + eventHandlerType);
-        }
     }
 
     @Override

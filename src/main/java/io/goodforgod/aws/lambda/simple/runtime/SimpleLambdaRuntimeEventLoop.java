@@ -1,6 +1,6 @@
 package io.goodforgod.aws.lambda.simple.runtime;
 
-import io.goodforgod.aws.lambda.simple.config.RuntimeVariables;
+import io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables;
 import io.goodforgod.aws.lambda.simple.config.SimpleLambdaDefaultLogLevelRefresher;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
 import io.goodforgod.aws.lambda.simple.handler.LambdaContext;
@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Runtime event loop for AWS Lambda event handling
+ * Runtime event loop for AWS Lambda
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
@@ -35,11 +35,11 @@ public final class SimpleLambdaRuntimeEventLoop {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(11);
 
     /**
-     * @param contextSupplier  RuntimeContext instance supplier
-     * @param eventHandlerType type of EventHandler processor
+     * @param contextSupplier       RuntimeContext instance supplier
+     * @param eventHandlerQualifier to use for implementation injection
      */
     public void execute(@NotNull Supplier<RuntimeContext> contextSupplier,
-                        @NotNull Class<? extends EventHandler> eventHandlerType) {
+                        @NotNull String eventHandlerQualifier) {
         SimpleLambdaDefaultLogLevelRefresher.refresh();
 
         final URI apiEndpoint = getRuntimeApiEndpoint();
@@ -49,10 +49,10 @@ public final class SimpleLambdaRuntimeEventLoop {
         try (final RuntimeContext context = contextSupplier.get()) {
             Objects.requireNonNull(context, "RuntimeContext can't be nullable!");
 
-            final EventHandler eventHandler = context.getBean(eventHandlerType);
+            final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
             final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
-            Objects.requireNonNull(eventHandler, "EventHandler '" + eventHandlerType.getName() + "' implementation can't be nullable!");
-            Objects.requireNonNull(httpClient, "SimpleHttpClient implementation can't be nullable!");
+            Objects.requireNonNull(eventHandler, "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
+            Objects.requireNonNull(httpClient, "SimpleHttpClient implementation not found!");
 
             if (logger.isInfoEnabled()) {
                 logger.info("RuntimeContext startup took: {} millis", TimeUtils.timeTook(contextStart));
@@ -79,7 +79,7 @@ public final class SimpleLambdaRuntimeEventLoop {
         } catch (Exception e) {
             logger.error("Function Initialization error occurred", e);
             final SimpleHttpClient httpClient = new NativeSimpleHttpClient();
-            final URI errorUri = apiEndpoint.resolve(RuntimeVariables.INIT_ERROR);
+            final URI errorUri = apiEndpoint.resolve(AwsRuntimeVariables.INIT_ERROR);
             logger.debug("Responding to AWS Runtime Init Error URI: {}", errorUri);
             httpClient.postAndForget(errorUri, getErrorResponse(e), DEFAULT_TIMEOUT);
         }
@@ -125,7 +125,7 @@ public final class SimpleLambdaRuntimeEventLoop {
      *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationNextUri(URI apiEndpoint) {
-        return apiEndpoint.resolve(RuntimeVariables.INVOCATION_NEXT_URI);
+        return apiEndpoint.resolve(AwsRuntimeVariables.INVOCATION_NEXT_URI);
     }
 
     /**
@@ -138,7 +138,7 @@ public final class SimpleLambdaRuntimeEventLoop {
      *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationResponseUri(URI apiEndpoint, String requestId) {
-        return apiEndpoint.resolve(RuntimeVariables.INVOCATION_URI + requestId + "/response");
+        return apiEndpoint.resolve(AwsRuntimeVariables.INVOCATION_URI + requestId + "/response");
     }
 
     /**
@@ -152,13 +152,13 @@ public final class SimpleLambdaRuntimeEventLoop {
      *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationErrorUri(URI apiEndpoint, String requestId) {
-        return apiEndpoint.resolve(RuntimeVariables.INVOCATION_URI + requestId + "/error");
+        return apiEndpoint.resolve(AwsRuntimeVariables.INVOCATION_URI + requestId + "/error");
     }
 
     private static URI getRuntimeApiEndpoint() {
-        final String runtimeApiEndpoint = System.getenv(RuntimeVariables.AWS_LAMBDA_RUNTIME_API);
+        final String runtimeApiEndpoint = System.getenv(AwsRuntimeVariables.AWS_LAMBDA_RUNTIME_API);
         if (StringUtils.isEmpty(runtimeApiEndpoint))
-            throw new IllegalStateException("Missing '" + RuntimeVariables.AWS_LAMBDA_RUNTIME_API
+            throw new IllegalStateException("Missing '" + AwsRuntimeVariables.AWS_LAMBDA_RUNTIME_API
                     + "' environment variable. Custom runtime can only be run within AWS Lambda environment.");
 
         return URI.create("http://" + runtimeApiEndpoint);

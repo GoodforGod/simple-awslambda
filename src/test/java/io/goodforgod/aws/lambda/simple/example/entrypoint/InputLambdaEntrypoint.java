@@ -22,12 +22,12 @@ public class InputLambdaEntrypoint extends AbstractLambdaEntrypoint {
     }
 
     @Override
-    protected @NotNull Function<RuntimeContext, RequestHandler> getRequestHandler(String[] args) {
+    protected @NotNull Function<RuntimeContext, RequestHandler> getRequestHandler() {
         return context -> new HelloWorldLambda();
     }
 
     @Override
-    public @NotNull String getEventHandler(String[] args) {
+    public @NotNull String getEventHandlerQualifier() {
         return InputEventHandler.QUALIFIER;
     }
 }

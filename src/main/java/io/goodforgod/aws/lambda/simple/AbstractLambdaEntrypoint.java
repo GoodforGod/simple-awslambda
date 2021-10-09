@@ -7,6 +7,7 @@ import io.goodforgod.aws.lambda.simple.runtime.RuntimeContext;
 import io.goodforgod.aws.lambda.simple.runtime.SimpleLambdaRuntimeEventLoop;
 import io.goodforgod.aws.lambda.simple.runtime.SimpleRuntimeContext;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -22,45 +23,41 @@ public abstract class AbstractLambdaEntrypoint {
 
     protected void run(String[] args) {
         try {
-            final Supplier<RuntimeContext> runtimeContext = () -> getRuntimeContext(args);
-            final Class<? extends EventHandler> handlerType = getEventHandlerType(args);
-            final SimpleLambdaRuntimeEventLoop eventLoop = getDefaultRuntimeEventLoop();
+            final Supplier<RuntimeContext> runtimeContext = this::getRuntimeContext;
+            final String eventHandler = getEventHandlerQualifier();
+            final SimpleLambdaRuntimeEventLoop eventLoop = getLambdaRuntimeEventLoop();
             Objects.requireNonNull(eventLoop, "Event loop runtime can't be nullable!");
-            Objects.requireNonNull(handlerType, "EventHandler can't be nullable!");
-            eventLoop.execute(runtimeContext, handlerType);
+            eventLoop.execute(runtimeContext, eventHandler);
         } catch (Exception e) {
             handleInitializationError(e);
         }
     }
 
     /**
-     * @param args passed to entrypoint by AWS
      * @return {@link RequestHandler} implementation
      */
     @NotNull
-    protected abstract RequestHandler getRequestHandler(String[] args);
+    protected abstract Function<RuntimeContext, RequestHandler> getRequestHandler();
 
     /**
-     * @param args passed to entrypoint by AWS
      * @return Type of {@link EventHandler} implementation that will be responsible
      *         for handing event processing
      */
     @NotNull
-    protected Class<? extends EventHandler> getEventHandlerType(String[] args) {
-        return InputEventHandler.class;
+    protected String getEventHandlerQualifier() {
+        return InputEventHandler.QUALIFIER;
     }
 
     /**
-     * @param args passed to entrypoint by AWS
      * @return {@link RuntimeContext} implementation for Lambda
      */
     @NotNull
-    protected RuntimeContext getRuntimeContext(String[] args) {
-        return new SimpleRuntimeContext(getRequestHandler(args), getEventHandlerType(args));
+    protected RuntimeContext getRuntimeContext() {
+        return new SimpleRuntimeContext(getRequestHandler());
     }
 
     @NotNull
-    protected SimpleLambdaRuntimeEventLoop getDefaultRuntimeEventLoop() {
+    protected SimpleLambdaRuntimeEventLoop getLambdaRuntimeEventLoop() {
         return new SimpleLambdaRuntimeEventLoop();
     }
 
