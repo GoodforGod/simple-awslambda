@@ -40,7 +40,7 @@ public class OkHttpSimpleHttpClient implements SimpleHttpClient {
     public OkHttpSimpleHttpClient() {
         this(new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECTION_TIMEOUT)
-                .callTimeout(DEFAULT_TIMEOUT)
+                .callTimeout(DEFAULT_CONNECTION_TIMEOUT)
                 .writeTimeout(DEFAULT_TIMEOUT)
                 .readTimeout(DEFAULT_TIMEOUT)
                 .followRedirects(true)
