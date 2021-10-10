@@ -6,9 +6,9 @@ import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
+import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import io.goodforgod.aws.simplelambda.http.nativeclient.NativeSimpleHttpClient;
-import io.goodforgod.aws.simplelambda.http.nativeclient.PublisherSimpleHttpRequest;
-import io.goodforgod.aws.simplelambda.http.nativeclient.StringSimpleHttpRequest;
+import io.goodforgod.aws.simplelambda.http.nativeclient.PublisherHttpRequest;
 import io.goodforgod.aws.simplelambda.utils.StringUtils;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
 import java.io.InputStream;
@@ -93,7 +93,7 @@ public final class SimpleLambdaRuntimeEventLoop {
             logger.debug("Responding to AWS Invocation URI: {}", responseUri);
             final long respondingStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
 
-            final SimpleHttpRequest responseHttpEvent = PublisherSimpleHttpRequest.ofPublisher(responsePublisher);
+            final SimpleHttpRequest responseHttpEvent = PublisherHttpRequest.ofPublisher(responsePublisher);
             final SimpleHttpResponse awsResponse = httpClient.post(responseUri, responseHttpEvent, DEFAULT_TIMEOUT);
             if (logger.isDebugEnabled()) {
                 logger.debug("Responding to AWS Invocation took: {} millis", TimeUtils.timeTook(respondingStart));
@@ -162,6 +162,6 @@ public final class SimpleLambdaRuntimeEventLoop {
 
     private static SimpleHttpRequest getErrorResponse(Throwable e) {
         final String body = "{\"errorMessage\":\"" + e.getMessage() + "\", \"errorType\":\"" + e.getClass().getSimpleName() + "\"}";
-        return StringSimpleHttpRequest.ofJson(body);
+        return StringHttpRequest.ofJson(body);
     }
 }

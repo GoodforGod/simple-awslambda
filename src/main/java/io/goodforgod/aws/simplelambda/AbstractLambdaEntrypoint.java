@@ -6,6 +6,7 @@ import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
 import io.goodforgod.aws.simplelambda.runtime.SimpleLambdaRuntimeEventLoop;
 import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
+import io.goodforgod.aws.simplelambda.utils.TimeUtils;
 import java.util.Objects;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +21,21 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractLambdaEntrypoint {
 
-    private final RuntimeContext runtimeContext = getRuntimeContext();
-    private final SimpleLambdaRuntimeEventLoop eventLoop = getLambdaRuntimeEventLoop();
+    private static final Logger logger = LoggerFactory.getLogger(AbstractLambdaEntrypoint.class);
+
+    private final RuntimeContext runtimeContext;
+    private final SimpleLambdaRuntimeEventLoop eventLoop;
+
+    protected AbstractLambdaEntrypoint() {
+        final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+
+        this.runtimeContext = getRuntimeContext();
+        this.eventLoop = getLambdaRuntimeEventLoop();
+
+        if (logger.isInfoEnabled()) {
+            logger.info("RuntimeContext startup took: {} millis", TimeUtils.timeTook(contextStart));
+        }
+    }
 
     protected void run(String[] args) {
         try {

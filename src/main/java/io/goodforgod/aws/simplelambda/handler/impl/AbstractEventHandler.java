@@ -79,7 +79,7 @@ public abstract class AbstractEventHandler implements EventHandler {
     }
 
     protected String getInputAsString(InputStream inputStream) {
-        return InputStreamUtils.getStringUTF8FromInputStream(inputStream);
+        return InputStreamUtils.getStringFromInputStreamUTF8(inputStream);
     }
 
     protected <T extends RequestHandler> RequestFunction getFunctionArguments(T t) {

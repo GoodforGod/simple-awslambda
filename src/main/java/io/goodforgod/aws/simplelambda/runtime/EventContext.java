@@ -24,7 +24,8 @@ public final class EventContext implements Context {
     private final Map<String, String> headers;
 
     private EventContext(@NotNull Map<String, String> headers) {
-        this.headers = Map.copyOf(headers);
+        this.headers = Map.copyOf(headers.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().toLowerCase(), Map.Entry::getValue)));
     }
 
     public static EventContext ofRequestId(@NotNull String requestId) {

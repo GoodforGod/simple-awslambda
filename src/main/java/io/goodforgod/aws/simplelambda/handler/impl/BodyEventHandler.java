@@ -12,7 +12,7 @@ import io.goodforgod.aws.lambda.events.system.LoadBalancerResponse;
 import io.goodforgod.aws.simplelambda.convert.Converter;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.RequestFunction;
-import io.goodforgod.aws.simplelambda.http.nativeclient.StringSimpleHttpRequest;
+import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -141,19 +141,19 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         if (LoadBalancerRequest.class.isAssignableFrom(funcInputType)) {
             return new LoadBalancerResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+                    .setHeaders(StringHttpRequest.JSON_HEADERS);
         } else if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayProxyResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+                    .setHeaders(StringHttpRequest.JSON_HEADERS);
         } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2HTTPResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+                    .setHeaders(StringHttpRequest.JSON_HEADERS);
         } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2WebSocketResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringSimpleHttpRequest.JSON_HEADERS);
+                    .setHeaders(StringHttpRequest.JSON_HEADERS);
         }
 
         return funcOutValue;

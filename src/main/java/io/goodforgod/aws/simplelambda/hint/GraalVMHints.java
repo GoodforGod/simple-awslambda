@@ -35,13 +35,13 @@ import io.goodforgod.graalvm.hint.annotation.TypeHint;
                 BodyBase64Event.class
         })
 @InitializationHint(typeNames = {
-        "io.goodforgod.aws.lambda.simple",
+        "io.goodforgod.aws.simplelambda",
         "io.goodforgod.gson.configuration",
-        "com.google.gson.Gson",
         "io.goodforgod.slf4j.simplelogger",
+        "com.google.gson",
         "org.slf4j.impl",
         "org.slf4j.LoggerFactory"
-})
+}, value = InitializationHint.InitPhase.BUILD)
 @ResourceHint(patterns = {
         "gson.properties",
         "simplelogger.properties"

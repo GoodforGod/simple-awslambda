@@ -4,7 +4,6 @@ import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
-import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

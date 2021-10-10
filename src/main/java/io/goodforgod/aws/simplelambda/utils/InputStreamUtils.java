@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -15,9 +16,13 @@ public final class InputStreamUtils {
 
     private InputStreamUtils() {}
 
-    public static String getStringUTF8FromInputStream(InputStream inputStream) {
+    public static String getStringFromInputStreamUTF8(InputStream inputStream) {
+        return getStringFromInputStream(inputStream, StandardCharsets.UTF_8);
+    }
+
+    public static String getStringFromInputStream(InputStream inputStream, Charset charset) {
         try {
-            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            return new String(inputStream.readAllBytes(), charset);
         } catch (IOException e) {
             throw new LambdaException(e);
         }

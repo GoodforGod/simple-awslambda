@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 22.08.2021
  */
-public final class SimpleRuntimeContext implements RuntimeContext {
+public class SimpleRuntimeContext implements RuntimeContext {
 
-    private final SimpleHttpClient httpClient;
+    private SimpleHttpClient mainHttpClient;
     private final Converter converter;
     private final RequestHandler requestHandler;
     private final InputEventHandler inputEventHandler;
@@ -29,7 +29,6 @@ public final class SimpleRuntimeContext implements RuntimeContext {
 
     public SimpleRuntimeContext(@NotNull Function<RuntimeContext, RequestHandler> requestHandlerFunction) {
         Objects.requireNonNull(requestHandlerFunction, "RequestHandler can't be nullable!");
-        this.httpClient = new NativeSimpleHttpClient();
         this.converter = new GsonConverterPropertyFactory().build();
         this.requestHandler = requestHandlerFunction.apply(this);
         this.inputEventHandler = new InputEventHandler(requestHandler, converter);
@@ -53,6 +52,8 @@ public final class SimpleRuntimeContext implements RuntimeContext {
                 return (T) this.inputEventHandler;
             } else if (BodyEventHandler.class.isAssignableFrom(beanType) || BodyEventHandler.QUALIFIER.equals(qualifier)) {
                 return (T) this.bodyEventHandler;
+            } else if (EventHandler.class.equals(beanType) && qualifier == null) {
+                return (T) this.inputEventHandler;
             } else {
                 throw new UnsupportedOperationException(
                         "Unknown EventHandler type is requested for qualifier: " + qualifier + ", and type " + beanType);
@@ -60,7 +61,18 @@ public final class SimpleRuntimeContext implements RuntimeContext {
         }
 
         if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
-            return (T) httpClient;
+            if (NativeSimpleHttpClient.class.isAssignableFrom(beanType) || NativeSimpleHttpClient.QUALIFIER.equals(qualifier)) {
+                if (mainHttpClient == null) {
+                    this.mainHttpClient = new NativeSimpleHttpClient();
+                }
+
+                return (T) this.mainHttpClient;
+            } else if (SimpleHttpClient.class.equals(beanType) && qualifier == null) {
+                return (T) this.mainHttpClient;
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unknown SimpleHttpClient type is requested for qualifier: " + qualifier + ", and type " + beanType);
+            }
         }
 
         if (RequestHandler.class.isAssignableFrom(beanType)) {
