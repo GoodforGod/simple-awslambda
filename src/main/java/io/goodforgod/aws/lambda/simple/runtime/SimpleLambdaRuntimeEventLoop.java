@@ -1,9 +1,8 @@
 package io.goodforgod.aws.lambda.simple.runtime;
 
+import com.amazonaws.services.lambda.runtime.Context;
 import io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables;
-import io.goodforgod.aws.lambda.simple.config.SimpleLambdaDefaultLogLevelRefresher;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
-import io.goodforgod.aws.lambda.simple.handler.LambdaContext;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpClient;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpRequest;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpResponse;
@@ -18,7 +17,6 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Flow.Publisher;
-import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,18 +33,18 @@ public final class SimpleLambdaRuntimeEventLoop {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(11);
 
     /**
-     * @param contextSupplier       RuntimeContext instance supplier
+     * @param runtimeContext        RuntimeContext instance supplier
      * @param eventHandlerQualifier to use for implementation injection
      */
-    public void execute(@NotNull Supplier<RuntimeContext> contextSupplier,
+    public void execute(@NotNull RuntimeContext runtimeContext,
                         @NotNull String eventHandlerQualifier) {
-        SimpleLambdaDefaultLogLevelRefresher.refresh();
+        SimpleLoggerLogLevelRefresher.refresh();
 
         final URI apiEndpoint = getRuntimeApiEndpoint();
         logger.debug("AWS Runtime API Endpoint URI: {}", apiEndpoint);
 
         final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
-        try (final RuntimeContext context = contextSupplier.get()) {
+        try (final RuntimeContext context = runtimeContext) {
             Objects.requireNonNull(context, "RuntimeContext can't be nullable!");
 
             final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
@@ -64,16 +62,14 @@ public final class SimpleLambdaRuntimeEventLoop {
             while (!Thread.currentThread().isInterrupted()) {
                 logger.trace("Invoking next event...");
                 final SimpleHttpResponse requestEvent = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
-                SimpleLambdaDefaultLogLevelRefresher.refresh();
-                logger.debug("Event received with httpCode '{}'", requestEvent.statusCode());
+                SimpleLoggerLogLevelRefresher.refresh();
+                logger.trace("Event received with httpCode '{}' with headers: {}", requestEvent.statusCode(), requestEvent.headers());
 
-                final LambdaContext requestContext = LambdaContext.ofHeadersMulti(requestEvent.headersMultiValues());
+                final Context requestContext = LambdaContext.ofHeadersMulti(requestEvent.headersMultiValues());
                 if (StringUtils.isEmpty(requestContext.getAwsRequestId()))
                     throw new IllegalStateException("AWS Request ID is not present!");
 
-                logger.debug("Event received for {}", requestContext);
-                logger.trace("Event headers: {}", requestEvent.headers());
-
+                logger.debug("Event received with RequestContext: {}", requestContext);
                 processRequestEvent(requestEvent, requestContext, eventHandler, httpClient, apiEndpoint);
             }
         } catch (Exception e) {
@@ -86,7 +82,7 @@ public final class SimpleLambdaRuntimeEventLoop {
     }
 
     private void processRequestEvent(SimpleHttpResponse httpRequest,
-                                     LambdaContext requestContext,
+                                     Context requestContext,
                                      EventHandler eventHandler,
                                      SimpleHttpClient httpClient,
                                      URI apiEndpoint) {
@@ -103,9 +99,9 @@ public final class SimpleLambdaRuntimeEventLoop {
                 logger.debug("Responding to AWS Invocation took: {} millis", TimeUtils.timeTook(respondingStart));
             }
 
-            if (logger.isDebugEnabled()) {
+            if (logger.isTraceEnabled()) {
                 final String responseBody = awsResponse.bodyAsString();
-                logger.debug("AWS Invocation responded with httpCode '{}' and body: {}",
+                logger.trace("AWS Invocation responded with httpCode '{}' and body: {}",
                         awsResponse.statusCode(), responseBody);
             }
         } catch (Exception e) {

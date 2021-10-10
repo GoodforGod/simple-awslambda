@@ -2,8 +2,8 @@ package io.goodforgod.aws.lambda.simple;
 
 import io.goodforgod.aws.lambda.simple.example.HelloWorldLambda;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
-import io.goodforgod.aws.lambda.simple.handler.LambdaContext;
 import io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler;
+import io.goodforgod.aws.lambda.simple.runtime.LambdaContext;
 import io.goodforgod.aws.lambda.simple.runtime.RuntimeContext;
 import io.goodforgod.aws.lambda.simple.runtime.SimpleRuntimeContext;
 import io.goodforgod.aws.lambda.simple.utils.InputStreamUtils;

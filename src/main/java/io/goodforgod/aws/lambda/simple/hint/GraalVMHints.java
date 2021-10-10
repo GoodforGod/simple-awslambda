@@ -38,6 +38,7 @@ import io.goodforgod.graalvm.hint.annotation.TypeHint;
         "io.goodforgod.aws.lambda.simple",
         "io.goodforgod.gson.configuration",
         "com.google.gson.Gson",
+        "io.goodforgod.slf4j.simplelogger",
         "org.slf4j.impl",
         "org.slf4j.LoggerFactory"
 })

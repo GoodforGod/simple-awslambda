@@ -1,4 +1,4 @@
-package io.goodforgod.aws.lambda.simple.handler;
+package io.goodforgod.aws.lambda.simple.runtime;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;

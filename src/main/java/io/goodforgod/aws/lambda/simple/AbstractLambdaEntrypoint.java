@@ -8,7 +8,6 @@ import io.goodforgod.aws.lambda.simple.runtime.SimpleLambdaRuntimeEventLoop;
 import io.goodforgod.aws.lambda.simple.runtime.SimpleRuntimeContext;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +20,12 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractLambdaEntrypoint {
 
+    private final RuntimeContext runtimeContext = getRuntimeContext();
+    private final SimpleLambdaRuntimeEventLoop eventLoop = getLambdaRuntimeEventLoop();
+
     protected void run(String[] args) {
         try {
-            final Supplier<RuntimeContext> runtimeContext = this::getRuntimeContext;
             final String eventHandler = getEventHandlerQualifier();
-            final SimpleLambdaRuntimeEventLoop eventLoop = getLambdaRuntimeEventLoop();
             Objects.requireNonNull(eventLoop, "Event loop runtime can't be nullable!");
             eventLoop.execute(runtimeContext, eventHandler);
         } catch (Exception e) {
