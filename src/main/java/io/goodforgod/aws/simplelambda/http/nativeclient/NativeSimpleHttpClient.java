@@ -116,7 +116,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
     private SimpleHttpResponse sendAndGetResponse(HttpRequest request) {
         try {
             final HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
-            return new InputStreamNativeHttpResponse(response);
+            return InputStreamNativeHttpResponse.of(response);
         } catch (Exception e) {
             throw new StatusException(500, e);
         }
@@ -125,7 +125,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
     private SimpleHttpResponse sendAndDiscardResponse(HttpRequest request) {
         try {
             final HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
-            return new NativeVoidHttpResponse(response);
+            return NativeVoidHttpResponse.of(response);
         } catch (Exception e) {
             throw new StatusException(500, e);
         }
@@ -133,11 +133,11 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
 
     private CompletableFuture<SimpleHttpResponse> sendAndGetResponseAsync(HttpRequest request) {
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
-                .thenApply(InputStreamNativeHttpResponse::new);
+                .thenApply(InputStreamNativeHttpResponse::of);
     }
 
     private CompletableFuture<SimpleHttpResponse> sendAndDiscardResponseAsync(HttpRequest request) {
         return client.sendAsync(request, HttpResponse.BodyHandlers.discarding())
-                .thenApply(NativeVoidHttpResponse::new);
+                .thenApply(NativeVoidHttpResponse::of);
     }
 }

@@ -1,6 +1,8 @@
 package io.goodforgod.aws.simplelambda.http;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +29,15 @@ public interface SimpleHttpResponse {
      * @return body as String
      */
     @NotNull
-    String bodyAsString();
+    default String bodyAsString() {
+        return bodyAsString(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * @return body as String
+     */
+    @NotNull
+    String bodyAsString(Charset charset);
 
     /**
      * @return http header multi map

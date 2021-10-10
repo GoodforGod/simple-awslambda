@@ -1,12 +1,10 @@
 package io.goodforgod.aws.simplelambda.http.nativeclient;
 
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
+import io.goodforgod.aws.simplelambda.http.common.AbstractHttpResponse;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.nio.charset.Charset;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,17 +14,14 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 20.08.2020
  */
-public final class NativeVoidHttpResponse implements SimpleHttpResponse {
+public final class NativeVoidHttpResponse extends AbstractHttpResponse {
 
-    private final HttpResponse<Void> httpResponse;
-
-    public NativeVoidHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
-        this.httpResponse = httpResponse;
+    private NativeVoidHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
+        super(httpResponse.statusCode(), httpResponse.headers().map());
     }
 
-    @Override
-    public int statusCode() {
-        return httpResponse.statusCode();
+    public static NativeVoidHttpResponse of(@NotNull HttpResponse<Void> httpResponse) {
+        return new NativeVoidHttpResponse(httpResponse);
     }
 
     @Override
@@ -35,29 +30,7 @@ public final class NativeVoidHttpResponse implements SimpleHttpResponse {
     }
 
     @Override
-    public @NotNull String bodyAsString() {
+    public @NotNull String bodyAsString(Charset charset) {
         return "";
-    }
-
-    @Override
-    public @NotNull Map<String, List<String>> headersMultiValues() {
-        return httpResponse.headers().map();
-    }
-
-    @Override
-    public @NotNull Map<String, String> headers() {
-        return headersMultiValues().entrySet().stream()
-                .filter(e -> !e.getValue().isEmpty())
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().iterator().next()));
-    }
-
-    @Override
-    public Optional<String> headerFirst(@NotNull String name) {
-        return httpResponse.headers().firstValue(name);
-    }
-
-    @Override
-    public String toString() {
-        return httpResponse.toString();
     }
 }

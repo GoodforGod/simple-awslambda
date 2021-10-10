@@ -4,6 +4,7 @@ import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
 import io.goodforgod.aws.simplelambda.utils.InputStreamUtils;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public final class InputStreamHttpResponse extends AbstractHttpResponse {
      * @return body as {@link java.nio.charset.StandardCharsets#UTF_8} String
      */
     @Override
-    public @NotNull String bodyAsString() {
-        return InputStreamUtils.getStringFromInputStreamUTF8(body());
+    public @NotNull String bodyAsString(Charset charset) {
+        return InputStreamUtils.getStringFromInputStream(body(), charset);
     }
 }

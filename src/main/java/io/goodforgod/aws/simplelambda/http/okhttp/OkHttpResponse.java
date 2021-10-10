@@ -56,8 +56,10 @@ public class OkHttpResponse implements SimpleHttpResponse {
     }
 
     @Override
-    public @NotNull String bodyAsString() {
-        return (body == null) ? "" : InputStreamUtils.getStringFromInputStream(body, responseCharset);
+    public @NotNull String bodyAsString(Charset charset) {
+        return (body == null)
+                ? ""
+                : InputStreamUtils.getStringFromInputStream(body, responseCharset);
     }
 
     @Override

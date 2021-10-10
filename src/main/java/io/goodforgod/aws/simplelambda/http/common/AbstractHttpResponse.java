@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 10.10.2021
  */
-abstract class AbstractHttpResponse implements SimpleHttpResponse {
+public abstract class AbstractHttpResponse implements SimpleHttpResponse {
 
     private final int statusCode;
     private final Map<String, List<String>> headers;
 
-    AbstractHttpResponse(int statusCode, Map<String, List<String>> headers) {
+    protected AbstractHttpResponse(int statusCode, Map<String, List<String>> headers) {
         this.statusCode = statusCode;
         this.headers = (headers == null)
                 ? Collections.emptyMap()
@@ -52,5 +52,10 @@ abstract class AbstractHttpResponse implements SimpleHttpResponse {
         return Optional.ofNullable(headers.get(name))
                 .filter(v -> !v.isEmpty())
                 .map(v -> v.get(0));
+    }
+
+    @Override
+    public String toString() {
+        return headers.toString();
     }
 }

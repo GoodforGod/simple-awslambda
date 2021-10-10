@@ -1,6 +1,7 @@
 package io.goodforgod.aws.simplelambda.http.common;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public final class EmptyHttpResponse extends AbstractHttpResponse {
     }
 
     @Override
-    public @NotNull String bodyAsString() {
+    public @NotNull String bodyAsString(Charset charset) {
         return "";
     }
 }
