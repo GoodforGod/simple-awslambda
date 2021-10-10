@@ -65,7 +65,7 @@ public final class SimpleLambdaRuntimeEventLoop {
                 SimpleLoggerLogLevelRefresher.refresh();
                 logger.trace("Event received with httpCode '{}' with headers: {}", requestEvent.statusCode(), requestEvent.headers());
 
-                final Context requestContext = LambdaContext.ofHeadersMulti(requestEvent.headersMultiValues());
+                final Context requestContext = EventContext.ofHeadersMulti(requestEvent.headersMultiValues());
                 if (StringUtils.isEmpty(requestContext.getAwsRequestId()))
                     throw new IllegalStateException("AWS Request ID is not present!");
 

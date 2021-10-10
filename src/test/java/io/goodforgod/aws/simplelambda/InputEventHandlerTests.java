@@ -3,7 +3,7 @@ package io.goodforgod.aws.simplelambda;
 import io.goodforgod.aws.simplelambda.example.HelloWorldLambda;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
-import io.goodforgod.aws.simplelambda.runtime.LambdaContext;
+import io.goodforgod.aws.simplelambda.runtime.EventContext;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
 import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import io.goodforgod.aws.simplelambda.utils.InputStreamUtils;
@@ -29,7 +29,7 @@ class InputEventHandlerTests extends Assertions {
             final String eventAsString = "{\"name\":\"Steeven King\"}";
             final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);
 
-            final Publisher<ByteBuffer> publisher = handler.handle(inputStream, LambdaContext.ofRequestId(UUID.randomUUID().toString()));
+            final Publisher<ByteBuffer> publisher = handler.handle(inputStream, EventContext.ofRequestId(UUID.randomUUID().toString()));
             assertNotNull(publisher);
 
             final String responseAsString = SubscriberUtils.getPublisherString(publisher);

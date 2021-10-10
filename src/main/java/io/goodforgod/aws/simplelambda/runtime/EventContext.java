@@ -6,6 +6,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import io.goodforgod.aws.simplelambda.config.AwsContextVariables;
 import io.goodforgod.aws.simplelambda.config.AwsRuntimeVariables;
+import io.goodforgod.aws.simplelambda.config.SimpleLambdaContextVariables;
 import io.goodforgod.aws.simplelambda.utils.StringUtils;
 import java.util.List;
 import java.util.Map;
@@ -18,28 +19,28 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
  */
-public class LambdaContext implements Context {
+public class EventContext implements Context {
 
     private final Map<String, String> headers;
 
-    private LambdaContext(@NotNull Map<String, String> headers) {
+    private EventContext(@NotNull Map<String, String> headers) {
         this.headers = Map.copyOf(headers);
     }
 
-    public static LambdaContext ofRequestId(@NotNull String requestId) {
-        return new LambdaContext(Map.of(AwsRuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID, requestId));
+    public static EventContext ofRequestId(@NotNull String requestId) {
+        return new EventContext(Map.of(AwsRuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID, requestId));
     }
 
-    public static LambdaContext ofHeaders(@NotNull Map<String, String> headers) {
-        return new LambdaContext(headers);
+    public static EventContext ofHeaders(@NotNull Map<String, String> headers) {
+        return new EventContext(headers);
     }
 
-    public static LambdaContext ofHeadersMulti(@NotNull Map<String, List<String>> headers) {
+    public static EventContext ofHeadersMulti(@NotNull Map<String, List<String>> headers) {
         final Map<String, String> singleValueHeaders = headers.entrySet().stream()
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().iterator().next()));
 
-        return new LambdaContext(singleValueHeaders);
+        return new EventContext(singleValueHeaders);
     }
 
     public @NotNull Map<String, String> getHeaders() {
@@ -140,13 +141,20 @@ public class LambdaContext implements Context {
     @Override
     public String toString() {
         return "{\"AwsRequestID\":\"" + getAwsRequestId() + "\","
-                + "\"getLogGroupName\":\"" + getLogGroupName() + "\","
-                + "\"getLogStreamName\":\"" + getLogStreamName() + "\","
-                + "\"getFunctionName\":\"" + getFunctionName() + "\","
-                + "\"getFunctionVersion\":\"" + getFunctionVersion() + "\","
-                + "\"getInvokedFunctionArn\":\"" + getInvokedFunctionArn() + "\","
-                + "\"getRemainingTimeInMillis\":" + getRemainingTimeInMillis() + ","
-                + "\"getMemoryLimitInMB\":" + getMemoryLimitInMB() + ","
+                + formatOrEmpty("\"requestHandler\":\"", getEnv(SimpleLambdaContextVariables.REQUEST_HANDLER), "\",")
+                + formatOrEmpty("\"eventHandler\":\"", getEnv(SimpleLambdaContextVariables.EVENT_HANDLER), "\",")
+                + formatOrEmpty("\"getLogStreamName\":\"", getLogStreamName(), "\",")
+                + formatOrEmpty("\"getLogGroupName\":\"", getLogGroupName(), "\",")
+                + formatOrEmpty("\"getLogStreamName\":\"", getLogStreamName(), "\",")
+                + formatOrEmpty("\"getFunctionName\":\"", getFunctionName(), "\",")
+                + formatOrEmpty("\"getFunctionVersion\":\"", getFunctionVersion(), "\",")
+                + formatOrEmpty("\"getInvokedFunctionArn\":\"", getInvokedFunctionArn(), "\",")
+                + formatOrEmpty("\"getRemainingTimeInMillis\":", getRemainingTimeInMillis(), ",")
+                + formatOrEmpty("\"getMemoryLimitInMB\":", getMemoryLimitInMB(), ",")
                 + "\"currentTime\":" + currentTime() + "}";
+    }
+
+    private String formatOrEmpty(String prefix, Object value, String suffix) {
+        return (value == null) ? "" : prefix + value + suffix;
     }
 }
