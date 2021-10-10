@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @author Anton Kurako (GoodforGod)
  * @since 22.08.2021
  */
-public class SubscriberUtils {
+public final class SubscriberUtils {
 
     private SubscriberUtils() {}
 

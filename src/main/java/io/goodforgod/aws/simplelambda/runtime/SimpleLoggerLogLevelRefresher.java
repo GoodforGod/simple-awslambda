@@ -18,7 +18,7 @@ import org.slf4j.event.Level;
  * @since 09.05.2021
  */
 @TypeHint(typeNames = SIMPLE_LOGGER_FACTORY, value = TypeHint.AccessType.ALL_DECLARED_METHODS)
-class SimpleLoggerLogLevelRefresher {
+final class SimpleLoggerLogLevelRefresher {
 
     static final String SIMPLE_LOGGER_FACTORY = "io.goodforgod.slf4j.simplelogger.SimpleLoggerFactory";
 

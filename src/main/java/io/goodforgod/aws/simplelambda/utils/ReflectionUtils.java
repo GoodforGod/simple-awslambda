@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Anton Kurako (GoodforGod)
  * @since 14.08.2021
  */
-public class ReflectionUtils {
+public final class ReflectionUtils {
 
     public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 

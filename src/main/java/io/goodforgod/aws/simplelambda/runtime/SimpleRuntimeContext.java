@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 22.08.2021
  */
-public class SimpleRuntimeContext implements RuntimeContext {
+public final class SimpleRuntimeContext implements RuntimeContext {
 
     private final SimpleHttpClient httpClient;
     private final Converter converter;

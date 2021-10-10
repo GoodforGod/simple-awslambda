@@ -4,7 +4,7 @@ package io.goodforgod.aws.simplelambda.utils;
  * @author Anton Kurako (GoodforGod)
  * @since 15.2.2021
  */
-public class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {}
 

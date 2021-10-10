@@ -4,7 +4,7 @@ package io.goodforgod.aws.simplelambda.utils;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public class TimeUtils {
+public final class TimeUtils {
 
     private TimeUtils() {}
 

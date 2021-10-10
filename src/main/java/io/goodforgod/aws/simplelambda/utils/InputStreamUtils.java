@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  * @author Anton Kurako (GoodforGod)
  * @since 15.08.2021
  */
-public class InputStreamUtils {
+public final class InputStreamUtils {
 
     private InputStreamUtils() {}
 

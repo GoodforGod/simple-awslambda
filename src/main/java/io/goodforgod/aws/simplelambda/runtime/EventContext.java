@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
  */
-public class EventContext implements Context {
+public final class EventContext implements Context {
 
     private final Map<String, String> headers;
 
