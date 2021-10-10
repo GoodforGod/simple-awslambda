@@ -90,9 +90,9 @@ public class OkHttpSimpleHttpClient implements SimpleHttpClient {
             final ByteBufferSubscriber subscriber = new ByteBufferSubscriber();
             body.subscribe(subscriber);
             return subscriber.result()
-                    .thenApply(byteBuffer -> executeRequest(httpMethod, uri, byteBuffer, timeout, false));
+                    .thenApply(byteBuffer -> exec(httpMethod, uri, byteBuffer, timeout, false));
         } else {
-            return CompletableFuture.supplyAsync(() -> executeRequest(httpMethod, uri, null, timeout, false));
+            return CompletableFuture.supplyAsync(() -> exec(httpMethod, uri, null, timeout, false));
         }
     }
 
@@ -106,17 +106,17 @@ public class OkHttpSimpleHttpClient implements SimpleHttpClient {
             final ByteBufferSubscriber subscriber = new ByteBufferSubscriber();
             body.subscribe(subscriber);
             return subscriber.result()
-                    .thenApply(byteBuffer -> executeRequest(httpMethod, uri, byteBuffer, timeout, true));
+                    .thenApply(byteBuffer -> exec(httpMethod, uri, byteBuffer, timeout, true));
         } else {
-            return CompletableFuture.supplyAsync(() -> executeRequest(httpMethod, uri, null, timeout, true));
+            return CompletableFuture.supplyAsync(() -> exec(httpMethod, uri, null, timeout, true));
         }
     }
 
-    private SimpleHttpResponse executeRequest(@NotNull CharSequence httpMethod,
-                                              @NotNull URI uri,
-                                              @Nullable ByteBuffer body,
-                                              @NotNull Duration timeout,
-                                              boolean forgetResponse) {
+    private SimpleHttpResponse exec(@NotNull CharSequence httpMethod,
+                                    @NotNull URI uri,
+                                    @Nullable ByteBuffer body,
+                                    @NotNull Duration timeout,
+                                    boolean forgetResponse) {
         final RequestBody requestBody = (body == null || body.array().length == 0)
                 ? null
                 : RequestBody.create(null, body.array());

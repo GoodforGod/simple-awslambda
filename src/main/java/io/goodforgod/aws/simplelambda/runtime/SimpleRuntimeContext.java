@@ -21,16 +21,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SimpleRuntimeContext implements RuntimeContext {
 
-    private SimpleHttpClient mainHttpClient;
+    private SimpleHttpClient simpleHttpClient;
     private final Converter converter;
     private final RequestHandler requestHandler;
     private final InputEventHandler inputEventHandler;
     private final BodyEventHandler bodyEventHandler;
 
     public SimpleRuntimeContext(@NotNull Function<RuntimeContext, RequestHandler> requestHandlerFunction) {
-        Objects.requireNonNull(requestHandlerFunction, "RequestHandler can't be nullable!");
+        Objects.requireNonNull(requestHandlerFunction, "RequestHandlerFunction can't be nullable!");
         this.converter = new GsonConverterPropertyFactory().build();
         this.requestHandler = requestHandlerFunction.apply(this);
+        Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
         this.inputEventHandler = new InputEventHandler(requestHandler, converter);
         this.bodyEventHandler = new BodyEventHandler(requestHandler, converter);
     }
@@ -62,13 +63,17 @@ public class SimpleRuntimeContext implements RuntimeContext {
 
         if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
             if (NativeSimpleHttpClient.class.isAssignableFrom(beanType) || NativeSimpleHttpClient.QUALIFIER.equals(qualifier)) {
-                if (mainHttpClient == null) {
-                    this.mainHttpClient = new NativeSimpleHttpClient();
+                if (simpleHttpClient == null) {
+                    this.simpleHttpClient = new NativeSimpleHttpClient();
                 }
 
-                return (T) this.mainHttpClient;
+                return (T) this.simpleHttpClient;
             } else if (SimpleHttpClient.class.equals(beanType) && qualifier == null) {
-                return (T) this.mainHttpClient;
+                if (simpleHttpClient == null) {
+                    this.simpleHttpClient = new NativeSimpleHttpClient();
+                }
+
+                return (T) this.simpleHttpClient;
             } else {
                 throw new UnsupportedOperationException(
                         "Unknown SimpleHttpClient type is requested for qualifier: " + qualifier + ", and type " + beanType);
