@@ -1,4 +1,4 @@
-package io.goodforgod.aws.simplelambda.http.nativeclient;
+package io.goodforgod.aws.simplelambda.http.common;
 
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
 import java.net.http.HttpRequest;
@@ -15,47 +15,47 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 15.08.2021
  */
-public final class StringSimpleHttpRequest implements SimpleHttpRequest {
+public final class StringHttpRequest implements SimpleHttpRequest {
 
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String MEDIA_TYPE_JSON = "application/json";
 
     public static final Map<String, String> JSON_HEADERS = Map.of(CONTENT_TYPE, MEDIA_TYPE_JSON);
 
-    private static final StringSimpleHttpRequest EMPTY = new StringSimpleHttpRequest(null, Collections.emptyMap());
+    private static final StringHttpRequest EMPTY = new StringHttpRequest(null, Collections.emptyMap());
 
     private final String body;
     private final Map<String, String> headers;
 
-    private StringSimpleHttpRequest(String body, @NotNull Map<String, String> headers) {
+    private StringHttpRequest(String body, @NotNull Map<String, String> headers) {
         this.body = body;
         this.headers = headers;
     }
 
-    public static StringSimpleHttpRequest empty() {
+    public static StringHttpRequest empty() {
         return EMPTY;
     }
 
-    public static StringSimpleHttpRequest ofJson(String value) {
+    public static StringHttpRequest ofJson(String value) {
         return ofString(value, JSON_HEADERS);
     }
 
-    public static StringSimpleHttpRequest ofString(String value) {
+    public static StringHttpRequest ofString(String value) {
         return ofString(value, Collections.emptyMap());
     }
 
-    public static StringSimpleHttpRequest ofString(String value, @NotNull Map<String, String> headers) {
-        return new StringSimpleHttpRequest(value, headers);
+    public static StringHttpRequest ofString(String value, @NotNull Map<String, String> headers) {
+        return new StringHttpRequest(value, headers);
     }
 
-    public static StringSimpleHttpRequest ofHeaders(@NotNull Map<String, String> headers) {
-        return new StringSimpleHttpRequest(null, headers);
+    public static StringHttpRequest ofHeaders(@NotNull Map<String, String> headers) {
+        return new StringHttpRequest(null, headers);
     }
 
     @Override
-    public @NotNull Publisher<ByteBuffer> body() {
+    public Publisher<ByteBuffer> body() {
         return (body == null)
-                ? HttpRequest.BodyPublishers.noBody()
+                ? null
                 : HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8);
     }
 
