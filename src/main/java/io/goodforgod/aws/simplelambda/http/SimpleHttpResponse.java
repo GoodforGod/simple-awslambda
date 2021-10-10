@@ -34,6 +34,7 @@ public interface SimpleHttpResponse {
     }
 
     /**
+     * @param charset to convert body with
      * @return body as String
      */
     @NotNull
