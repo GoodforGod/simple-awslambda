@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 15.08.2021
  */
-public class StringSimpleHttpRequest implements SimpleHttpRequest {
+public final class StringSimpleHttpRequest implements SimpleHttpRequest {
 
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String MEDIA_TYPE_JSON = "application/json";

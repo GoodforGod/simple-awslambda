@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 15.08.2021
  */
-public class PublisherSimpleHttpRequest implements SimpleHttpRequest {
+public final class PublisherSimpleHttpRequest implements SimpleHttpRequest {
 
     private final Publisher<ByteBuffer> publisher;
     private final Map<String, String> headers;

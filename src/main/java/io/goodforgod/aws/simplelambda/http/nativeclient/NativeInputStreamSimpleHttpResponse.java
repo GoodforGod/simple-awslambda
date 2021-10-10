@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public class NativeInputStreamSimpleHttpResponse implements SimpleHttpResponse {
+public final class NativeInputStreamSimpleHttpResponse implements SimpleHttpResponse {
 
     private final HttpResponse<InputStream> httpResponse;
 

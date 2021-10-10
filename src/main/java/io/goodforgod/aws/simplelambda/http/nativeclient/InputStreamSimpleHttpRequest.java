@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 15.08.2021
  */
-public class InputStreamSimpleHttpRequest implements SimpleHttpRequest {
+public final class InputStreamSimpleHttpRequest implements SimpleHttpRequest {
 
     private final InputStream inputStream;
     private final Map<String, String> headers;

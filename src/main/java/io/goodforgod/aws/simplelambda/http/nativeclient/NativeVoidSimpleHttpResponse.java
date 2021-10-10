@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 20.08.2020
  */
-public class NativeVoidSimpleHttpResponse implements SimpleHttpResponse {
+public final class NativeVoidSimpleHttpResponse implements SimpleHttpResponse {
 
     private final HttpResponse<Void> httpResponse;
 
