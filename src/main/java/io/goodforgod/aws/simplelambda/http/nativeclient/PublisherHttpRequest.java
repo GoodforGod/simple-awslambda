@@ -13,27 +13,27 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 15.08.2021
  */
-public final class PublisherSimpleHttpRequest implements SimpleHttpRequest {
+public final class PublisherHttpRequest implements SimpleHttpRequest {
 
     private final Publisher<ByteBuffer> publisher;
     private final Map<String, String> headers;
 
-    private PublisherSimpleHttpRequest(Publisher<ByteBuffer> publisher, @NotNull Map<String, String> headers) {
+    private PublisherHttpRequest(Publisher<ByteBuffer> publisher, @NotNull Map<String, String> headers) {
         this.publisher = publisher;
         this.headers = headers;
     }
 
-    public static PublisherSimpleHttpRequest ofPublisher(@NotNull Publisher<ByteBuffer> publisher) {
+    public static PublisherHttpRequest ofPublisher(@NotNull Publisher<ByteBuffer> publisher) {
         return ofPublisher(publisher, Collections.emptyMap());
     }
 
-    public static PublisherSimpleHttpRequest ofPublisher(@NotNull Publisher<ByteBuffer> publisher,
-                                                         @NotNull Map<String, String> headers) {
-        return new PublisherSimpleHttpRequest(publisher, headers);
+    public static PublisherHttpRequest ofPublisher(@NotNull Publisher<ByteBuffer> publisher,
+                                                   @NotNull Map<String, String> headers) {
+        return new PublisherHttpRequest(publisher, headers);
     }
 
     @Override
-    public @NotNull Publisher<ByteBuffer> body() {
+    public Publisher<ByteBuffer> body() {
         return publisher;
     }
 

@@ -1,7 +1,5 @@
 package io.goodforgod.aws.simplelambda.http;
 
-import static io.goodforgod.aws.simplelambda.http.nativeclient.NativeSimpleHttpClient.DEFAULT_TIMEOUT;
-
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
@@ -15,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 27.10.2020
  */
 public interface SimpleHttpClient {
+
+    Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
 
     /**
      * GET

@@ -34,7 +34,7 @@ public final class InputStreamSimpleHttpRequest implements SimpleHttpRequest {
     }
 
     @Override
-    public @NotNull Publisher<ByteBuffer> body() {
+    public Publisher<ByteBuffer> body() {
         return HttpRequest.BodyPublishers.ofInputStream(() -> inputStream);
     }
 

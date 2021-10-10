@@ -1,7 +1,6 @@
 package io.goodforgod.aws.simplelambda.http.nativeclient;
 
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
-import io.goodforgod.aws.simplelambda.utils.InputStreamUtils;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.util.List;
@@ -11,17 +10,17 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Native {@link HttpResponse} wrapper with body as {@link InputStream} for
+ * Native {@link HttpResponse} wrapper without body for
  * {@link SimpleHttpResponse}
  *
  * @author Anton Kurako (GoodforGod)
- * @since 7.11.2020
+ * @since 20.08.2020
  */
-public final class NativeInputStreamSimpleHttpResponse implements SimpleHttpResponse {
+public final class NativeVoidHttpResponse implements SimpleHttpResponse {
 
-    private final HttpResponse<InputStream> httpResponse;
+    private final HttpResponse<Void> httpResponse;
 
-    public NativeInputStreamSimpleHttpResponse(@NotNull HttpResponse<InputStream> httpResponse) {
+    public NativeVoidHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
         this.httpResponse = httpResponse;
     }
 
@@ -32,15 +31,12 @@ public final class NativeInputStreamSimpleHttpResponse implements SimpleHttpResp
 
     @Override
     public @NotNull InputStream body() {
-        return httpResponse.body();
+        return InputStream.nullInputStream();
     }
 
-    /**
-     * @return body as {@link java.nio.charset.StandardCharsets#UTF_8} String
-     */
     @Override
     public @NotNull String bodyAsString() {
-        return InputStreamUtils.getStringUTF8FromInputStream(body());
+        return "";
     }
 
     @Override

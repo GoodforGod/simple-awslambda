@@ -1,11 +1,12 @@
 package io.goodforgod.aws.simplelambda.http;
 
-import io.goodforgod.aws.simplelambda.http.nativeclient.StringSimpleHttpRequest;
-import java.io.InputStream;
+import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -17,7 +18,7 @@ public interface SimpleHttpRequest {
      * @return empty simple http request
      */
     static SimpleHttpRequest empty() {
-        return StringSimpleHttpRequest.empty();
+        return StringHttpRequest.empty();
     }
 
     /**
@@ -25,13 +26,10 @@ public interface SimpleHttpRequest {
      * @return simple http request with headers only
      */
     static SimpleHttpRequest ofHeaders(@NotNull Map<String, String> headers) {
-        return StringSimpleHttpRequest.ofHeaders(headers);
+        return StringHttpRequest.ofHeaders(headers);
     }
 
-    /**
-     * @return body as {@link InputStream}
-     */
-    @NotNull
+    @Nullable
     Publisher<ByteBuffer> body();
 
     /**
