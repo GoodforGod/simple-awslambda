@@ -2,6 +2,7 @@ package io.goodforgod.aws.simplelambda.runtime;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import io.goodforgod.aws.simplelambda.config.AwsRuntimeVariables;
+import io.goodforgod.aws.simplelambda.error.StatusException;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
@@ -17,6 +18,7 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Flow.Publisher;
+import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,19 +63,23 @@ public final class SimpleLambdaRuntimeEventLoop {
 
             while (!Thread.currentThread().isInterrupted()) {
                 logger.trace("Invoking next event...");
-                final SimpleHttpResponse requestEvent = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
+                final SimpleHttpResponse event = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
                 SimpleLoggerLogLevelRefresher.refresh();
-                logger.trace("Event received with httpCode '{}' with headers: {}", requestEvent.statusCode(), requestEvent.headers());
+                logger.trace("Event received with httpCode '{}' with headers: {}", event.statusCode(), event.headers());
+                if (event.statusCode() != 200) {
+                    throw new StatusException(event.statusCode(), event.bodyAsString());
+                }
 
-                final Context requestContext = EventContext.ofHeadersMulti(requestEvent.headersMultiValues());
-                if (StringUtils.isEmpty(requestContext.getAwsRequestId()))
+                final Context requestContext = EventContext.ofHeadersMulti(event.headersMultiValues());
+                if (StringUtils.isEmpty(requestContext.getAwsRequestId())) {
                     throw new IllegalStateException("AWS Request ID is not present!");
+                }
 
                 logger.debug("Event received with RequestContext: {}", requestContext);
-                processRequestEvent(requestEvent, requestContext, eventHandler, httpClient, apiEndpoint);
+                processEvent(event::body, requestContext, eventHandler, httpClient, apiEndpoint);
             }
         } catch (Exception e) {
-            logger.error("Function Initialization error occurred", e);
+            logger.error("Function unexpected initialization error occurred", e);
             final SimpleHttpClient httpClient = new NativeSimpleHttpClient();
             final URI errorUri = apiEndpoint.resolve(AwsRuntimeVariables.INIT_ERROR);
             logger.debug("Responding to AWS Runtime Init Error URI: {}", errorUri);
@@ -81,15 +87,15 @@ public final class SimpleLambdaRuntimeEventLoop {
         }
     }
 
-    private void processRequestEvent(SimpleHttpResponse httpRequest,
-                                     Context requestContext,
-                                     EventHandler eventHandler,
-                                     SimpleHttpClient httpClient,
-                                     URI apiEndpoint) {
-        try (final InputStream eventStream = httpRequest.body()) {
-            final Publisher<ByteBuffer> responsePublisher = eventHandler.handle(eventStream, requestContext);
+    private void processEvent(Supplier<InputStream> eventSupplier,
+                              Context eventContext,
+                              EventHandler eventHandler,
+                              SimpleHttpClient httpClient,
+                              URI apiResponseEndpoint) {
+        try (final InputStream eventStream = eventSupplier.get()) {
+            final Publisher<ByteBuffer> responsePublisher = eventHandler.handle(eventStream, eventContext);
 
-            final URI responseUri = getInvocationResponseUri(apiEndpoint, requestContext.getAwsRequestId());
+            final URI responseUri = getInvocationResponseUri(apiResponseEndpoint, eventContext.getAwsRequestId());
             logger.debug("Responding to AWS Invocation URI: {}", responseUri);
             final long respondingStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
 
@@ -106,7 +112,7 @@ public final class SimpleLambdaRuntimeEventLoop {
             }
         } catch (Exception e) {
             logger.error("Function Invocation error occurred", e);
-            final URI uri = getInvocationErrorUri(apiEndpoint, requestContext.getAwsRequestId());
+            final URI uri = getInvocationErrorUri(apiResponseEndpoint, eventContext.getAwsRequestId());
             logger.debug("Responding to AWS Invocation Error URI: {}", uri);
             httpClient.postAndForget(uri, getErrorResponse(e), DEFAULT_TIMEOUT);
         }

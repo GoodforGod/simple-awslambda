@@ -50,7 +50,7 @@ public class UrlConnectionHttpClient implements SimpleHttpClient {
         try {
             return executeAsync(httpMethod, uri, request, timeout).join();
         } catch (CompletionException e) {
-            throw new StatusException(500, e.getMessage());
+            throw new StatusException(500, e.getCause());
         }
     }
 
@@ -62,7 +62,7 @@ public class UrlConnectionHttpClient implements SimpleHttpClient {
         try {
             return executeAndForgetAsync(httpMethod, uri, request, timeout).join();
         } catch (CompletionException e) {
-            throw new StatusException(500, e.getMessage());
+            throw new StatusException(500, e.getCause());
         }
     }
 
@@ -146,7 +146,7 @@ public class UrlConnectionHttpClient implements SimpleHttpClient {
                 return InputStreamHttpResponse.of(con.getResponseCode(), decodedStream, con.getHeaderFields());
             }
         } catch (IOException e) {
-            throw new StatusException(500, e.getMessage());
+            throw new StatusException(500, e);
         }
     }
 
@@ -158,5 +158,10 @@ public class UrlConnectionHttpClient implements SimpleHttpClient {
         } else {
             return new BufferedInputStream(connectionInputStream);
         }
+    }
+
+    @Override
+    public void close() {
+        // do nothing
     }
 }

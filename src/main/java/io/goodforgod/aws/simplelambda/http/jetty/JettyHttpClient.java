@@ -24,11 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.HttpClientTransport;
-import org.eclipse.jetty.client.Origin;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.dynamic.HttpClientTransportDynamic;
 import org.eclipse.jetty.client.util.AsyncRequestContent;
 import org.eclipse.jetty.client.util.BytesRequestContent;
 import org.eclipse.jetty.http.HttpField;
@@ -70,7 +67,8 @@ public class JettyHttpClient implements SimpleHttpClient {
         final HttpClientTransportOverHTTP2 clientTransport = new HttpClientTransportOverHTTP2(http2Client);
         clientTransport.setUseALPN(true);
         final HttpClient httpClient = new HttpClient(clientTransport);
-//        final HttpClient httpClient = new HttpClient( new HttpClientTransportDynamic());
+        // final HttpClient httpClient = new HttpClient( new
+        // HttpClientTransportDynamic());
         httpClient.setConnectTimeout(CONNECTION_TIMEOUT);
         httpClient.setIdleTimeout(CONNECTION_TIMEOUT);
         return httpClient;

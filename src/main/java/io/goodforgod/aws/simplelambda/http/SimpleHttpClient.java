@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 27.10.2020
  */
-public interface SimpleHttpClient {
+public interface SimpleHttpClient extends AutoCloseable {
 
     Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
 

@@ -140,4 +140,9 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
         return client.sendAsync(request, HttpResponse.BodyHandlers.discarding())
                 .thenApply(NativeVoidHttpResponse::of);
     }
+
+    @Override
+    public void close() {
+        // do nothing
+    }
 }

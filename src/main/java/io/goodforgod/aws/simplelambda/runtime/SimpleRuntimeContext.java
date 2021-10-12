@@ -7,6 +7,7 @@ import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.BodyEventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
+import io.goodforgod.aws.simplelambda.http.jetty.JettyHttpClient;
 import io.goodforgod.aws.simplelambda.http.nativeclient.NativeSimpleHttpClient;
 import java.util.Objects;
 import java.util.function.Function;
@@ -21,7 +22,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SimpleRuntimeContext implements RuntimeContext {
 
-    private SimpleHttpClient simpleHttpClient;
+    private boolean isRequested = false;
+    private JettyHttpClient simpleHttpClient;
     private final Converter converter;
     private final RequestHandler requestHandler;
     private final InputEventHandler inputEventHandler;
@@ -31,6 +33,7 @@ public class SimpleRuntimeContext implements RuntimeContext {
         Objects.requireNonNull(requestHandlerFunction, "RequestHandlerFunction can't be nullable!");
         this.converter = new GsonConverterPropertyFactory().build();
         this.requestHandler = requestHandlerFunction.apply(this);
+        this.simpleHttpClient = new JettyHttpClient();
         Objects.requireNonNull(requestHandler, "RequestHandler can't be nullable!");
         this.inputEventHandler = new InputEventHandler(requestHandler, converter);
         this.bodyEventHandler = new BodyEventHandler(requestHandler, converter);
@@ -49,12 +52,12 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
 
         if (EventHandler.class.isAssignableFrom(beanType)) {
-            if (InputEventHandler.class.isAssignableFrom(beanType) || InputEventHandler.QUALIFIER.equals(qualifier)) {
+            if (InputEventHandler.class.isAssignableFrom(beanType)
+                    || InputEventHandler.QUALIFIER.equals(qualifier)
+                    || (EventHandler.class.equals(beanType) && qualifier == null)) {
                 return (T) this.inputEventHandler;
             } else if (BodyEventHandler.class.isAssignableFrom(beanType) || BodyEventHandler.QUALIFIER.equals(qualifier)) {
                 return (T) this.bodyEventHandler;
-            } else if (EventHandler.class.equals(beanType) && qualifier == null) {
-                return (T) this.inputEventHandler;
             } else {
                 throw new UnsupportedOperationException(
                         "Unknown EventHandler type is requested for qualifier: " + qualifier + ", and type " + beanType);
@@ -62,15 +65,16 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
 
         if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
-            if (NativeSimpleHttpClient.class.isAssignableFrom(beanType) || NativeSimpleHttpClient.QUALIFIER.equals(qualifier)) {
+            if (NativeSimpleHttpClient.class.isAssignableFrom(beanType)
+                    || NativeSimpleHttpClient.QUALIFIER.equals(qualifier)
+                    || (SimpleHttpClient.class.equals(beanType) && qualifier == null)) {
                 if (simpleHttpClient == null) {
-                    this.simpleHttpClient = new NativeSimpleHttpClient();
+                    this.simpleHttpClient = new JettyHttpClient();
                 }
 
-                return (T) this.simpleHttpClient;
-            } else if (SimpleHttpClient.class.equals(beanType) && qualifier == null) {
-                if (simpleHttpClient == null) {
-                    this.simpleHttpClient = new NativeSimpleHttpClient();
+                if (!isRequested) {
+                    isRequested = true;
+                    this.simpleHttpClient.setup();
                 }
 
                 return (T) this.simpleHttpClient;

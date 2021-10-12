@@ -134,4 +134,9 @@ public class OkHttpSimpleHttpClient implements SimpleHttpClient {
             throw new StatusException(500, e);
         }
     }
+
+    @Override
+    public void close() {
+        // do nothing
+    }
 }
