@@ -1,6 +1,7 @@
 package io.goodforgod.aws.simplelambda.runtime;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Runtime Context interface so whole code can be used with any DI framework or
@@ -24,5 +25,6 @@ public interface RuntimeContext extends AutoCloseable {
      * @param <T>       type of bean to instantiate
      * @return return bean instance
      */
-    <T> T getBean(@NotNull Class<T> beanType, String qualifier);
+    <T> T getBean(@NotNull Class<T> beanType,
+                  @Nullable String qualifier);
 }
