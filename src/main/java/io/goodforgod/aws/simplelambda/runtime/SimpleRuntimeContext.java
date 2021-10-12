@@ -54,12 +54,12 @@ public class SimpleRuntimeContext implements RuntimeContext {
                     || InputEventHandler.QUALIFIER.equals(qualifier)
                     || (EventHandler.class.equals(beanType) && qualifier == null)) {
                 if (inputEventHandler == null) {
-                    this.inputEventHandler = new InputEventHandler(requestHandler, converter);
+                    this.inputEventHandler = new InputEventHandler(getBean(RequestHandler.class), getBean(Converter.class));
                 }
                 return (T) this.inputEventHandler;
             } else if (BodyEventHandler.class.isAssignableFrom(beanType) || BodyEventHandler.QUALIFIER.equals(qualifier)) {
                 if (bodyEventHandler == null) {
-                    this.bodyEventHandler = new BodyEventHandler(requestHandler, converter);
+                    this.bodyEventHandler = new BodyEventHandler(getBean(RequestHandler.class), getBean(Converter.class));
                 }
                 return (T) this.bodyEventHandler;
             } else {
