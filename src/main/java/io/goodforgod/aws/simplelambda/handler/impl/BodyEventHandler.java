@@ -4,7 +4,7 @@ import static io.goodforgod.aws.simplelambda.handler.impl.BodyEventHandler.QUALI
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import io.goodforgod.aws.lambda.events.BodyBase64Event;
+import io.goodforgod.aws.lambda.events.Base64BodyEvent;
 import io.goodforgod.aws.lambda.events.BodyEvent;
 import io.goodforgod.aws.lambda.events.gateway.*;
 import io.goodforgod.aws.lambda.events.system.LoadBalancerRequest;
@@ -87,8 +87,8 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         if (BodyEvent.class.isAssignableFrom(funcInputType)) {
             eventBody = event;
         } else {
-            final BodyBase64Event<?> bodyEvent = converter.fromString(event, BodyBase64Event.class);
-            eventBody = (bodyEvent.isBase64Encoded()) ? bodyEvent.getBodyDecoded() : bodyEvent.getBody();
+            final Base64BodyEvent<?> bodyEvent = converter.fromString(event, Base64BodyEvent.class);
+            eventBody = bodyEvent.getBody();
         }
 
         return super.getFunctionInput(eventBody, funcInputType, funcOutputType, context);
