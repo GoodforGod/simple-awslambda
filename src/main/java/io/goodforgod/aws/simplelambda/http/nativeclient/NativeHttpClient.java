@@ -1,6 +1,6 @@
 package io.goodforgod.aws.simplelambda.http.nativeclient;
 
-import static io.goodforgod.aws.simplelambda.http.nativeclient.NativeSimpleHttpClient.QUALIFIER;
+import static io.goodforgod.aws.simplelambda.http.nativeclient.NativeHttpClient.QUALIFIER;
 
 import io.goodforgod.aws.simplelambda.error.StatusException;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @Named(QUALIFIER)
 @Singleton
-public class NativeSimpleHttpClient implements SimpleHttpClient {
+public class NativeHttpClient implements SimpleHttpClient {
 
     public static final String QUALIFIER = "native";
 
@@ -36,11 +36,11 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
 
     private final HttpClient client;
 
-    public NativeSimpleHttpClient() {
+    public NativeHttpClient() {
         this(getClient());
     }
 
-    public NativeSimpleHttpClient(@NotNull HttpClient client) {
+    public NativeHttpClient(@NotNull HttpClient client) {
         this.client = client;
     }
 
@@ -125,7 +125,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
     private SimpleHttpResponse sendAndDiscardResponse(HttpRequest request) {
         try {
             final HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
-            return NativeVoidHttpResponse.of(response);
+            return VoidNativeHttpResponse.of(response);
         } catch (Exception e) {
             throw new StatusException(500, e);
         }
@@ -138,7 +138,7 @@ public class NativeSimpleHttpClient implements SimpleHttpClient {
 
     private CompletableFuture<SimpleHttpResponse> sendAndDiscardResponseAsync(HttpRequest request) {
         return client.sendAsync(request, HttpResponse.BodyHandlers.discarding())
-                .thenApply(NativeVoidHttpResponse::of);
+                .thenApply(VoidNativeHttpResponse::of);
     }
 
     @Override

@@ -14,14 +14,14 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 20.08.2020
  */
-public final class NativeVoidHttpResponse extends AbstractHttpResponse {
+public final class VoidNativeHttpResponse extends AbstractHttpResponse {
 
-    private NativeVoidHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
+    private VoidNativeHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
         super(httpResponse.statusCode(), httpResponse.headers().map());
     }
 
-    public static NativeVoidHttpResponse of(@NotNull HttpResponse<Void> httpResponse) {
-        return new NativeVoidHttpResponse(httpResponse);
+    public static VoidNativeHttpResponse of(@NotNull HttpResponse<Void> httpResponse) {
+        return new VoidNativeHttpResponse(httpResponse);
     }
 
     @Override

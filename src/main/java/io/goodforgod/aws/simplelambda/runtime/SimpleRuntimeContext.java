@@ -7,7 +7,7 @@ import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.BodyEventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
-import io.goodforgod.aws.simplelambda.http.nativeclient.NativeSimpleHttpClient;
+import io.goodforgod.aws.simplelambda.http.nativeclient.NativeHttpClient;
 import java.util.Objects;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
@@ -69,11 +69,11 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
 
         if (SimpleHttpClient.class.isAssignableFrom(beanType)) {
-            if (NativeSimpleHttpClient.class.isAssignableFrom(beanType)
-                    || NativeSimpleHttpClient.QUALIFIER.equals(qualifier)
+            if (NativeHttpClient.class.isAssignableFrom(beanType)
+                    || NativeHttpClient.QUALIFIER.equals(qualifier)
                     || (SimpleHttpClient.class.equals(beanType) && qualifier == null)) {
                 if (simpleHttpClient == null) {
-                    this.simpleHttpClient = new NativeSimpleHttpClient();
+                    this.simpleHttpClient = new NativeHttpClient();
                 }
 
                 return (T) this.simpleHttpClient;

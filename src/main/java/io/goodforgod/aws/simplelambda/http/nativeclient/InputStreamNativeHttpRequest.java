@@ -15,22 +15,22 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 15.08.2021
  */
-public final class InputStreamSimpleHttpRequest implements SimpleHttpRequest {
+public final class InputStreamNativeHttpRequest implements SimpleHttpRequest {
 
     private final InputStream inputStream;
     private final Map<String, String> headers;
 
-    private InputStreamSimpleHttpRequest(@NotNull InputStream inputStream, @NotNull Map<String, String> headers) {
+    private InputStreamNativeHttpRequest(@NotNull InputStream inputStream, @NotNull Map<String, String> headers) {
         this.inputStream = inputStream;
         this.headers = headers;
     }
 
-    public static InputStreamSimpleHttpRequest ofStream(@NotNull InputStream stream) {
+    public static InputStreamNativeHttpRequest ofStream(@NotNull InputStream stream) {
         return ofStream(stream, Collections.emptyMap());
     }
 
-    public static InputStreamSimpleHttpRequest ofStream(@NotNull InputStream stream, @NotNull Map<String, String> headers) {
-        return new InputStreamSimpleHttpRequest(stream, headers);
+    public static InputStreamNativeHttpRequest ofStream(@NotNull InputStream stream, @NotNull Map<String, String> headers) {
+        return new InputStreamNativeHttpRequest(stream, headers);
     }
 
     @Override

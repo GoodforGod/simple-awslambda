@@ -15,7 +15,7 @@ import org.eclipse.jetty.http.HttpField;
  * @author Anton Kurako (GoodforGod)
  * @since 11.10.2021
  */
-class CompletableFutureResponseListener extends BufferingResponseListener {
+final class CompletableFutureResponseListener extends BufferingResponseListener {
 
     private final CompletableFuture<SimpleHttpResponse> future = new CompletableFuture<>();
 
