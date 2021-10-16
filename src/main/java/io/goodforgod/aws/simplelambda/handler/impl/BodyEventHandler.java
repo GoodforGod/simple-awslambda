@@ -14,12 +14,12 @@ import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.RequestFunction;
 import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow.Publisher;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 public class BodyEventHandler extends AbstractEventHandler implements EventHandler {
 
-    public static final String QUALIFIER = "body-event";
+    public static final String QUALIFIER = "bodyEvent";
 
     private final RequestHandler requestHandler;
 

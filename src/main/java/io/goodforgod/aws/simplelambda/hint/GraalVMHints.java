@@ -54,7 +54,7 @@ import io.goodforgod.graalvm.hint.annotation.TypeHint;
                 KinesisEvent.KinesisEventRecord.class,
 
                 DynamoDBEvent.class,
-                DynamoDBEvent.DynamodbStreamRecord.class,
+                DynamoDBEvent.DynamoDBStreamRecord.class,
         })
 @InitializationHint(typeNames = {
         "io.goodforgod.aws.simplelambda",
@@ -70,4 +70,6 @@ import io.goodforgod.graalvm.hint.annotation.TypeHint;
         "simplelogger.properties"
 })
 final class GraalVMHints {
+
+    private GraalVMHints() {}
 }

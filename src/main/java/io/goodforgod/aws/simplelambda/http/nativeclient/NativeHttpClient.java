@@ -6,8 +6,6 @@ import io.goodforgod.aws.simplelambda.error.StatusException;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,6 +15,8 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow.Publisher;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**

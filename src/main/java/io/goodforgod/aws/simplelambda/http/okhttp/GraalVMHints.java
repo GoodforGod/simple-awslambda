@@ -12,4 +12,6 @@ import io.goodforgod.graalvm.hint.annotation.InitializationHint;
         "okio.ByteString",
 }, value = InitializationHint.InitPhase.BUILD)
 final class GraalVMHints {
+
+    private GraalVMHints() {}
 }

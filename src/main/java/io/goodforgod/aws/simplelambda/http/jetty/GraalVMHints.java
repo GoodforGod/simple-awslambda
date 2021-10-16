@@ -22,4 +22,6 @@ import io.goodforgod.graalvm.hint.annotation.InitializationHint;
         "org.eclipse.jetty.util.ProcessorUtils"
 }, value = InitializationHint.InitPhase.BUILD)
 final class GraalVMHints {
+
+    private GraalVMHints() {}
 }

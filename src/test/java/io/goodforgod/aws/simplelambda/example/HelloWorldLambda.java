@@ -2,8 +2,8 @@ package io.goodforgod.aws.simplelambda.example;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import jakarta.inject.Singleton;
 import java.util.UUID;
+import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

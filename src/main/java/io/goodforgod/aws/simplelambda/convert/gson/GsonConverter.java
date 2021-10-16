@@ -2,9 +2,9 @@ package io.goodforgod.aws.simplelambda.convert.gson;
 
 import com.google.gson.Gson;
 import io.goodforgod.aws.simplelambda.convert.Converter;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 22.3.2021
  */
-@Named("json")
+@Named("gson")
 @Singleton
 public class GsonConverter implements Converter {
 

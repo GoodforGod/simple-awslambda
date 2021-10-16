@@ -8,12 +8,12 @@ import io.goodforgod.aws.simplelambda.convert.Converter;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.RequestFunction;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow.Publisher;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 public class InputEventHandler extends AbstractEventHandler implements EventHandler {
 
-    public static final String QUALIFIER = "input-event";
+    public static final String QUALIFIER = "inputEvent";
 
     private final RequestHandler requestHandler;
 

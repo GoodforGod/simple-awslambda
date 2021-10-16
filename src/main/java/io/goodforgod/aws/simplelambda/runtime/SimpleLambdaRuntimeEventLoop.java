@@ -48,6 +48,7 @@ public final class SimpleLambdaRuntimeEventLoop {
         final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         try (final RuntimeContext context = runtimeContext) {
             Objects.requireNonNull(context, "RuntimeContext can't be nullable!");
+            context.setupInRuntime();
 
             final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
             final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);

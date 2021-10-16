@@ -3,7 +3,7 @@ package io.goodforgod.aws.simplelambda.convert.gson;
 import com.google.gson.Gson;
 import io.goodforgod.aws.simplelambda.convert.Converter;
 import io.goodforgod.gson.configuration.GsonFactory;
-import jakarta.inject.Singleton;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**

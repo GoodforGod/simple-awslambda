@@ -37,6 +37,15 @@ public class SimpleRuntimeContext implements RuntimeContext {
     }
 
     @Override
+    public void setupInRuntime() {
+        this.simpleHttpClient = new NativeHttpClient();
+        this.requestHandler = requestHandlerFunction.apply(this);
+        Objects.requireNonNull(this.requestHandler, "RequestHandler can't be nullable!");
+        this.inputEventHandler = new InputEventHandler(getBean(RequestHandler.class), getBean(Converter.class));
+        this.bodyEventHandler = new BodyEventHandler(getBean(RequestHandler.class), getBean(Converter.class));
+    }
+
+    @Override
     public <T> T getBean(@NotNull Class<T> beanType) {
         return getBean(beanType, null);
     }
@@ -53,14 +62,8 @@ public class SimpleRuntimeContext implements RuntimeContext {
             if (InputEventHandler.class.isAssignableFrom(beanType)
                     || InputEventHandler.QUALIFIER.equals(qualifier)
                     || (EventHandler.class.equals(beanType) && qualifier == null)) {
-                if (inputEventHandler == null) {
-                    this.inputEventHandler = new InputEventHandler(getBean(RequestHandler.class), getBean(Converter.class));
-                }
                 return (T) this.inputEventHandler;
             } else if (BodyEventHandler.class.isAssignableFrom(beanType) || BodyEventHandler.QUALIFIER.equals(qualifier)) {
-                if (bodyEventHandler == null) {
-                    this.bodyEventHandler = new BodyEventHandler(getBean(RequestHandler.class), getBean(Converter.class));
-                }
                 return (T) this.bodyEventHandler;
             } else {
                 throw new UnsupportedOperationException(
@@ -72,10 +75,6 @@ public class SimpleRuntimeContext implements RuntimeContext {
             if (NativeHttpClient.class.isAssignableFrom(beanType)
                     || NativeHttpClient.QUALIFIER.equals(qualifier)
                     || (SimpleHttpClient.class.equals(beanType) && qualifier == null)) {
-                if (simpleHttpClient == null) {
-                    this.simpleHttpClient = new NativeHttpClient();
-                }
-
                 return (T) this.simpleHttpClient;
             } else {
                 throw new UnsupportedOperationException(
@@ -84,10 +83,6 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
 
         if (RequestHandler.class.isAssignableFrom(beanType)) {
-            if (requestHandler == null) {
-                this.requestHandler = requestHandlerFunction.apply(this);
-                Objects.requireNonNull(this.requestHandler, "RequestHandler can't be nullable!");
-            }
             return (T) requestHandler;
         }
 

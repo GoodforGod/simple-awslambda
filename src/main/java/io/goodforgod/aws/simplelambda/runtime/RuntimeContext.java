@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface RuntimeContext extends AutoCloseable {
 
+    void setupInRuntime();
+
     /**
      * @param beanType class or interface of bean to look for
      * @param <T>      type of bean to instantiate
@@ -25,6 +27,5 @@ public interface RuntimeContext extends AutoCloseable {
      * @param <T>       type of bean to instantiate
      * @return return bean instance
      */
-    <T> T getBean(@NotNull Class<T> beanType,
-                  @Nullable String qualifier);
+    <T> T getBean(@NotNull Class<T> beanType, @Nullable String qualifier);
 }

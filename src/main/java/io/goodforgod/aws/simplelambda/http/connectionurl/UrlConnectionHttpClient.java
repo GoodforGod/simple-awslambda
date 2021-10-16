@@ -9,8 +9,6 @@ import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
 import io.goodforgod.aws.simplelambda.http.common.EmptyHttpResponse;
 import io.goodforgod.aws.simplelambda.http.common.InputStreamHttpResponse;
 import io.goodforgod.aws.simplelambda.reactive.ByteBufferSubscriber;
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -27,6 +25,8 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Flow.Publisher;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
