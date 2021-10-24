@@ -45,10 +45,6 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.8"
     implementation "javax.inject:javax.inject:1"
 
-    implementation "org.eclipse.jetty.http2:http2-client:11.0.6"
-    implementation 'org.eclipse.jetty.http2:http2-http-client-transport:11.0.6'
-    implementation "org.eclipse.jetty:jetty-client:11.0.6"
-
     api "io.goodforgod:aws-lambda-java-events:1.0.0-SNAPSHOT"
     api "io.goodforgod:uri-builder:1.0.0-SNAPSHOT"
     api "org.jetbrains:annotations:22.0.0"
