@@ -45,23 +45,28 @@ public final class SimpleLambdaRuntimeEventLoop {
         final URI apiEndpoint = getRuntimeApiEndpoint();
         logger.debug("AWS Runtime API Endpoint URI: {}", apiEndpoint);
 
-        final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         try (final RuntimeContext context = runtimeContext) {
             Objects.requireNonNull(context, "RuntimeContext can't be nullable!");
 
+            final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
             context.setupInRuntime();
-
-            final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
-            final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
-            Objects.requireNonNull(eventHandler, "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
-            Objects.requireNonNull(httpClient, "SimpleHttpClient implementation not found!");
 
             if (logger.isInfoEnabled()) {
                 logger.info("RuntimeContext runtime initialization took: {} millis", TimeUtils.timeTook(contextStart));
             }
 
+            final long runtimeLoopStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+            final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
+            final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
+            Objects.requireNonNull(eventHandler, "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
+            Objects.requireNonNull(httpClient, "SimpleHttpClient implementation not found!");
+
             final URI invocationUri = getInvocationNextUri(apiEndpoint);
             logger.debug("AWS Event Invocation URI: {}", invocationUri);
+
+            if (logger.isInfoEnabled()) {
+                logger.info("RuntimeEventLoop runtime initialization took: {} millis", TimeUtils.timeTook(runtimeLoopStart));
+            }
 
             while (!Thread.currentThread().isInterrupted()) {
                 logger.trace("Invoking next event...");
