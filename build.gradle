@@ -45,7 +45,6 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.8"
     implementation "javax.inject:javax.inject:1"
 
-    implementation "com.squareup.okhttp3:okhttp:3.14.9"
     implementation "org.eclipse.jetty.http2:http2-client:11.0.6"
     implementation 'org.eclipse.jetty.http2:http2-http-client-transport:11.0.6'
     implementation "org.eclipse.jetty:jetty-client:11.0.6"
