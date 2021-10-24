@@ -33,7 +33,7 @@ public abstract class AbstractLambdaEntrypoint {
         this.eventLoop = getLambdaRuntimeEventLoop();
 
         if (logger.isInfoEnabled()) {
-            logger.info("RuntimeContext startup took: {} millis", TimeUtils.timeTook(contextStart));
+            logger.info("RuntimeContext build initialization took: {} millis", TimeUtils.timeTook(contextStart));
         }
     }
 

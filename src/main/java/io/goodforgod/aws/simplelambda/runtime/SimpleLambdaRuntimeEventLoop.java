@@ -48,6 +48,7 @@ public final class SimpleLambdaRuntimeEventLoop {
         final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
         try (final RuntimeContext context = runtimeContext) {
             Objects.requireNonNull(context, "RuntimeContext can't be nullable!");
+
             context.setupInRuntime();
 
             final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
@@ -56,7 +57,7 @@ public final class SimpleLambdaRuntimeEventLoop {
             Objects.requireNonNull(httpClient, "SimpleHttpClient implementation not found!");
 
             if (logger.isInfoEnabled()) {
-                logger.info("RuntimeContext startup took: {} millis", TimeUtils.timeTook(contextStart));
+                logger.info("RuntimeContext runtime initialization took: {} millis", TimeUtils.timeTook(contextStart));
             }
 
             final URI invocationUri = getInvocationNextUri(apiEndpoint);
