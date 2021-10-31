@@ -8,8 +8,7 @@ import java.nio.charset.Charset;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Native {@link HttpResponse} wrapper without body for
- * {@link SimpleHttpResponse}
+ * Native {@link HttpResponse} wrapper without body for {@link SimpleHttpResponse}
  *
  * @author Anton Kurako (GoodforGod)
  * @since 20.08.2020

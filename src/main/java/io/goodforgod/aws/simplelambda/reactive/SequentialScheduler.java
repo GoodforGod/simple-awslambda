@@ -14,18 +14,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 final class SequentialScheduler {
 
     /**
-     * An interface to signal the completion of a
-     * {@link SequentialScheduler.RestartableTask}.
+     * An interface to signal the completion of a {@link SequentialScheduler.RestartableTask}.
      *
      * <p>
-     * The invocation of {@code complete} completes the task. The invocation of
-     * {@code complete} may restart the task, if an attempt has previously been made
-     * to run the task while it was already running.
+     * The invocation of {@code complete} completes the task. The invocation of {@code complete} may
+     * restart the task, if an attempt has previously been made to run the task while it was already
+     * running.
      *
-     * @apiNote {@code DeferredCompleter} is useful when a task is not necessary
-     *          complete when its {@code run} method returns, but will complete at a
-     *          later time, and maybe in different thread. This type exists for
-     *          readability purposes at use-sites only.
+     * @apiNote {@code DeferredCompleter} is useful when a task is not necessary complete when its
+     *          {@code run} method returns, but will complete at a later time, and maybe in different
+     *          thread. This type exists for readability purposes at use-sites only.
      */
     public abstract static class DeferredCompleter {
 
@@ -45,15 +43,14 @@ final class SequentialScheduler {
         /**
          * The body of the task.
          *
-         * @param taskCompleter A completer that must be invoked once, and only once,
-         *                      when this task is logically finished
+         * @param taskCompleter A completer that must be invoked once, and only once, when this task is
+         *                      logically finished
          */
         void run(SequentialScheduler.DeferredCompleter taskCompleter);
     }
 
     /**
-     * A simple and self-contained task that completes once its {@code run} method
-     * returns.
+     * A simple and self-contained task that completes once its {@code run} method returns.
      */
     public abstract static class CompleteRestartableTask implements SequentialScheduler.RestartableTask {
 
@@ -71,9 +68,9 @@ final class SequentialScheduler {
     }
 
     /**
-     * A task that runs its main loop within a synchronized block to provide memory
-     * visibility between runs. Since the main loop can't run concurrently, the lock
-     * shouldn't be contended and no deadlock should ever be possible.
+     * A task that runs its main loop within a synchronized block to provide memory visibility between
+     * runs. Since the main loop can't run concurrently, the lock shouldn't be contended and no deadlock
+     * should ever be possible.
      */
     public static final class SynchronizedRestartableTask extends SequentialScheduler.CompleteRestartableTask {
 
@@ -104,8 +101,7 @@ final class SequentialScheduler {
     private final SequentialScheduler.SchedulableTask schedulableTask;
 
     /**
-     * An auxiliary task that starts the restartable task:
-     * {@code restartableTask.run(completer)}.
+     * An auxiliary task that starts the restartable task: {@code restartableTask.run(completer)}.
      */
     private final class SchedulableTask implements Runnable {
 
@@ -145,15 +141,12 @@ final class SequentialScheduler {
      * Executes or schedules the task to be executed in the provided executor.
      *
      * <p>
-     * This method can be used when potential executing from a calling thread is not
-     * desirable.
+     * This method can be used when potential executing from a calling thread is not desirable.
      *
-     * @param executor An executor in which to execute the task, if the task needs
-     *                 to be executed.
+     * @param executor An executor in which to execute the task, if the task needs to be executed.
      *
-     * @apiNote The given executor can be {@code null} in which case calling
-     *          {@code runOrSchedule(null)} is strictly equivalent to calling
-     *          {@code runOrSchedule()}.
+     * @apiNote The given executor can be {@code null} in which case calling {@code runOrSchedule(null)}
+     *          is strictly equivalent to calling {@code runOrSchedule()}.
      */
     public void runOrSchedule(Executor executor) {
         runOrSchedule(schedulableTask, executor);
@@ -173,10 +166,10 @@ final class SequentialScheduler {
                 }
             } else if ((s & AGAIN) != 0 || s == STOP) {
                 /*
-                 * In the case of AGAIN the scheduler does not provide happens-before
-                 * relationship between actions prior to runOrSchedule() and actions that happen
-                 * in task.run(). The reason is that no volatile write is done in this case, and
-                 * the call piggybacks on the call that has actually set AGAIN state.
+                 * In the case of AGAIN the scheduler does not provide happens-before relationship between actions
+                 * prior to runOrSchedule() and actions that happen in task.run(). The reason is that no volatile
+                 * write is done in this case, and the call piggybacks on the call that has actually set AGAIN
+                 * state.
                  */
                 return;
             } else {
@@ -207,8 +200,8 @@ final class SequentialScheduler {
                 while (true) {
                     if ((s & OFFLOAD) != 0) {
                         /*
-                         * OFFLOAD bit can never be observed here. Otherwise it would mean there is
-                         * another invocation of "complete" that can run the task.
+                         * OFFLOAD bit can never be observed here. Otherwise it would mean there is another invocation of
+                         * "complete" that can run the task.
                          */
                         throw new InternalError(String.valueOf(s));
                     }
@@ -239,8 +232,8 @@ final class SequentialScheduler {
      * Tells whether, or not, this scheduler has been permanently stopped.
      *
      * <p>
-     * Should be used from inside the task to poll the status of the scheduler,
-     * pretty much the same way as it is done for threads:
+     * Should be used from inside the task to poll the status of the scheduler, pretty much the same way
+     * as it is done for threads:
      * 
      * <pre>
      * {@code
@@ -255,31 +248,27 @@ final class SequentialScheduler {
     }
 
     /**
-     * Stops this scheduler. Subsequent invocations of {@code runOrSchedule} are
-     * effectively no-ops.
+     * Stops this scheduler. Subsequent invocations of {@code runOrSchedule} are effectively no-ops.
      *
      * <p>
-     * If the task has already begun, this invocation will not affect it, unless the
-     * task itself uses {@code isStopped()} method to check the state of the
-     * handler.
+     * If the task has already begun, this invocation will not affect it, unless the task itself uses
+     * {@code isStopped()} method to check the state of the handler.
      */
     public void stop() {
         state.set(STOP);
     }
 
     /**
-     * Returns a new {@code SequentialScheduler} that executes the provided
-     * {@code mainLoop} from within a
-     * {@link SequentialScheduler.SynchronizedRestartableTask}.
+     * Returns a new {@code SequentialScheduler} that executes the provided {@code mainLoop} from within
+     * a {@link SequentialScheduler.SynchronizedRestartableTask}.
      *
      * @apiNote This is equivalent to calling
-     *          {@code new SequentialScheduler(new SynchronizedRestartableTask(mainLoop))}
-     *          The main loop must not perform any blocking operation.
+     *          {@code new SequentialScheduler(new SynchronizedRestartableTask(mainLoop))} The main loop
+     *          must not perform any blocking operation.
      *
      * @param mainLoop The main loop of the new sequential scheduler
-     * @return a new {@code SequentialScheduler} that executes the provided
-     *         {@code mainLoop} from within a
-     *         {@link SequentialScheduler.SynchronizedRestartableTask}.
+     * @return a new {@code SequentialScheduler} that executes the provided {@code mainLoop} from within
+     *         a {@link SequentialScheduler.SynchronizedRestartableTask}.
      */
     public static SequentialScheduler synchronizedScheduler(Runnable mainLoop) {
         return new SequentialScheduler(new SequentialScheduler.SynchronizedRestartableTask(mainLoop));

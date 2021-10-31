@@ -58,8 +58,8 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Resolve all of the type arguments for the given interface from the given
-     * type. Also searches superclasses.
+     * Resolve all of the type arguments for the given interface from the given type. Also searches
+     * superclasses.
      *
      * @param type          The type to resolve from
      * @param interfaceType The interface to resolve from

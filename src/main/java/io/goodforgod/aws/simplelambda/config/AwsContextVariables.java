@@ -1,9 +1,8 @@
 package io.goodforgod.aws.simplelambda.config;
 
 /**
- * Lambda runtimes set several environment variables during initialization. Most
- * of the environment variables provide information about the function or
- * runtime.
+ * Lambda runtimes set several environment variables during initialization. Most of the environment
+ * variables provide information about the function or runtime.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
@@ -21,8 +20,7 @@ public interface AwsContextVariables {
     String AWS_REGION = "AWS_REGION";
 
     /**
-     * The runtime identifier, prefixed by AWS_Lambda_—for example,
-     * AWS_Lambda_java8.
+     * The runtime identifier, prefixed by AWS_Lambda_—for example, AWS_Lambda_java8.
      */
     String AWS_EXECUTION_ENV = "AWS_EXECUTION_ENV";
 
@@ -83,8 +81,8 @@ public interface AwsContextVariables {
     String LAMBDA_RUNTIME_DIR = "LAMBDA_RUNTIME_DIR";
 
     /**
-     * The environment's time zone (UTC). The execution environment uses NTP to
-     * synchronize the system clock.
+     * The environment's time zone (UTC). The execution environment uses NTP to synchronize the system
+     * clock.
      */
     String TZ = "TZ";
 }

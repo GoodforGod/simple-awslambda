@@ -1,4 +1,4 @@
-package io.goodforgod.aws.simplelambda.runtime;
+package io.goodforgod.aws.simplelambda;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import io.goodforgod.aws.simplelambda.config.AwsRuntimeVariables;
@@ -10,6 +10,8 @@ import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
 import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import io.goodforgod.aws.simplelambda.http.nativeclient.NativeHttpClient;
 import io.goodforgod.aws.simplelambda.http.nativeclient.PublisherNativeHttpRequest;
+import io.goodforgod.aws.simplelambda.runtime.EventContext;
+import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
 import io.goodforgod.aws.simplelambda.utils.StringUtils;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
 import java.io.InputStream;
@@ -29,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public final class SimpleLambdaRuntimeEventLoop {
+final class SimpleLambdaRuntimeEventLoop {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleLambdaRuntimeEventLoop.class);
     private static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(11);
@@ -38,8 +40,8 @@ public final class SimpleLambdaRuntimeEventLoop {
      * @param runtimeContext        RuntimeContext instance supplier
      * @param eventHandlerQualifier to use for implementation injection
      */
-    public void execute(@NotNull RuntimeContext runtimeContext,
-                        @NotNull String eventHandlerQualifier) {
+    void execute(@NotNull RuntimeContext runtimeContext,
+                 @NotNull String eventHandlerQualifier) {
         SimpleLoggerLogLevelRefresher.refresh();
 
         final URI apiEndpoint = getRuntimeApiEndpoint();
@@ -151,8 +153,8 @@ public final class SimpleLambdaRuntimeEventLoop {
     }
 
     /**
-     * If the function returns an error, the runtime formats the error into a JSON
-     * document, and posts it to the invocation error path.
+     * If the function returns an error, the runtime formats the error into a JSON document, and posts
+     * it to the invocation error path.
      *
      * @param apiEndpoint of api URI
      * @param requestId   of request

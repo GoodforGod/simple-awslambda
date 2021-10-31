@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.concurrent.Flow;
 
 /**
- * Copy of JDK internal
- * jdk.internal.net.http.common.SequentialScheduler.ByteArraySubscriber
+ * Copy of JDK internal jdk.internal.net.http.common.SequentialScheduler.ByteArraySubscriber
  *
  * @author Anton Kurako (GoodforGod)
  * @since 10.10.2021

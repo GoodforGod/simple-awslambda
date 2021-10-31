@@ -2,7 +2,7 @@ package io.goodforgod.aws.simplelambda.runtime;
 
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.simplelambda.convert.Converter;
-import io.goodforgod.aws.simplelambda.convert.gson.GsonConverterPropertyFactory;
+import io.goodforgod.aws.simplelambda.convert.gson.GsonConverterFactory;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.BodyEventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
@@ -14,8 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Simple Runtime without any DI that can be extended for more performant
- * workload.
+ * Simple Runtime without any DI that can be extended for more performant workload.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 22.08.2021
@@ -32,7 +31,7 @@ public class SimpleRuntimeContext implements RuntimeContext {
 
     public SimpleRuntimeContext(@NotNull Function<RuntimeContext, RequestHandler> requestHandlerFunction) {
         Objects.requireNonNull(requestHandlerFunction, "RequestHandlerFunction can't be nullable!");
-        this.converter = new GsonConverterPropertyFactory().build();
+        this.converter = new GsonConverterFactory().build();
         this.requestHandlerFunction = requestHandlerFunction;
     }
 

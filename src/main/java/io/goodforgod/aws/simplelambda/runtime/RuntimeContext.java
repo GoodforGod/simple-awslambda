@@ -1,17 +1,21 @@
 package io.goodforgod.aws.simplelambda.runtime;
 
+import io.goodforgod.graalvm.hint.annotation.InitializationHint.InitPhase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Runtime Context interface so whole code can be used with any DI framework or
- * even with some plain java written realisation RuntimeContext.
+ * Runtime Context interface so whole code can be used with any DI framework or even with some plain
+ * java written realisation RuntimeContext.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 1.2.2021
  */
 public interface RuntimeContext extends AutoCloseable {
 
+    /**
+     * Setup required for context to be initialized in runtime and not build time {@link InitPhase}
+     */
     void setupInRuntime();
 
     /**

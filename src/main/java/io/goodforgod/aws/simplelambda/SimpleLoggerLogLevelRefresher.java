@@ -1,6 +1,6 @@
-package io.goodforgod.aws.simplelambda.runtime;
+package io.goodforgod.aws.simplelambda;
 
-import static io.goodforgod.aws.simplelambda.runtime.SimpleLoggerLogLevelRefresher.SIMPLE_LOGGER_FACTORY;
+import static io.goodforgod.aws.simplelambda.SimpleLoggerLogLevelRefresher.SIMPLE_LOGGER_FACTORY;
 
 import io.goodforgod.aws.simplelambda.config.SimpleLambdaContextVariables;
 import io.goodforgod.aws.simplelambda.utils.StringUtils;

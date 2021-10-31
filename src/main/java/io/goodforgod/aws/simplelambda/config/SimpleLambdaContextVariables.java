@@ -20,8 +20,7 @@ public interface SimpleLambdaContextVariables {
     String EVENT_HANDLER = "_HANDLER_EVENT";
 
     /**
-     * Default logging level for {@link org.slf4j.Logger} with values from
-     * {@link Level}
+     * Default logging level for {@link org.slf4j.Logger} with values from {@link Level}
      */
     String LOGGING_LEVEL = "SIMPLE_LAMBDA_DEFAULT_LOG_LEVEL";
 }

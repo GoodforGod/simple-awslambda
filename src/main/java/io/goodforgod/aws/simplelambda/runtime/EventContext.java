@@ -124,16 +124,14 @@ public final class EventContext implements Context {
 
     /**
      * @param name the name of the environment variable
-     * @return the string value of the variable, or {@code null} if the variable is
-     *         not defined
+     * @return the string value of the variable, or {@code null} if the variable is not defined
      */
     protected String getEnv(String name) {
         return System.getenv(name);
     }
 
     /**
-     * @return the number of milliseconds since January 1, 1970, 00:00:00 GMT until
-     *         the current date
+     * @return the number of milliseconds since January 1, 1970, 00:00:00 GMT until the current date
      */
     protected long currentTime() {
         return System.currentTimeMillis();

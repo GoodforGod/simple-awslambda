@@ -39,12 +39,11 @@ final class Demand {
      * Tries to decrease this demand by the specified positive value.
      *
      * <p>
-     * The actual value this demand has been decreased by might be less than
-     * {@code n}, including {@code 0} (no decrease at all).
+     * The actual value this demand has been decreased by might be less than {@code n}, including
+     * {@code 0} (no decrease at all).
      *
      * @param n decrement {@code > 0}
-     * @return a value {@code m} ({@code 0 <= m <= n}) this demand has been actually
-     *         decreased by
+     * @return a value {@code m} ({@code 0 <= m <= n}) this demand has been actually decreased by
      */
     public long decreaseAndGet(long n) {
         if (n <= 0) {

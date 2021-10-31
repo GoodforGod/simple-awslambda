@@ -23,8 +23,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * AWS Lambda Gateway Handler for handling requests coming from events that
- * contains body.
+ * AWS Lambda Gateway Handler for handling requests coming from events that contains body.
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
@@ -96,10 +95,8 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
     /**
      * @param funcOutValue   received from {@link RequestHandler}
-     * @param funcInputType  that is input argument class type of
-     *                       {@link RequestHandler}
-     * @param funcOutputType that is output argument class type of
-     *                       {@link RequestHandler}
+     * @param funcInputType  that is input argument class type of {@link RequestHandler}
+     * @param funcOutputType that is output argument class type of {@link RequestHandler}
      * @param context        of request
      * @return converted event output
      */
@@ -124,10 +121,9 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
     /**
      * @param funcOutValue  received from {@link RequestHandler}
-     * @param funcInputType that is input argument class type of
-     *                      {@link RequestHandler}
-     * @return if argument type is one of AWS DTOs {@link BodyEvent} than result is
-     *         wrapped in corresponding type or outValue as is
+     * @param funcInputType that is input argument class type of {@link RequestHandler}
+     * @return if argument type is one of AWS DTOs {@link BodyEvent} than result is wrapped in
+     *         corresponding type or outValue as is
      */
     private Object tryWrapEvent(Object funcOutValue,
                                 @NotNull Class<?> funcInputType) {

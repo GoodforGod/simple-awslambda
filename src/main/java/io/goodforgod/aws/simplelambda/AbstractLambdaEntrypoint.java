@@ -4,7 +4,6 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
-import io.goodforgod.aws.simplelambda.runtime.SimpleLambdaRuntimeEventLoop;
 import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
 import java.util.Objects;
@@ -29,8 +28,10 @@ public abstract class AbstractLambdaEntrypoint {
     protected AbstractLambdaEntrypoint() {
         final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
 
-        this.runtimeContext = getRuntimeContext();
         this.eventLoop = getLambdaRuntimeEventLoop();
+        this.runtimeContext = getRuntimeContext();
+        Objects.requireNonNull(eventLoop, "EventLoop can't be nullable!");
+        Objects.requireNonNull(runtimeContext, "RuntimeContext can't be nullable!");
 
         if (logger.isInfoEnabled()) {
             logger.info("RuntimeContext build initialization took: {} millis", TimeUtils.timeTook(contextStart));
@@ -39,9 +40,8 @@ public abstract class AbstractLambdaEntrypoint {
 
     protected void run(String[] args) {
         try {
-            final String eventHandler = getEventHandlerQualifier();
-            Objects.requireNonNull(eventLoop, "Event loop runtime can't be nullable!");
-            eventLoop.execute(runtimeContext, eventHandler);
+            final String eventHandlerQualifier = getEventHandlerQualifier();
+            eventLoop.execute(runtimeContext, eventHandlerQualifier);
         } catch (Exception e) {
             handleInitializationError(e);
         }
@@ -54,8 +54,8 @@ public abstract class AbstractLambdaEntrypoint {
     protected abstract Function<RuntimeContext, RequestHandler> getRequestHandler();
 
     /**
-     * @return Type of {@link EventHandler} implementation that will be responsible
-     *         for handing event processing
+     * @return Type of {@link EventHandler} implementation that will be responsible for handing event
+     *         processing
      */
     @NotNull
     protected String getEventHandlerQualifier() {
@@ -71,7 +71,7 @@ public abstract class AbstractLambdaEntrypoint {
     }
 
     @NotNull
-    protected SimpleLambdaRuntimeEventLoop getLambdaRuntimeEventLoop() {
+    private SimpleLambdaRuntimeEventLoop getLambdaRuntimeEventLoop() {
         return new SimpleLambdaRuntimeEventLoop();
     }
 

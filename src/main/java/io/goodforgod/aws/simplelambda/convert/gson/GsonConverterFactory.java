@@ -7,14 +7,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Simple {@link Gson} factory implementation that builds instance of Gson from
- * property file: gson.properties
+ * Simple {@link Gson} factory implementation that builds instance of Gson from property file:
+ * gson.properties
  *
  * @author Anton Kurako (GoodforGod)
  * @since 02.10.2021
  */
 @Singleton
-public class GsonConverterPropertyFactory {
+public class GsonConverterFactory {
 
     private final GsonFactory factory = new GsonFactory();
 

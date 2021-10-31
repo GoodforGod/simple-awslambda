@@ -41,17 +41,17 @@ dependencies {
 
     compileOnly "io.goodforgod:graalvm-hint-annotations:0.10.0-SNAPSHOT"
 
-    implementation "io.goodforgod:gson-configuration:1.0.0-SNAPSHOT"
+    implementation "io.goodforgod:gson-configuration:1.0.0"
     implementation "com.google.code.gson:gson:2.8.8"
     implementation "javax.inject:javax.inject:1"
 
-    api "io.goodforgod:aws-lambda-java-events:1.0.0-SNAPSHOT"
-    api "io.goodforgod:uri-builder:1.0.0-SNAPSHOT"
+    api "io.goodforgod:aws-lambda-java-events:1.0.0"
+    api "io.goodforgod:uri-builder:1.0.0"
     api "org.jetbrains:annotations:22.0.0"
     api "com.amazonaws:aws-lambda-java-core:1.2.1"
     api "org.slf4j:slf4j-api:1.7.32"
 
-    testRuntimeOnly "io.goodforgod:slf4j-simple-logger:0.10.0-SNAPSHOT"
+    testRuntimeOnly "io.goodforgod:slf4j-simple-logger:0.10.0"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.1"
     testImplementation "org.junit.jupiter:junit-jupiter-params:5.8.1"

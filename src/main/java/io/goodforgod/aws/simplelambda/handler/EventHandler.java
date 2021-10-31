@@ -8,8 +8,8 @@ import java.util.concurrent.Flow.Publisher;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Process event as input stream and add logic for conversation, transformation,
- * normalization of events before processing them in {@link RequestHandler}
+ * Process event as input stream and add logic for conversation, transformation, normalization of
+ * events before processing them in {@link RequestHandler}
  *
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
