@@ -54,20 +54,20 @@ public abstract class AbstractLambdaEntrypoint {
     protected abstract Function<RuntimeContext, RequestHandler> getRequestHandler();
 
     /**
+     * @return {@link RuntimeContext} implementation for Lambda
+     */
+    @NotNull
+    public RuntimeContext getRuntimeContext() {
+        return new SimpleRuntimeContext(getRequestHandler());
+    }
+
+    /**
      * @return Type of {@link EventHandler} implementation that will be responsible for handing event
      *         processing
      */
     @NotNull
     protected String getEventHandlerQualifier() {
         return InputEventHandler.QUALIFIER;
-    }
-
-    /**
-     * @return {@link RuntimeContext} implementation for Lambda
-     */
-    @NotNull
-    protected RuntimeContext getRuntimeContext() {
-        return new SimpleRuntimeContext(getRequestHandler());
     }
 
     @NotNull
