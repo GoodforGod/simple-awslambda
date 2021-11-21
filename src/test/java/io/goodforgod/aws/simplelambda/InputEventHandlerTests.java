@@ -1,11 +1,10 @@
 package io.goodforgod.aws.simplelambda;
 
-import io.goodforgod.aws.simplelambda.example.HelloWorldLambda;
+import io.goodforgod.aws.simplelambda.example.entrypoint.BodyLambdaEntrypoint;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.runtime.EventContext;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
-import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import io.goodforgod.aws.simplelambda.utils.InputStreamUtils;
 import io.goodforgod.aws.simplelambda.utils.SubscriberUtils;
 import java.io.InputStream;
@@ -23,7 +22,9 @@ class InputEventHandlerTests extends Assertions {
 
     @Test
     void inputEventHandled() {
-        try (final RuntimeContext context = new SimpleRuntimeContext(c -> new HelloWorldLambda())) {
+        try (final RuntimeContext context = new BodyLambdaEntrypoint().getRuntimeContext()) {
+            context.setupInRuntime();
+
             final EventHandler handler = context.getBean(InputEventHandler.class);
 
             final String eventAsString = "{\"name\":\"Steeven King\"}";
