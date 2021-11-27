@@ -37,19 +37,23 @@ public class NativeHttpClient implements SimpleHttpClient {
     private final HttpClient client;
 
     public NativeHttpClient() {
-        this(getClient());
+        this(getDefaultHttpClient());
     }
 
     public NativeHttpClient(@NotNull HttpClient client) {
         this.client = client;
     }
 
-    private static HttpClient getClient() {
+    private static HttpClient getDefaultHttpClient() {
         return HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.NORMAL)
                 .connectTimeout(DEFAULT_CONNECTION_TIMEOUT)
                 .version(DEFAULT_VERSION)
                 .build();
+    }
+
+    public @NotNull HttpClient getClient() {
+        return client;
     }
 
     @Override
