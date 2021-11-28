@@ -41,8 +41,8 @@ dependencies {
 
     compileOnly "io.goodforgod:graalvm-hint-annotations:0.10.0-SNAPSHOT"
 
-    implementation "io.goodforgod:gson-configuration:1.0.0"
-    implementation "com.google.code.gson:gson:2.8.8"
+    implementation "io.goodforgod:gson-configuration:1.1.0"
+    implementation "com.google.code.gson:gson:2.8.9"
     implementation "javax.inject:javax.inject:1"
 
     api "io.goodforgod:aws-lambda-java-events:1.0.0"
