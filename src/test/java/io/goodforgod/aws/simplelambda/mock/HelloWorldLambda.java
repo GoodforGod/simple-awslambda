@@ -1,4 +1,4 @@
-package io.goodforgod.aws.simplelambda.example;
+package io.goodforgod.aws.simplelambda.mock;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;

@@ -1,8 +1,8 @@
 package io.goodforgod.aws.simplelambda;
 
-import io.goodforgod.aws.simplelambda.example.entrypoint.BodyLambdaEntrypoint;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
+import io.goodforgod.aws.simplelambda.mock.entrypoint.BodyLambdaEntrypoint;
 import io.goodforgod.aws.simplelambda.runtime.EventContext;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
 import io.goodforgod.aws.simplelambda.utils.InputStreamUtils;

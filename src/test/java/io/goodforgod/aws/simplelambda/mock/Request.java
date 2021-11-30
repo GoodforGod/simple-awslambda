@@ -1,4 +1,4 @@
-package io.goodforgod.aws.simplelambda.example;
+package io.goodforgod.aws.simplelambda.mock;
 
 /**
  * @author Anton Kurako (GoodforGod)
