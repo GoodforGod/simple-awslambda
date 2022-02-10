@@ -262,7 +262,6 @@ public interface SimpleHttpClient extends AutoCloseable {
                                       @NotNull SimpleHttpRequest request,
                                       @NotNull Duration timeout) {
         return execute(HttpMethod.DELETE, uri, request, timeout);
-
     }
 
     /**

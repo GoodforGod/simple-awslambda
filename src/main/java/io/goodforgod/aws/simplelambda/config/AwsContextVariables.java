@@ -60,7 +60,6 @@ public interface AwsContextVariables {
     String AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY";
 
     /**
-     *
      * The access keys obtained from the function's execution role.
      */
     String AWS_SESSION_TOKEN = "AWS_SESSION_TOKEN";

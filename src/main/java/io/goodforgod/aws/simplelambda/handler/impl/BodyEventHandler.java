@@ -45,7 +45,9 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
     @Override
     public @NotNull Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
         logger.trace("Function input conversion started...");
-        final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
+        final long inputStart = (logger.isDebugEnabled())
+                ? TimeUtils.getTime()
+                : 0;
 
         final RequestFunction function = getFunctionArguments(requestHandler);
         logger.debug("Function '{}' execution started with input '{}' and output '{}'",
@@ -58,14 +60,18 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         }
 
         logger.trace("Function processing started...");
-        final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+        final long responseStart = (logger.isInfoEnabled())
+                ? TimeUtils.getTime()
+                : 0;
         final Object functionOutput = requestHandler.handleRequest(functionInput, context);
         if (logger.isInfoEnabled()) {
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
         }
 
         logger.trace("Function output event conversion started...");
-        final long outputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
+        final long outputStart = (logger.isDebugEnabled())
+                ? TimeUtils.getTime()
+                : 0;
         final Object response = getFunctionOutput(functionOutput, function.getInput(), function.getOutput(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function output event took: {} millis", TimeUtils.timeTook(outputStart));
@@ -123,7 +129,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
      * @param funcOutValue  received from {@link RequestHandler}
      * @param funcInputType that is input argument class type of {@link RequestHandler}
      * @return if argument type is one of AWS DTOs {@link BodyEvent} than result is wrapped in
-     *         corresponding type or outValue as is
+     *             corresponding type or outValue as is
      */
     private Object tryWrapEvent(Object funcOutValue,
                                 @NotNull Class<?> funcInputType) {

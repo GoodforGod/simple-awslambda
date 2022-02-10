@@ -4,7 +4,7 @@ plugins {
 
     id "java-library"
     id "org.sonarqube" version "3.3"
-    id "com.diffplug.spotless" version "5.14.3"
+    id "com.diffplug.spotless" version "6.2.2"
 }
 
 repositories {
@@ -37,9 +37,9 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.10.0-SNAPSHOT"
+    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.12.0-SNAPSHOT"
 
-    compileOnly "io.goodforgod:graalvm-hint-annotations:0.10.0-SNAPSHOT"
+    compileOnly "io.goodforgod:graalvm-hint-annotations:0.12.0-SNAPSHOT"
 
     implementation "io.goodforgod:gson-configuration:1.1.0"
     implementation "com.google.code.gson:gson:2.8.9"

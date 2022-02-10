@@ -50,17 +50,22 @@ final class SimpleLambdaRuntimeEventLoop {
         try (final RuntimeContext context = runtimeContext) {
             Objects.requireNonNull(context, "RuntimeContext can't be nullable!");
 
-            final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+            final long contextStart = (logger.isInfoEnabled())
+                    ? TimeUtils.getTime()
+                    : 0;
             context.setupInRuntime();
 
             if (logger.isInfoEnabled()) {
                 logger.info("RuntimeContext runtime initialization took: {} millis", TimeUtils.timeTook(contextStart));
             }
 
-            final long runtimeLoopStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+            final long runtimeLoopStart = (logger.isInfoEnabled())
+                    ? TimeUtils.getTime()
+                    : 0;
             final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
             final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
-            Objects.requireNonNull(eventHandler, "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
+            Objects.requireNonNull(eventHandler,
+                    "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
             Objects.requireNonNull(httpClient, "SimpleHttpClient implementation not found!");
 
             final URI invocationUri = getInvocationNextUri(apiEndpoint);
@@ -106,7 +111,9 @@ final class SimpleLambdaRuntimeEventLoop {
 
             final URI responseUri = getInvocationResponseUri(apiResponseEndpoint, eventContext.getAwsRequestId());
             logger.debug("Responding to AWS Invocation URI: {}", responseUri);
-            final long respondingStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+            final long respondingStart = (logger.isInfoEnabled())
+                    ? TimeUtils.getTime()
+                    : 0;
 
             final SimpleHttpRequest responseHttpEvent = PublisherNativeHttpRequest.ofPublisher(responsePublisher);
             final SimpleHttpResponse awsResponse = httpClient.post(responseUri, responseHttpEvent, DEFAULT_TIMEOUT);
@@ -133,7 +140,7 @@ final class SimpleLambdaRuntimeEventLoop {
      * @param apiEndpoint of api URI
      * @return invocation response uri
      * @see <a href=
-     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     *          "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationNextUri(URI apiEndpoint) {
         return apiEndpoint.resolve(AwsRuntimeVariables.INVOCATION_NEXT_URI);
@@ -146,7 +153,7 @@ final class SimpleLambdaRuntimeEventLoop {
      * @param requestId   of request
      * @return invocation response uri
      * @see <a href=
-     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     *          "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationResponseUri(URI apiEndpoint, String requestId) {
         return apiEndpoint.resolve(AwsRuntimeVariables.INVOCATION_URI + requestId + "/response");
@@ -160,7 +167,7 @@ final class SimpleLambdaRuntimeEventLoop {
      * @param requestId   of request
      * @return invocation response uri
      * @see <a href=
-     *      "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
+     *          "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html">https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html</a>
      */
     private static URI getInvocationErrorUri(URI apiEndpoint, String requestId) {
         return apiEndpoint.resolve(AwsRuntimeVariables.INVOCATION_URI + requestId + "/error");
@@ -176,7 +183,7 @@ final class SimpleLambdaRuntimeEventLoop {
     }
 
     private static SimpleHttpRequest getErrorResponse(Throwable e) {
-        final String body = "{\"errorMessage\":\"" + e.getMessage() + "\", \"errorType\":\"" + e.getClass().getSimpleName() + "\"}";
+        final String body = "{\"errorMessage\":\"" + e.getMessage() + "\", \"errorType\":\"" + e.getClass().getName() + "\"}";
         return StringHttpRequest.ofJson(body);
     }
 }

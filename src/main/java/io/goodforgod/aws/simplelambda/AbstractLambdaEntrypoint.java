@@ -26,7 +26,9 @@ public abstract class AbstractLambdaEntrypoint {
     private final SimpleLambdaRuntimeEventLoop eventLoop;
 
     protected AbstractLambdaEntrypoint() {
-        final long contextStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+        final long contextStart = (logger.isInfoEnabled())
+                ? TimeUtils.getTime()
+                : 0;
 
         this.eventLoop = getLambdaRuntimeEventLoop();
         this.runtimeContext = getRuntimeContext();
@@ -63,7 +65,7 @@ public abstract class AbstractLambdaEntrypoint {
 
     /**
      * @return Type of {@link EventHandler} implementation that will be responsible for handing event
-     *         processing
+     *             processing
      */
     @NotNull
     protected String getEventHandlerQualifier() {

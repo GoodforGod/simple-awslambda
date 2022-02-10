@@ -24,6 +24,8 @@ public class StatusException extends LambdaException {
     }
 
     public int statusCode() {
-        return (statusCode <= 100 || statusCode >= 600) ? 500 : statusCode;
+        return (statusCode <= 100 || statusCode >= 600)
+                ? 500
+                : statusCode;
     }
 }

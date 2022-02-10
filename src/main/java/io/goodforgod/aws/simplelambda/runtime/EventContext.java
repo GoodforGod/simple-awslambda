@@ -154,6 +154,8 @@ public final class EventContext implements Context {
     }
 
     private String formatOrEmpty(String prefix, Object value, String suffix) {
-        return (value == null) ? "" : prefix + value + suffix;
+        return (value == null)
+                ? ""
+                : prefix + value + suffix;
     }
 }

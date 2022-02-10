@@ -15,15 +15,15 @@ final class SequentialScheduler {
 
     /**
      * An interface to signal the completion of a {@link SequentialScheduler.RestartableTask}.
-     *
      * <p>
      * The invocation of {@code complete} completes the task. The invocation of {@code complete} may
      * restart the task, if an attempt has previously been made to run the task while it was already
      * running.
      *
      * @apiNote {@code DeferredCompleter} is useful when a task is not necessary complete when its
-     *          {@code run} method returns, but will complete at a later time, and maybe in different
-     *          thread. This type exists for readability purposes at use-sites only.
+     *              {@code run} method returns, but will complete at a later time, and maybe in
+     *              different
+     *              thread. This type exists for readability purposes at use-sites only.
      */
     public abstract static class DeferredCompleter {
 
@@ -122,7 +122,7 @@ final class SequentialScheduler {
      *
      * @implSpec The recursion which is possible here must be bounded:
      *
-     *           <pre>
+     *               <pre>
      * {@code
      *     this.runOrSchedule()
      *         completer.complete()
@@ -139,14 +139,12 @@ final class SequentialScheduler {
 
     /**
      * Executes or schedules the task to be executed in the provided executor.
-     *
      * <p>
      * This method can be used when potential executing from a calling thread is not desirable.
      *
      * @param executor An executor in which to execute the task, if the task needs to be executed.
-     *
      * @apiNote The given executor can be {@code null} in which case calling {@code runOrSchedule(null)}
-     *          is strictly equivalent to calling {@code runOrSchedule()}.
+     *              is strictly equivalent to calling {@code runOrSchedule()}.
      */
     public void runOrSchedule(Executor executor) {
         runOrSchedule(schedulableTask, executor);
@@ -230,7 +228,6 @@ final class SequentialScheduler {
 
     /**
      * Tells whether, or not, this scheduler has been permanently stopped.
-     *
      * <p>
      * Should be used from inside the task to poll the status of the scheduler, pretty much the same way
      * as it is done for threads:
@@ -249,7 +246,6 @@ final class SequentialScheduler {
 
     /**
      * Stops this scheduler. Subsequent invocations of {@code runOrSchedule} are effectively no-ops.
-     *
      * <p>
      * If the task has already begun, this invocation will not affect it, unless the task itself uses
      * {@code isStopped()} method to check the state of the handler.
@@ -263,12 +259,12 @@ final class SequentialScheduler {
      * a {@link SequentialScheduler.SynchronizedRestartableTask}.
      *
      * @apiNote This is equivalent to calling
-     *          {@code new SequentialScheduler(new SynchronizedRestartableTask(mainLoop))} The main loop
-     *          must not perform any blocking operation.
-     *
+     *              {@code new SequentialScheduler(new SynchronizedRestartableTask(mainLoop))} The main
+     *              loop
+     *              must not perform any blocking operation.
      * @param mainLoop The main loop of the new sequential scheduler
      * @return a new {@code SequentialScheduler} that executes the provided {@code mainLoop} from within
-     *         a {@link SequentialScheduler.SynchronizedRestartableTask}.
+     *             a {@link SequentialScheduler.SynchronizedRestartableTask}.
      */
     public static SequentialScheduler synchronizedScheduler(Runnable mainLoop) {
         return new SequentialScheduler(new SequentialScheduler.SynchronizedRestartableTask(mainLoop));

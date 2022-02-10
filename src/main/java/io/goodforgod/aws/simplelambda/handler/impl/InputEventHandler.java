@@ -38,7 +38,9 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
 
     public @NotNull Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
         logger.trace("Function input conversion started...");
-        final long inputStart = (logger.isDebugEnabled()) ? TimeUtils.getTime() : 0;
+        final long inputStart = (logger.isDebugEnabled())
+                ? TimeUtils.getTime()
+                : 0;
 
         final RequestFunction function = getFunctionArguments(requestHandler);
         logger.debug("Function '{}' execution started with input '{}' and output '{}'",
@@ -51,7 +53,9 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
         }
 
         logger.trace("Function processing started...");
-        final long responseStart = (logger.isInfoEnabled()) ? TimeUtils.getTime() : 0;
+        final long responseStart = (logger.isInfoEnabled())
+                ? TimeUtils.getTime()
+                : 0;
         final Object functionOutput = requestHandler.handleRequest(functionInput, context);
         if (logger.isInfoEnabled()) {
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));

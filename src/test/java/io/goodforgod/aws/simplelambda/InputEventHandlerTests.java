@@ -30,7 +30,8 @@ class InputEventHandlerTests extends Assertions {
             final String eventAsString = "{\"name\":\"Steeven King\"}";
             final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);
 
-            final Publisher<ByteBuffer> publisher = handler.handle(inputStream, EventContext.ofRequestId(UUID.randomUUID().toString()));
+            final Publisher<ByteBuffer> publisher = handler.handle(inputStream,
+                    EventContext.ofRequestId(UUID.randomUUID().toString()));
             assertNotNull(publisher);
 
             final String responseAsString = SubscriberUtils.getPublisherString(publisher);

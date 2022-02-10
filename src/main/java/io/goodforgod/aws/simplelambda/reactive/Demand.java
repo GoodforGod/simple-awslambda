@@ -22,7 +22,9 @@ final class Demand {
         if (n <= 0) {
             throw new IllegalArgumentException(String.valueOf(n));
         }
-        long prev = val.getAndAccumulate(n, (p, i) -> p + i < 0 ? Long.MAX_VALUE : p + i);
+        long prev = val.getAndAccumulate(n, (p, i) -> p + i < 0
+                ? Long.MAX_VALUE
+                : p + i);
         return prev == 0;
     }
 
@@ -37,7 +39,6 @@ final class Demand {
 
     /**
      * Tries to decrease this demand by the specified positive value.
-     *
      * <p>
      * The actual value this demand has been decreased by might be less than {@code n}, including
      * {@code 0} (no decrease at all).
