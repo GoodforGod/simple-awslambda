@@ -22,5 +22,7 @@ public interface EventHandler {
      * @return response representation as JSON
      */
     @NotNull
-    Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context);
+    Publisher<ByteBuffer> handle(@NotNull RequestHandler requestHandler,
+                                 @NotNull InputStream eventStream,
+                                 @NotNull Context context);
 }

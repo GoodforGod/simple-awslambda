@@ -1,5 +1,6 @@
 package io.goodforgod.aws.simplelambda;
 
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.mock.entrypoint.BodyLambdaEntrypoint;
@@ -26,12 +27,15 @@ class InputEventHandlerTests extends Assertions {
             context.setupInRuntime();
 
             final EventHandler handler = context.getBean(InputEventHandler.class);
+            final RequestHandler requestHandler = context.getBean(RequestHandler.class);
 
             final String eventAsString = "{\"name\":\"Steeven King\"}";
             final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);
 
-            final Publisher<ByteBuffer> publisher = handler.handle(inputStream,
+            final Publisher<ByteBuffer> publisher = handler.handle(requestHandler,
+                    inputStream,
                     EventContext.ofRequestId(UUID.randomUUID().toString()));
+
             assertNotNull(publisher);
 
             final String responseAsString = SubscriberUtils.getPublisherString(publisher);

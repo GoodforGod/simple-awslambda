@@ -1,13 +1,10 @@
 package io.goodforgod.aws.simplelambda;
 
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
-import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
 import java.util.Objects;
-import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,18 +47,10 @@ public abstract class AbstractLambdaEntrypoint {
     }
 
     /**
-     * @return {@link RequestHandler} implementation
+     * @return {@link RuntimeContext} implementation
      */
     @NotNull
-    protected abstract Function<RuntimeContext, RequestHandler> getRequestHandler();
-
-    /**
-     * @return {@link RuntimeContext} implementation for Lambda
-     */
-    @NotNull
-    public RuntimeContext getRuntimeContext() {
-        return new SimpleRuntimeContext(getRequestHandler());
-    }
+    public abstract RuntimeContext getRuntimeContext();
 
     /**
      * @return Type of {@link EventHandler} implementation that will be responsible for handing event

@@ -28,15 +28,14 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
 
     public static final String QUALIFIER = "inputEvent";
 
-    private final RequestHandler requestHandler;
-
     @Inject
-    public InputEventHandler(RequestHandler requestHandler, Converter converter) {
+    public InputEventHandler(Converter converter) {
         super(converter);
-        this.requestHandler = requestHandler;
     }
 
-    public @NotNull Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
+    public @NotNull Publisher<ByteBuffer> handle(@NotNull RequestHandler requestHandler,
+                                                 @NotNull InputStream eventStream,
+                                                 @NotNull Context context) {
         logger.trace("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled())
                 ? TimeUtils.getTime()
@@ -44,9 +43,9 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
 
         final RequestFunction function = getFunctionArguments(requestHandler);
         logger.debug("Function '{}' execution started with input '{}' and output '{}'",
-                requestHandler.getClass().getName(), function.getInput().getName(), function.getOutput().getName());
+                requestHandler.getClass().getName(), function.input().getName(), function.output().getName());
 
-        final Object functionInput = getFunctionInput(eventStream, function.getInput(), function.getOutput(), context);
+        final Object functionInput = getFunctionInput(eventStream, function.input(), function.output(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
             logger.debug("Function input: {}", functionInput);
@@ -63,7 +62,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
 
         logger.trace("Function output conversion started...");
         final long outputStart = TimeUtils.getTime();
-        final Object response = getFunctionOutput(functionOutput, function.getInput(), function.getOutput(), context);
+        final Object response = getFunctionOutput(functionOutput, function.input(), function.output(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function output conversion took: {} millis", TimeUtils.timeTook(outputStart));
             logger.debug("Function output: {}", response);

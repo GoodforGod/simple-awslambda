@@ -56,5 +56,6 @@ public interface SimpleHttpResponse {
      * @param name header name
      * @return header value or {@link Optional#empty()}
      */
+    @NotNull
     Optional<String> headerFirst(@NotNull String name);
 }

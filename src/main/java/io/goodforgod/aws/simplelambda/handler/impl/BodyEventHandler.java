@@ -34,16 +34,15 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
     public static final String QUALIFIER = "bodyEvent";
 
-    private final RequestHandler requestHandler;
-
     @Inject
-    public BodyEventHandler(RequestHandler requestHandler, Converter converter) {
+    public BodyEventHandler(Converter converter) {
         super(converter);
-        this.requestHandler = requestHandler;
     }
 
     @Override
-    public @NotNull Publisher<ByteBuffer> handle(@NotNull InputStream eventStream, @NotNull Context context) {
+    public @NotNull Publisher<ByteBuffer> handle(@NotNull RequestHandler requestHandler,
+                                                 @NotNull InputStream eventStream,
+                                                 @NotNull Context context) {
         logger.trace("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled())
                 ? TimeUtils.getTime()
@@ -51,9 +50,9 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
 
         final RequestFunction function = getFunctionArguments(requestHandler);
         logger.debug("Function '{}' execution started with input '{}' and output '{}'",
-                requestHandler.getClass().getName(), function.getInput().getName(), function.getOutput().getName());
+                requestHandler.getClass().getName(), function.input().getName(), function.output().getName());
 
-        final Object functionInput = getFunctionInput(eventStream, function.getInput(), function.getOutput(), context);
+        final Object functionInput = getFunctionInput(eventStream, function.input(), function.output(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
             logger.debug("Function input: {}", functionInput);
@@ -63,6 +62,7 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         final long responseStart = (logger.isInfoEnabled())
                 ? TimeUtils.getTime()
                 : 0;
+
         final Object functionOutput = requestHandler.handleRequest(functionInput, context);
         if (logger.isInfoEnabled()) {
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
@@ -72,7 +72,8 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         final long outputStart = (logger.isDebugEnabled())
                 ? TimeUtils.getTime()
                 : 0;
-        final Object response = getFunctionOutput(functionOutput, function.getInput(), function.getOutput(), context);
+
+        final Object response = getFunctionOutput(functionOutput, function.input(), function.output(), context);
         if (logger.isDebugEnabled()) {
             logger.debug("Function output event took: {} millis", TimeUtils.timeTook(outputStart));
             logger.debug("Function output event: {}", response);

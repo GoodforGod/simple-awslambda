@@ -6,15 +6,15 @@ import io.goodforgod.aws.lambda.events.gateway.*;
 import io.goodforgod.aws.lambda.events.kinesis.KinesisEvent;
 import io.goodforgod.aws.lambda.events.s3.S3BatchEvent;
 import io.goodforgod.graalvm.hint.annotation.InitializationHint;
+import io.goodforgod.graalvm.hint.annotation.ReflectionHint;
 import io.goodforgod.graalvm.hint.annotation.ResourceHint;
-import io.goodforgod.graalvm.hint.annotation.TypeHint;
 
 /**
  * @author Anton Kurako (GoodforGod)
  * @since 27.09.2021
  */
-@TypeHint(
-        value = { TypeHint.AccessType.ALL_DECLARED },
+@ReflectionHint(
+        value = { ReflectionHint.AccessType.ALL_DECLARED },
         types = {
                 APIGatewayProxyEvent.class,
                 APIGatewayProxyEvent.RequestIdentity.class,

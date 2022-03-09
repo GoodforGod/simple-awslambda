@@ -48,7 +48,7 @@ public abstract class AbstractHttpResponse implements SimpleHttpResponse {
     }
 
     @Override
-    public Optional<String> headerFirst(@NotNull String name) {
+    public @NotNull Optional<String> headerFirst(@NotNull String name) {
         return Optional.ofNullable(headers.get(name))
                 .filter(v -> !v.isEmpty())
                 .map(v -> v.get(0));

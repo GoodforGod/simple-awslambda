@@ -1,5 +1,6 @@
 package io.goodforgod.aws.simplelambda;
 
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.lambda.events.gateway.APIGatewayV2HTTPEvent;
 import io.goodforgod.aws.simplelambda.convert.Converter;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
@@ -29,14 +30,17 @@ class BodyEventHandlerTests extends Assertions {
 
             final EventHandler handler = context.getBean(BodyEventHandler.class);
             final Converter converter = context.getBean(Converter.class);
+            final RequestHandler requestHandler = context.getBean(RequestHandler.class);
 
             final String eventBody = "{\"name\":\"Steeven King\"}";
             final APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent().setBody(eventBody);
             final String eventAsString = converter.toString(event);
             final InputStream inputStream = InputStreamUtils.getInputStreamFromStringUTF8(eventAsString);
 
-            final Publisher<ByteBuffer> publisher = handler.handle(inputStream,
+            final Publisher<ByteBuffer> publisher = handler.handle(requestHandler,
+                    inputStream,
                     EventContext.ofRequestId(UUID.randomUUID().toString()));
+
             assertNotNull(publisher);
 
             final String responseAsString = SubscriberUtils.getPublisherString(publisher);

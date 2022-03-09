@@ -4,7 +4,7 @@ import static io.goodforgod.aws.simplelambda.SimpleLoggerLogLevelRefresher.SIMPL
 
 import io.goodforgod.aws.simplelambda.config.SimpleLambdaContextVariables;
 import io.goodforgod.aws.simplelambda.utils.StringUtils;
-import io.goodforgod.graalvm.hint.annotation.TypeHint;
+import io.goodforgod.graalvm.hint.annotation.ReflectionHint;
 import java.lang.reflect.Method;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import org.slf4j.event.Level;
  * @author Anton Kurako (GoodforGod)
  * @since 09.05.2021
  */
-@TypeHint(typeNames = SIMPLE_LOGGER_FACTORY, value = TypeHint.AccessType.ALL_DECLARED_METHODS)
+@ReflectionHint(typeNames = SIMPLE_LOGGER_FACTORY, value = ReflectionHint.AccessType.ALL_DECLARED_METHODS)
 final class SimpleLoggerLogLevelRefresher {
 
     static final String SIMPLE_LOGGER_FACTORY = "io.goodforgod.slf4j.simplelogger.SimpleLoggerFactory";

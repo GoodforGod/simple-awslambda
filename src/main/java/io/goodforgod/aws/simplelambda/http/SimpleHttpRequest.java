@@ -16,6 +16,7 @@ public interface SimpleHttpRequest {
     /**
      * @return empty simple http request
      */
+    @NotNull
     static SimpleHttpRequest empty() {
         return StringHttpRequest.empty();
     }
@@ -24,6 +25,7 @@ public interface SimpleHttpRequest {
      * @param headers to include in HttpRequest
      * @return simple http request with headers only
      */
+    @NotNull
     static SimpleHttpRequest ofHeaders(@NotNull Map<String, String> headers) {
         return StringHttpRequest.ofHeaders(headers);
     }
