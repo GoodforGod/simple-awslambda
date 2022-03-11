@@ -23,9 +23,7 @@ public abstract class AbstractLambdaEntrypoint {
     private final SimpleLambdaRuntimeEventLoop eventLoop;
 
     protected AbstractLambdaEntrypoint() {
-        final long contextStart = (logger.isInfoEnabled())
-                ? TimeUtils.getTime()
-                : 0;
+        final long contextStart = TimeUtils.getTime();
 
         this.eventLoop = getLambdaRuntimeEventLoop();
         this.runtimeContext = getRuntimeContext();
@@ -62,12 +60,11 @@ public abstract class AbstractLambdaEntrypoint {
     }
 
     @NotNull
-    private SimpleLambdaRuntimeEventLoop getLambdaRuntimeEventLoop() {
+    private static SimpleLambdaRuntimeEventLoop getLambdaRuntimeEventLoop() {
         return new SimpleLambdaRuntimeEventLoop();
     }
 
     protected void handleInitializationError(Throwable e) {
-        final Logger logger = LoggerFactory.getLogger(AbstractLambdaEntrypoint.class);
         logger.error(e.getMessage(), e);
         System.exit(1);
     }

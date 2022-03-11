@@ -40,65 +40,26 @@ final class SimpleLambdaRuntimeEventLoop {
      * @param runtimeContext        RuntimeContext instance supplier
      * @param eventHandlerQualifier to use for implementation injection
      */
-    void execute(@NotNull RuntimeContext runtimeContext,
-                 @NotNull String eventHandlerQualifier) {
+    void execute(@NotNull RuntimeContext runtimeContext, @NotNull String eventHandlerQualifier) {
         SimpleLoggerLogLevelRefresher.refresh();
 
         final URI apiEndpoint = getRuntimeApiEndpoint();
         logger.debug("AWS Runtime API Endpoint URI: {}", apiEndpoint);
 
+        final long contextStart = TimeUtils.getTime();
         try (final RuntimeContext context = runtimeContext) {
-            final long contextStart = (logger.isInfoEnabled())
-                    ? TimeUtils.getTime()
-                    : 0;
+            context.setupInRuntime();
+            final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
 
             if (logger.isInfoEnabled()) {
                 logger.info("RuntimeContext runtime initialization took: {} millis", TimeUtils.timeTook(contextStart));
             }
 
-            final long runtimeLoopStart = (logger.isInfoEnabled())
-                    ? TimeUtils.getTime()
-                    : 0;
-
-            final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
             final URI invocationUri = getInvocationNextUri(apiEndpoint);
             logger.debug("AWS Event Invocation URI: {}", invocationUri);
 
-            if (logger.isInfoEnabled()) {
-                logger.info("RuntimeEventLoop runtime initialization took: {} millis", TimeUtils.timeTook(runtimeLoopStart));
-            }
-
             while (!Thread.currentThread().isInterrupted()) {
-                logger.trace("Invoking next event...");
-                final SimpleHttpResponse event = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
-                SimpleLoggerLogLevelRefresher.refresh();
-                logger.trace("Event received with httpCode '{}' with headers: {}", event.statusCode(), event.headers());
-                if (event.statusCode() != 200) {
-                    throw new StatusException(event.statusCode(), event.bodyAsString());
-                }
-
-                final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
-                if (eventHandler == null) {
-                    throw new NullPointerException(
-                            "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
-                }
-
-                final Context requestContext = EventContext.ofHeadersMulti(event.headersMultiValues());
-                if (StringUtils.isEmpty(requestContext.getAwsRequestId())) {
-                    throw new IllegalStateException("AWS Request ID is not present!");
-                }
-
-                RequestHandler requestHandler = context.getBean(RequestHandler.class, requestContext.getFunctionName());
-                if (requestHandler == null)
-                    requestHandler = context.getBean(RequestHandler.class);
-
-                if (requestHandler == null) {
-                    throw new NullPointerException(
-                            "RequestHandler implementation for qualifier '" + requestContext.getFunctionName() + "' not found!");
-                }
-
-                logger.debug("Event received with RequestContext: {}", requestContext);
-                processEvent(event::body, requestContext, eventHandler, requestHandler, httpClient, apiEndpoint);
+                processLoop(context, eventHandlerQualifier, httpClient, invocationUri, apiEndpoint);
             }
         } catch (Exception e) {
             logger.error("Function unexpected initialization error occurred", e);
@@ -109,18 +70,57 @@ final class SimpleLambdaRuntimeEventLoop {
         }
     }
 
-    private void processEvent(Supplier<InputStream> eventSupplier,
-                              Context eventContext,
-                              EventHandler eventHandler,
-                              RequestHandler requestHandler,
-                              SimpleHttpClient httpClient,
-                              URI apiResponseEndpoint) {
+    private static void processLoop(RuntimeContext context,
+                                    String eventHandlerQualifier,
+                                    SimpleHttpClient httpClient,
+                                    URI invocationUri,
+                                    URI apiEndpoint) {
+        logger.trace("Invoking next event...");
+
+        final SimpleHttpResponse event = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
+        SimpleLoggerLogLevelRefresher.refresh();
+        logger.trace("Event received with httpCode '{}' with headers: {}", event.statusCode(), event.headers());
+
+        if (event.statusCode() != 200) {
+            throw new StatusException(event.statusCode(), event.bodyAsString());
+        }
+
+        final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
+        if (eventHandler == null) {
+            throw new IllegalStateException(
+                    "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
+        }
+
+        final Context requestContext = EventContext.ofHeadersMulti(event.headersMultiValues());
+        if (StringUtils.isEmpty(requestContext.getAwsRequestId())) {
+            throw new IllegalStateException("AWS Request ID is not present!");
+        }
+
+        RequestHandler requestHandler = context.getBean(RequestHandler.class, requestContext.getFunctionName());
+        if (requestHandler == null)
+            requestHandler = context.getBean(RequestHandler.class);
+
+        if (requestHandler == null) {
+            throw new IllegalStateException(
+                    "RequestHandler implementation for qualifier '" + requestContext.getFunctionName() + "' not found!");
+        }
+
+        logger.debug("Event received with RequestContext: {}", requestContext);
+        processEvent(event::body, requestContext, eventHandler, requestHandler, httpClient, apiEndpoint);
+    }
+
+    private static void processEvent(Supplier<InputStream> eventSupplier,
+                                     Context eventContext,
+                                     EventHandler eventHandler,
+                                     RequestHandler requestHandler,
+                                     SimpleHttpClient httpClient,
+                                     URI apiResponseEndpoint) {
         try (final InputStream eventStream = eventSupplier.get()) {
             final Publisher<ByteBuffer> responsePublisher = eventHandler.handle(requestHandler, eventStream, eventContext);
 
             final URI responseUri = getInvocationResponseUri(apiResponseEndpoint, eventContext.getAwsRequestId());
             logger.debug("Responding to AWS Invocation URI: {}", responseUri);
-            final long respondingStart = (logger.isInfoEnabled())
+            final long respondingStart = (logger.isDebugEnabled())
                     ? TimeUtils.getTime()
                     : 0;
 

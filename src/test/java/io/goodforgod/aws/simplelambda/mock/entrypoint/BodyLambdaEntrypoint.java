@@ -6,7 +6,6 @@ import io.goodforgod.aws.simplelambda.handler.impl.BodyEventHandler;
 import io.goodforgod.aws.simplelambda.mock.HelloWorldLambda;
 import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * AWS Lambda Entrypoint for Lambda {@link BodyEvent}.
@@ -22,7 +21,7 @@ public class BodyLambdaEntrypoint extends AbstractBodyLambdaEntrypoint {
     }
 
     @Override
-    protected @NotNull Consumer<SimpleRuntimeContext> setupInRuntime() {
+    protected Consumer<SimpleRuntimeContext> setupInRuntime() {
         return context -> context.registerBean(new HelloWorldLambda());
     }
 }
