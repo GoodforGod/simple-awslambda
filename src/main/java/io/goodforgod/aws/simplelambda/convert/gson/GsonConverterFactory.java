@@ -3,7 +3,6 @@ package io.goodforgod.aws.simplelambda.convert.gson;
 import com.google.gson.Gson;
 import io.goodforgod.aws.simplelambda.convert.Converter;
 import io.goodforgod.gson.configuration.GsonFactory;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,13 +12,17 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 02.10.2021
  */
-@Singleton
-public class GsonConverterFactory {
+public final class GsonConverterFactory {
 
-    private final GsonFactory factory = new GsonFactory();
+    private static final GsonFactory GSON_FACTORY = new GsonFactory();
+    private static final RecordTypeAdapterFactory ADAPTER_FACTORY = new RecordTypeAdapterFactory();
 
     @NotNull
     public Converter build() {
-        return new GsonConverter(factory.build());
+        final Gson gson = GSON_FACTORY.builder()
+                .registerTypeAdapterFactory(ADAPTER_FACTORY)
+                .create();
+
+        return new GsonConverter(gson);
     }
 }
