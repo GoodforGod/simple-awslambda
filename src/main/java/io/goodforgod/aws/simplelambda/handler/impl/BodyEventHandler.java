@@ -12,10 +12,12 @@ import io.goodforgod.aws.lambda.events.system.LoadBalancerResponse;
 import io.goodforgod.aws.simplelambda.convert.Converter;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.handler.RequestFunction;
-import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.MediaType;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,6 +33,9 @@ import org.jetbrains.annotations.NotNull;
 @Named(QUALIFIER)
 @Singleton
 public class BodyEventHandler extends AbstractEventHandler implements EventHandler {
+
+    private static final Map<String, String> JSON_HEADERS = HttpHeaders.of(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .getMap();
 
     public static final String QUALIFIER = "bodyEvent";
 
@@ -144,19 +149,19 @@ public class BodyEventHandler extends AbstractEventHandler implements EventHandl
         if (LoadBalancerRequest.class.isAssignableFrom(funcInputType)) {
             return new LoadBalancerResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringHttpRequest.JSON_HEADERS);
+                    .setHeaders(JSON_HEADERS);
         } else if (APIGatewayProxyEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayProxyResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringHttpRequest.JSON_HEADERS);
+                    .setHeaders(JSON_HEADERS);
         } else if (APIGatewayV2HTTPEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2HTTPResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringHttpRequest.JSON_HEADERS);
+                    .setHeaders(JSON_HEADERS);
         } else if (APIGatewayV2WebSocketEvent.class.isAssignableFrom(funcInputType)) {
             return new APIGatewayV2WebSocketResponse()
                     .setBody(funcOutValue)
-                    .setHeaders(StringHttpRequest.JSON_HEADERS);
+                    .setHeaders(JSON_HEADERS);
         }
 
         return funcOutValue;

@@ -47,14 +47,12 @@ public abstract class AbstractLambdaEntrypoint {
     /**
      * @return {@link RuntimeContext} implementation
      */
-    @NotNull
     public abstract RuntimeContext getRuntimeContext();
 
     /**
      * @return Type of {@link EventHandler} implementation that will be responsible for handing event
      *             processing
      */
-    @NotNull
     protected String getEventHandlerQualifier() {
         return InputEventHandler.QUALIFIER;
     }

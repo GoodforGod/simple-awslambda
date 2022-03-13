@@ -2,6 +2,8 @@ package io.goodforgod.aws.simplelambda.http.nativeclient;
 
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
 import io.goodforgod.aws.simplelambda.http.common.AbstractHttpResponse;
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.HttpStatus;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
@@ -16,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public final class VoidNativeHttpResponse extends AbstractHttpResponse {
 
     private VoidNativeHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
-        super(httpResponse.statusCode(), httpResponse.headers().map());
+        super(HttpStatus.valueOf(httpResponse.statusCode()), HttpHeaders.ofMultiMap(httpResponse.headers().map()));
     }
 
     public static VoidNativeHttpResponse of(@NotNull HttpResponse<Void> httpResponse) {

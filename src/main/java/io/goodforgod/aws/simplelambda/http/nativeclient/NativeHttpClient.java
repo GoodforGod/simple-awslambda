@@ -2,10 +2,11 @@ package io.goodforgod.aws.simplelambda.http.nativeclient;
 
 import static io.goodforgod.aws.simplelambda.http.nativeclient.NativeHttpClient.QUALIFIER;
 
-import io.goodforgod.aws.simplelambda.error.StatusException;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
+import io.goodforgod.http.common.HttpStatus;
+import io.goodforgod.http.common.exception.HttpStatusException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -111,8 +112,11 @@ public class NativeHttpClient implements SimpleHttpClient {
                 .timeout(timeout)
                 .version(DEFAULT_VERSION);
 
-        if (!request.headers().isEmpty())
-            request.headers().forEach(builder::header);
+        request.headers().getMultiMap().forEach((header, values) -> {
+            for (String value : values) {
+                builder.header(header, value);
+            }
+        });
 
         return builder.build();
     }
@@ -122,7 +126,7 @@ public class NativeHttpClient implements SimpleHttpClient {
             final HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
             return InputStreamNativeHttpResponse.of(response);
         } catch (Exception e) {
-            throw new StatusException(500, e);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
 
@@ -131,7 +135,7 @@ public class NativeHttpClient implements SimpleHttpClient {
             final HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
             return VoidNativeHttpResponse.of(response);
         } catch (Exception e) {
-            throw new StatusException(500, e);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
 

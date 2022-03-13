@@ -3,7 +3,6 @@ package io.goodforgod.aws.simplelambda;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.simplelambda.config.AwsRuntimeVariables;
-import io.goodforgod.aws.simplelambda.error.StatusException;
 import io.goodforgod.aws.simplelambda.handler.EventHandler;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpClient;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
@@ -11,10 +10,11 @@ import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
 import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
 import io.goodforgod.aws.simplelambda.http.nativeclient.NativeHttpClient;
 import io.goodforgod.aws.simplelambda.http.nativeclient.PublisherNativeHttpRequest;
-import io.goodforgod.aws.simplelambda.runtime.EventContext;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
 import io.goodforgod.aws.simplelambda.utils.StringUtils;
 import io.goodforgod.aws.simplelambda.utils.TimeUtils;
+import io.goodforgod.http.common.HttpStatus;
+import io.goodforgod.http.common.exception.HttpStatusException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -79,30 +79,31 @@ final class SimpleLambdaRuntimeEventLoop {
 
         final SimpleHttpResponse event = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
         SimpleLoggerLogLevelRefresher.refresh();
-        logger.trace("Event received with httpCode '{}' with headers: {}", event.statusCode(), event.headers());
+        logger.trace("Event received with httpCode '{}' with headers: {}", event.status(), event.headers());
 
-        if (event.statusCode() != 200) {
-            throw new StatusException(event.statusCode(), event.bodyAsString());
+        if (!HttpStatus.OK.equals(event.status())) {
+            throw new HttpStatusException(event.status(), event.bodyAsString());
         }
 
         final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
         if (eventHandler == null) {
-            throw new IllegalStateException(
-                    "EventHandler implementation for qualifier '" + eventHandlerQualifier + "' not found!");
+            throw new IllegalStateException("EventHandler for qualifier '" + eventHandlerQualifier + "' not found!");
         }
 
-        final Context requestContext = EventContext.ofHeadersMulti(event.headersMultiValues());
+        final EventContext requestContext = EventContext.ofHeaders(event.headers());
         if (StringUtils.isEmpty(requestContext.getAwsRequestId())) {
             throw new IllegalStateException("AWS Request ID is not present!");
         }
 
-        RequestHandler requestHandler = context.getBean(RequestHandler.class, requestContext.getFunctionName());
-        if (requestHandler == null)
+        final String handlerName = requestContext.getHandlerName();
+        RequestHandler requestHandler = context.getBean(RequestHandler.class, handlerName);
+        if (requestHandler == null) {
+            logger.debug("RequestHandler for qualifier '{}' not found, looking without qualifier...", handlerName);
             requestHandler = context.getBean(RequestHandler.class);
+        }
 
         if (requestHandler == null) {
-            throw new IllegalStateException(
-                    "RequestHandler implementation for qualifier '" + requestContext.getFunctionName() + "' not found!");
+            throw new IllegalStateException("RequestHandler for qualifier '" + handlerName + "' not found!");
         }
 
         logger.debug("Event received with RequestContext: {}", requestContext);
@@ -133,7 +134,7 @@ final class SimpleLambdaRuntimeEventLoop {
             if (logger.isTraceEnabled()) {
                 final String responseBody = awsResponse.bodyAsString();
                 logger.trace("AWS Invocation responded with httpCode '{}' and body: {}",
-                        awsResponse.statusCode(), responseBody);
+                        awsResponse.status(), responseBody);
             }
         } catch (Exception e) {
             logger.error("Function Invocation error occurred", e);

@@ -3,6 +3,8 @@ package io.goodforgod.aws.simplelambda.http.nativeclient;
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
 import io.goodforgod.aws.simplelambda.http.common.AbstractHttpResponse;
 import io.goodforgod.aws.simplelambda.utils.InputStreamUtils;
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.HttpStatus;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
@@ -20,7 +22,7 @@ public final class InputStreamNativeHttpResponse extends AbstractHttpResponse {
     private final HttpResponse<InputStream> httpResponse;
 
     private InputStreamNativeHttpResponse(@NotNull HttpResponse<InputStream> httpResponse) {
-        super(httpResponse.statusCode(), httpResponse.headers().map());
+        super(HttpStatus.valueOf(httpResponse.statusCode()), HttpHeaders.ofMultiMap(httpResponse.headers().map()));
         this.httpResponse = httpResponse;
     }
 

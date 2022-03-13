@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 10.10.2021
  */
-public class ByteBufferSubscriber implements Flow.Subscriber<ByteBuffer> {
+class ByteBufferSubscriber implements Flow.Subscriber<ByteBuffer> {
 
     private final Function<byte[], ByteBuffer> finisher;
     private final CompletableFuture<ByteBuffer> result = new CompletableFuture<>();

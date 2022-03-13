@@ -2,11 +2,11 @@ package io.goodforgod.aws.simplelambda.http.common;
 
 import io.goodforgod.aws.simplelambda.http.SimpleHttpResponse;
 import io.goodforgod.aws.simplelambda.utils.InputStreamUtils;
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.HttpStatus;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,13 +20,17 @@ public final class InputStreamHttpResponse extends AbstractHttpResponse {
 
     private final InputStream body;
 
-    private InputStreamHttpResponse(int statusCode, InputStream body, Map<String, List<String>> headers) {
-        super(statusCode, headers);
+    private InputStreamHttpResponse(@NotNull HttpStatus status,
+                                    InputStream body,
+                                    @NotNull HttpHeaders headers) {
+        super(status, headers);
         this.body = body;
     }
 
-    public static InputStreamHttpResponse of(int statusCode, InputStream body, Map<String, List<String>> headers) {
-        return new InputStreamHttpResponse(statusCode, body, headers);
+    public static InputStreamHttpResponse of(@NotNull HttpStatus status,
+                                             InputStream body,
+                                             @NotNull HttpHeaders headers) {
+        return new InputStreamHttpResponse(status, body, headers);
     }
 
     @Override
@@ -38,7 +42,7 @@ public final class InputStreamHttpResponse extends AbstractHttpResponse {
      * @return body as {@link java.nio.charset.StandardCharsets#UTF_8} String
      */
     @Override
-    public @NotNull String bodyAsString(Charset charset) {
+    public @NotNull String bodyAsString(@NotNull Charset charset) {
         return InputStreamUtils.getStringFromInputStream(body(), charset);
     }
 }

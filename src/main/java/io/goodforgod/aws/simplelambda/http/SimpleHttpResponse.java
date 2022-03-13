@@ -1,11 +1,10 @@
 package io.goodforgod.aws.simplelambda.http;
 
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.HttpStatus;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,7 +16,14 @@ public interface SimpleHttpResponse {
     /**
      * @return http response status code
      */
-    int statusCode();
+    @NotNull
+    HttpStatus status();
+
+    /**
+     * @return http header multi map
+     */
+    @NotNull
+    HttpHeaders headers();
 
     /**
      * @return body as {@link InputStream}
@@ -39,23 +45,4 @@ public interface SimpleHttpResponse {
      */
     @NotNull
     String bodyAsString(Charset charset);
-
-    /**
-     * @return http header multi map
-     */
-    @NotNull
-    Map<String, List<String>> headersMultiValues();
-
-    /**
-     * @return http header flat map
-     */
-    @NotNull
-    Map<String, String> headers();
-
-    /**
-     * @param name header name
-     * @return header value or {@link Optional#empty()}
-     */
-    @NotNull
-    Optional<String> headerFirst(@NotNull String name);
 }

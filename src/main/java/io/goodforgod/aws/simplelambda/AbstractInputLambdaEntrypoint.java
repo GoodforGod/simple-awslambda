@@ -4,7 +4,6 @@ import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
 import io.goodforgod.aws.simplelambda.runtime.RuntimeContext;
 import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Abstract Simple Lambda Entrypoint for {@link InputEventHandler}
@@ -17,24 +16,24 @@ public abstract class AbstractInputLambdaEntrypoint extends AbstractLambdaEntryp
     /**
      * @return consumer to setup context in runtime
      */
-    @NotNull
-    protected abstract Consumer<SimpleRuntimeContext> setupInRuntime();
+    protected Consumer<SimpleRuntimeContext> setupInRuntime() {
+        return context -> {};
+    }
 
     /**
      * @return consumer to setup context in compile time
      */
-    @NotNull
     protected Consumer<SimpleRuntimeContext> setupInCompileTime() {
         return context -> {};
     }
 
     @Override
-    public @NotNull RuntimeContext getRuntimeContext() {
+    public RuntimeContext getRuntimeContext() {
         return new SimpleRuntimeContext(setupInRuntime(), setupInCompileTime());
     }
 
     @Override
-    protected @NotNull String getEventHandlerQualifier() {
+    protected String getEventHandlerQualifier() {
         return InputEventHandler.QUALIFIER;
     }
 }

@@ -1,8 +1,8 @@
 package io.goodforgod.aws.simplelambda.http;
 
 import io.goodforgod.aws.simplelambda.http.common.StringHttpRequest;
+import io.goodforgod.http.common.HttpHeaders;
 import java.nio.ByteBuffer;
-import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,16 +26,13 @@ public interface SimpleHttpRequest {
      * @return simple http request with headers only
      */
     @NotNull
-    static SimpleHttpRequest ofHeaders(@NotNull Map<String, String> headers) {
+    static SimpleHttpRequest ofHeaders(@NotNull HttpHeaders headers) {
         return StringHttpRequest.ofHeaders(headers);
     }
 
+    @NotNull
+    HttpHeaders headers();
+
     @Nullable
     Publisher<ByteBuffer> body();
-
-    /**
-     * @return http header multi map
-     */
-    @NotNull
-    Map<String, String> headers();
 }

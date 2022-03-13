@@ -1,4 +1,4 @@
-package io.goodforgod.aws.simplelambda.runtime;
+package io.goodforgod.aws.simplelambda;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
@@ -8,9 +8,7 @@ import io.goodforgod.aws.simplelambda.config.AwsContextVariables;
 import io.goodforgod.aws.simplelambda.config.AwsRuntimeVariables;
 import io.goodforgod.aws.simplelambda.config.SimpleLambdaContextVariables;
 import io.goodforgod.aws.simplelambda.utils.StringUtils;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import io.goodforgod.http.common.HttpHeaders;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,38 +17,27 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 22.5.2021
  */
-public final class EventContext implements Context {
+final class EventContext implements Context {
 
-    private final Map<String, String> headers;
+    private final HttpHeaders headers;
 
-    private EventContext(@NotNull Map<String, String> headers) {
-        this.headers = Map.copyOf(headers.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().toLowerCase(), Map.Entry::getValue)));
+    private EventContext(@NotNull HttpHeaders headers) {
+        this.headers = headers;
     }
 
-    public static EventContext ofRequestId(@NotNull String requestId) {
-        return new EventContext(Map.of(AwsRuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID, requestId));
-    }
-
-    public static EventContext ofHeaders(@NotNull Map<String, String> headers) {
+    @NotNull
+    public static EventContext ofHeaders(@NotNull HttpHeaders headers) {
         return new EventContext(headers);
     }
 
-    public static EventContext ofHeadersMulti(@NotNull Map<String, List<String>> headers) {
-        final Map<String, String> singleValueHeaders = headers.entrySet().stream()
-                .filter(e -> !e.getValue().isEmpty())
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().iterator().next()));
-
-        return new EventContext(singleValueHeaders);
-    }
-
-    public @NotNull Map<String, String> getHeaders() {
+    @NotNull
+    public HttpHeaders getHeaders() {
         return headers;
     }
 
     @Override
     public String getAwsRequestId() {
-        return headers.get(AwsRuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID);
+        return headers.findFirst(AwsRuntimeVariables.LAMBDA_RUNTIME_AWS_REQUEST_ID).orElse(null);
     }
 
     @Override
@@ -61,6 +48,10 @@ public final class EventContext implements Context {
     @Override
     public String getLogStreamName() {
         return getEnv(AwsContextVariables.AWS_LAMBDA_LOG_STREAM_NAME);
+    }
+
+    public String getHandlerName() {
+        return getEnv(AwsContextVariables.HANDLER);
     }
 
     @Override
@@ -75,7 +66,7 @@ public final class EventContext implements Context {
 
     @Override
     public String getInvokedFunctionArn() {
-        return headers.get(AwsRuntimeVariables.LAMBDA_RUNTIME_INVOKED_FUNCTION_ARN);
+        return headers.findFirst(AwsRuntimeVariables.LAMBDA_RUNTIME_INVOKED_FUNCTION_ARN).orElse(null);
     }
 
     @Override
@@ -90,7 +81,7 @@ public final class EventContext implements Context {
 
     @Override
     public int getRemainingTimeInMillis() {
-        final String millis = headers.get(AwsRuntimeVariables.LAMBDA_RUNTIME_DEADLINE_MS);
+        final String millis = headers.findFirst(AwsRuntimeVariables.LAMBDA_RUNTIME_DEADLINE_MS).orElse(null);
         if (StringUtils.isEmpty(millis))
             return 0;
 

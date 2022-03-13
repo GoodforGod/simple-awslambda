@@ -1,6 +1,5 @@
-package io.goodforgod.aws.simplelambda.utils;
+package io.goodforgod.aws.simplelambda.reactive;
 
-import io.goodforgod.aws.simplelambda.reactive.ByteBufferSubscriber;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;

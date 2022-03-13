@@ -56,15 +56,18 @@ import io.goodforgod.graalvm.hint.annotation.ResourceHint;
                 DynamoDBEvent.class,
                 DynamoDBEvent.DynamoDBStreamRecord.class,
         })
-@InitializationHint(typeNames = {
-        "io.goodforgod.aws.simplelambda",
-        "io.goodforgod.gson.configuration",
-        "io.goodforgod.slf4j.simplelogger",
-        "io.goodforgod.net.uri",
-        "com.google.gson",
-        "org.slf4j.impl",
-        "org.slf4j.LoggerFactory"
-}, value = InitializationHint.InitPhase.BUILD)
+@InitializationHint(
+        typeNames = {
+                "io.goodforgod.aws.simplelambda",
+                "io.goodforgod.gson.configuration",
+                "io.goodforgod.slf4j.simplelogger",
+                "io.goodforgod.net.uri",
+                "com.google.gson",
+                "org.slf4j.impl",
+                "org.slf4j.LoggerFactory",
+                "io.goodforgod.http.common",
+        },
+        value = InitializationHint.InitPhase.BUILD)
 @ResourceHint(patterns = {
         "gson.properties",
         "simplelogger.properties"

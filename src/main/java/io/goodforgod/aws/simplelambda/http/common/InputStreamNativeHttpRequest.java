@@ -1,11 +1,10 @@
-package io.goodforgod.aws.simplelambda.http.nativeclient;
+package io.goodforgod.aws.simplelambda.http.common;
 
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
+import io.goodforgod.http.common.HttpHeaders;
 import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,18 +17,18 @@ import org.jetbrains.annotations.NotNull;
 public final class InputStreamNativeHttpRequest implements SimpleHttpRequest {
 
     private final InputStream inputStream;
-    private final Map<String, String> headers;
+    private final HttpHeaders headers;
 
-    private InputStreamNativeHttpRequest(@NotNull InputStream inputStream, @NotNull Map<String, String> headers) {
+    private InputStreamNativeHttpRequest(@NotNull InputStream inputStream, @NotNull HttpHeaders headers) {
         this.inputStream = inputStream;
         this.headers = headers;
     }
 
     public static InputStreamNativeHttpRequest ofStream(@NotNull InputStream stream) {
-        return ofStream(stream, Collections.emptyMap());
+        return ofStream(stream, HttpHeaders.empty());
     }
 
-    public static InputStreamNativeHttpRequest ofStream(@NotNull InputStream stream, @NotNull Map<String, String> headers) {
+    public static InputStreamNativeHttpRequest ofStream(@NotNull InputStream stream, @NotNull HttpHeaders headers) {
         return new InputStreamNativeHttpRequest(stream, headers);
     }
 
@@ -39,7 +38,7 @@ public final class InputStreamNativeHttpRequest implements SimpleHttpRequest {
     }
 
     @Override
-    public @NotNull Map<String, String> headers() {
+    public @NotNull HttpHeaders headers() {
         return headers;
     }
 

@@ -17,8 +17,9 @@ import org.jetbrains.annotations.NotNull;
 public interface EventHandler {
 
     /**
-     * @param eventStream to handler
-     * @param context     of the request
+     * @param requestHandler for the event stream for handler
+     * @param eventStream    to handler
+     * @param context        of the request
      * @return response representation as JSON
      */
     @NotNull

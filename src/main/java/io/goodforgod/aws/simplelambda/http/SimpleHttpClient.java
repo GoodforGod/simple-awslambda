@@ -1,8 +1,9 @@
 package io.goodforgod.aws.simplelambda.http;
 
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.HttpMethod;
 import java.net.URI;
 import java.time.Duration;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +50,7 @@ public interface SimpleHttpClient extends AutoCloseable {
      */
     @NotNull
     default SimpleHttpResponse get(@NotNull URI uri,
-                                   @NotNull Map<String, String> headers) {
+                                   @NotNull HttpHeaders headers) {
         return execute(HttpMethod.GET, uri, SimpleHttpRequest.ofHeaders(headers), DEFAULT_TIMEOUT);
     }
 
@@ -63,7 +64,7 @@ public interface SimpleHttpClient extends AutoCloseable {
      */
     @NotNull
     default SimpleHttpResponse get(@NotNull URI uri,
-                                   @NotNull Map<String, String> headers,
+                                   @NotNull HttpHeaders headers,
                                    @NotNull Duration timeout) {
         return execute(HttpMethod.GET, uri, SimpleHttpRequest.ofHeaders(headers), timeout);
     }

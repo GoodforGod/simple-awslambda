@@ -1,11 +1,11 @@
 package io.goodforgod.aws.simplelambda.http.common;
 
 import io.goodforgod.aws.simplelambda.http.SimpleHttpRequest;
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.MediaType;
 import java.net.http.HttpRequest;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.Flow.Publisher;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,17 +17,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class StringHttpRequest implements SimpleHttpRequest {
 
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String MEDIA_TYPE_JSON = "application/json";
+    private static final HttpHeaders JSON_HEADERS = HttpHeaders.of(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
-    public static final Map<String, String> JSON_HEADERS = Map.of(CONTENT_TYPE, MEDIA_TYPE_JSON);
-
-    private static final StringHttpRequest EMPTY = new StringHttpRequest(null, Collections.emptyMap());
+    private static final StringHttpRequest EMPTY = new StringHttpRequest(null, HttpHeaders.empty());
 
     private final String body;
-    private final Map<String, String> headers;
+    private final HttpHeaders headers;
 
-    private StringHttpRequest(String body, @NotNull Map<String, String> headers) {
+    private StringHttpRequest(String body, @NotNull HttpHeaders headers) {
         this.body = body;
         this.headers = headers;
     }
@@ -41,14 +38,14 @@ public final class StringHttpRequest implements SimpleHttpRequest {
     }
 
     public static StringHttpRequest ofString(String value) {
-        return ofString(value, Collections.emptyMap());
+        return ofString(value, HttpHeaders.empty());
     }
 
-    public static StringHttpRequest ofString(String value, @NotNull Map<String, String> headers) {
+    public static StringHttpRequest ofString(String value, @NotNull HttpHeaders headers) {
         return new StringHttpRequest(value, headers);
     }
 
-    public static StringHttpRequest ofHeaders(@NotNull Map<String, String> headers) {
+    public static StringHttpRequest ofHeaders(@NotNull HttpHeaders headers) {
         return new StringHttpRequest(null, headers);
     }
 
@@ -60,7 +57,7 @@ public final class StringHttpRequest implements SimpleHttpRequest {
     }
 
     @Override
-    public @NotNull Map<String, String> headers() {
+    public @NotNull HttpHeaders headers() {
         return headers;
     }
 
