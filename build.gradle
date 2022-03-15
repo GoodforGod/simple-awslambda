@@ -40,17 +40,16 @@ dependencies {
     annotationProcessor "io.goodforgod:graalvm-hint-processor:0.15.0-SNAPSHOT"
     compileOnly "io.goodforgod:graalvm-hint-annotations:0.15.0-SNAPSHOT"
 
-    implementation "io.goodforgod:gson-configuration:1.4.1-SNAPSHOT"
-    implementation "com.google.code.gson:gson:2.9.0"
+    implementation "io.goodforgod:gson-configuration:1.4.1"
     implementation "javax.inject:javax.inject:1"
     implementation "org.jetbrains:annotations:23.0.0"
 
-    api "io.goodforgod:aws-lambda-java-events:1.0.0"
-    api "io.goodforgod:http-common:0.10.0-SNAPSHOT"
+    api "io.goodforgod:aws-lambda-java-events:1.1.0"
+    api "io.goodforgod:http-common:0.10.0"
     api "com.amazonaws:aws-lambda-java-core:1.2.1"
     api "org.slf4j:slf4j-api:1.7.36"
 
-    testRuntimeOnly "io.goodforgod:slf4j-simple-logger:0.12.0"
+    testRuntimeOnly "io.goodforgod:slf4j-simple-logger:0.13.0"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.2"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
     testImplementation "org.junit.jupiter:junit-jupiter-params:5.8.2"
