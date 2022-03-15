@@ -18,7 +18,7 @@ public class HelloWorldLambda implements RequestHandler<Request, Response> {
 
     @Override
     public Response handleRequest(Request request, Context context) {
-        logger.info("Processing User with name: {}", request.getName());
-        return new Response(UUID.randomUUID().toString(), "Hello - " + request.getName());
+        logger.info("Processing User with name: {}", request.name());
+        return new Response(UUID.randomUUID().toString(), "Hello - " + request.name());
     }
 }

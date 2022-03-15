@@ -1,8 +1,7 @@
-package io.goodforgod.aws.simplelambda.mock.entrypoint;
+package io.goodforgod.aws.simplelambda.mock;
 
 import io.goodforgod.aws.simplelambda.AbstractInputLambdaEntrypoint;
 import io.goodforgod.aws.simplelambda.handler.impl.InputEventHandler;
-import io.goodforgod.aws.simplelambda.mock.HelloWorldLambda;
 import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import java.util.function.Consumer;
 

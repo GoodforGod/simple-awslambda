@@ -1,14 +1,12 @@
-package io.goodforgod.aws.simplelambda.mock.entrypoint;
+package io.goodforgod.aws.simplelambda.mock;
 
-import io.goodforgod.aws.lambda.events.BodyEvent;
 import io.goodforgod.aws.simplelambda.AbstractBodyLambdaEntrypoint;
 import io.goodforgod.aws.simplelambda.handler.impl.BodyEventHandler;
-import io.goodforgod.aws.simplelambda.mock.HelloWorldLambda;
 import io.goodforgod.aws.simplelambda.runtime.SimpleRuntimeContext;
 import java.util.function.Consumer;
 
 /**
- * AWS Lambda Entrypoint for Lambda {@link BodyEvent}.
+ * AWS Lambda Entrypoint for Lambda
  *
  * @see BodyEventHandler
  * @author Anton Kurako (GoodforGod)
