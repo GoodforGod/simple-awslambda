@@ -1,1 +1,3 @@
-rootProject.name = artifactId
+rootProject.name = "simple-awslambda-project"
+include "simple-awslambda"
+

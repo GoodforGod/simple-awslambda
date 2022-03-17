@@ -7,141 +7,77 @@ plugins {
     id "com.diffplug.spotless" version "6.1.0"
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-}
-
 group = groupId
 version = artifactVersion
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-spotless {
-    java {
-        encoding("UTF-8")
-        importOrder()
-        removeUnusedImports()
-        eclipse().configFile("${projectDir}/config/codestyle.xml")
-    }
-}
-
-configurations {
-    all {
-        resolutionStrategy {
-            cacheChangingModulesFor 0, 'seconds' // check for updates every build
-        }
-    }
-}
-
-dependencies {
-    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.15.0-SNAPSHOT"
-    compileOnly "io.goodforgod:graalvm-hint-annotations:0.15.0-SNAPSHOT"
-
-    implementation "io.goodforgod:gson-configuration:1.4.1"
-    implementation "javax.inject:javax.inject:1"
-    implementation "org.jetbrains:annotations:23.0.0"
-
-    api "io.goodforgod:aws-lambda-java-events:1.1.0"
-    api "io.goodforgod:http-common:0.10.0"
-    api "com.amazonaws:aws-lambda-java-core:1.2.1"
-    api "org.slf4j:slf4j-api:1.7.36"
-
-    testRuntimeOnly "io.goodforgod:slf4j-simple-logger:0.13.0"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.2"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:5.8.2"
-}
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
-        exceptionFormat("full")
-    }
-
-    reports {
-        html.enabled(false)
-        junitXml.enabled(false)
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            pom {
-                name = "Simple Lambda"
-                url = "https://github.com/GoodforGod/$artifactId"
-                description = "Fast, Lightweight and GraalVM optimized AWS Lambda Runtime."
-
-                license {
-                    name = "Apache License 2.0"
-                    url = "https://github.com/GoodforGod/$artifactId/blob/master/LICENSE"
-                    distribution = "repo"
-                }
-
-                developer {
-                    id = "GoodforGod"
-                    name = "Anton Kurako"
-                    email = "goodforgod.dev@gmail.com"
-                    url = "https://github.com/GoodforGod"
-                }
-
-                scm {
-                    connection = "scm:git:git://github.com/GoodforGod/${artifactId}.git"
-                    developerConnection = "scm:git:ssh://GoodforGod/${artifactId}.git"
-                    url = "https://github.com/GoodforGod/$artifactId/tree/master"
-                }
-            }
-        }
-    }
+subprojects {
+    apply plugin: "jacoco"
+    apply plugin: "java-library"
+    apply plugin: "maven-publish"
+    apply plugin: "org.sonarqube"
+    apply plugin: "com.diffplug.spotless"
 
     repositories {
-        maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username System.getenv("OSS_USERNAME")
-                password System.getenv("OSS_PASSWORD")
-            }
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    }
+
+    group = groupId
+    version = artifactVersion
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    spotless {
+        java {
+            encoding("UTF-8")
+            importOrder()
+            removeUnusedImports()
+            eclipse("4.21.0").configFile("${rootDir}/config/codestyle.xml")
         }
     }
-}
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+            exceptionFormat("full")
+        }
 
-tasks.withType(JavaCompile) {
-    options.encoding("UTF-8")
-    options.incremental(true)
-    options.fork = true
-}
-
-check.dependsOn jacocoTestReport
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.destination file("${buildDir}/jacocoHtml")
+        reports {
+            html.enabled(false)
+            junitXml.enabled(false)
+        }
     }
-}
 
-javadoc {
-    options.encoding = "UTF-8"
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption("html5", true)
+    jar.enabled(true)
+
+    tasks.withType(JavaCompile) {
+        options.encoding("UTF-8")
+        options.incremental(true)
+        options.fork = true
     }
-}
 
-if (project.hasProperty("signing.keyId")) {
-    apply plugin: "signing"
-    signing {
-        sign publishing.publications.mavenJava
+    check.dependsOn jacocoTestReport
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            html.destination file("${buildDir}/jacocoHtml")
+        }
+    }
+
+    javadoc {
+        options.encoding = "UTF-8"
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption("html5", true)
+        }
+    }
+
+    if (project.hasProperty("signing.keyId")) {
+        apply plugin: "signing"
+        signing {
+            sign publishing.publications.mavenJava
+        }
     }
 }
