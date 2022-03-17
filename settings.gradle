@@ -1,3 +1,4 @@
 rootProject.name = "simple-awslambda-project"
 include "simple-awslambda"
+include 'simple-awslambda-micronaut'
 
