@@ -14,40 +14,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class EventContextBuilder {
 
-    static final class DummyContext implements Context {
-
-        private final String awsRequestId;
-        private final String logGroupName;
-        private final String logStreamName;
-        private final String functionName;
-        private final String functionVersion;
-        private final String invokedFunctionArn;
-        private final CognitoIdentity identity;
-        private final ClientContext clientContext;
-        private final int remainingTimeInMillis;
-        private final int memoryLimitInMB;
-
-        DummyContext(String awsRequestId,
-                     String logGroupName,
-                     String logStreamName,
-                     String functionName,
-                     String functionVersion,
-                     String invokedFunctionArn,
-                     CognitoIdentity identity,
-                     ClientContext clientContext,
-                     int remainingTimeInMillis,
-                     int memoryLimitInMB) {
-            this.awsRequestId = awsRequestId;
-            this.logGroupName = logGroupName;
-            this.logStreamName = logStreamName;
-            this.functionName = functionName;
-            this.functionVersion = functionVersion;
-            this.invokedFunctionArn = invokedFunctionArn;
-            this.identity = identity;
-            this.clientContext = clientContext;
-            this.remainingTimeInMillis = remainingTimeInMillis;
-            this.memoryLimitInMB = memoryLimitInMB;
-        }
+    record DummyContext(String awsRequestId,
+                        String logGroupName,
+                        String logStreamName,
+                        String functionName,
+                        String functionVersion,
+                        String invokedFunctionArn,
+                        CognitoIdentity identity,
+                        ClientContext clientContext,
+                        int remainingTimeInMillis,
+                        int memoryLimitInMB)
+            implements Context {
 
         @Override
         public String getAwsRequestId() {

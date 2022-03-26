@@ -1,6 +1,5 @@
 package io.goodforgod.aws.lambda.simple.utils;
 
-import io.goodforgod.aws.lambda.simple.error.LambdaException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public final class InputStreamUtils {
         try {
             return new String(inputStream.readAllBytes(), charset);
         } catch (IOException e) {
-            throw new LambdaException(e);
+            throw new IllegalStateException(e);
         }
     }
 

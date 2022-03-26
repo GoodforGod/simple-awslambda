@@ -19,10 +19,6 @@ import org.jetbrains.annotations.NotNull;
  */
 record EventContext(HttpHeaders headers) implements Context {
 
-    EventContext(@NotNull HttpHeaders headers) {
-        this.headers = headers;
-    }
-
     @NotNull
     public static EventContext ofHeaders(@NotNull HttpHeaders headers) {
         return new EventContext(headers);
@@ -123,18 +119,18 @@ record EventContext(HttpHeaders headers) implements Context {
 
     @Override
     public String toString() {
-        return "{\"AwsRequestID\":\"" + getAwsRequestId() + "\","
-                + formatOrEmpty("\"requestHandler\":\"", getEnv(SimpleLambdaContextVariables.REQUEST_HANDLER), "\",")
-                + formatOrEmpty("\"eventHandler\":\"", getEnv(SimpleLambdaContextVariables.EVENT_HANDLER), "\",")
-                + formatOrEmpty("\"getLogStreamName\":\"", getLogStreamName(), "\",")
-                + formatOrEmpty("\"getLogGroupName\":\"", getLogGroupName(), "\",")
-                + formatOrEmpty("\"getLogStreamName\":\"", getLogStreamName(), "\",")
-                + formatOrEmpty("\"getFunctionName\":\"", getFunctionName(), "\",")
-                + formatOrEmpty("\"getFunctionVersion\":\"", getFunctionVersion(), "\",")
-                + formatOrEmpty("\"getInvokedFunctionArn\":\"", getInvokedFunctionArn(), "\",")
-                + formatOrEmpty("\"getRemainingTimeInMillis\":", getRemainingTimeInMillis(), ",")
-                + formatOrEmpty("\"getMemoryLimitInMB\":", getMemoryLimitInMB(), ",")
-                + "\"currentTime\":" + currentTime() + "}";
+        return "[AwsRequestID:" + getAwsRequestId() + ","
+                + formatOrEmpty("requestHandler: ", getEnv(SimpleLambdaContextVariables.REQUEST_HANDLER), ",")
+                + formatOrEmpty("eventHandler: ", getEnv(SimpleLambdaContextVariables.EVENT_HANDLER), ",")
+                + formatOrEmpty("getLogStreamName: ", getLogStreamName(), ",")
+                + formatOrEmpty("getLogGroupName: ", getLogGroupName(), ",")
+                + formatOrEmpty("getLogStreamName: ", getLogStreamName(), ",")
+                + formatOrEmpty("getFunctionName: ", getFunctionName(), ",")
+                + formatOrEmpty("getFunctionVersion: ", getFunctionVersion(), ",")
+                + formatOrEmpty("getInvokedFunctionArn: ", getInvokedFunctionArn(), ",")
+                + formatOrEmpty("getRemainingTimeInMillis: ", getRemainingTimeInMillis(), ",")
+                + formatOrEmpty("getMemoryLimitInMB: ", getMemoryLimitInMB(), ",")
+                + "currentTime: " + currentTime() + "]";
     }
 
     private String formatOrEmpty(String prefix, Object value, String suffix) {
