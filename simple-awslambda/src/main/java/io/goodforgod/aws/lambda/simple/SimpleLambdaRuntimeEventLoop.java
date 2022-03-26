@@ -90,7 +90,7 @@ final class SimpleLambdaRuntimeEventLoop {
             throw new IllegalStateException("EventHandler for qualifier '" + eventHandlerQualifier + "' not found!");
         }
 
-        final EventContext requestContext = EventContext.ofHeaders(event.headers());
+        final EventContext requestContext = new EventContext(event.headers());
         if (StringUtils.isEmpty(requestContext.getAwsRequestId())) {
             throw new IllegalStateException("AWS Request ID is not present!");
         }

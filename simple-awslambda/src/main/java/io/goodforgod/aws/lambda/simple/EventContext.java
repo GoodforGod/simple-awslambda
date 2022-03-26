@@ -9,7 +9,6 @@ import io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables;
 import io.goodforgod.aws.lambda.simple.config.SimpleLambdaContextVariables;
 import io.goodforgod.aws.lambda.simple.utils.StringUtils;
 import io.goodforgod.http.common.HttpHeaders;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Implementation of {@link Context} runtime context
@@ -18,11 +17,6 @@ import org.jetbrains.annotations.NotNull;
  * @since 22.5.2021
  */
 record EventContext(HttpHeaders headers) implements Context {
-
-    @NotNull
-    public static EventContext ofHeaders(@NotNull HttpHeaders headers) {
-        return new EventContext(headers);
-    }
 
     @Override
     public String getAwsRequestId() {
