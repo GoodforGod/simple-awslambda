@@ -1,9 +1,9 @@
 plugins {
-    id "io.micronaut.library" version "3.3.0"
+    id "io.micronaut.library" version "3.3.1"
 }
 
 micronaut {
-    version("3.3.4")
+    version("3.4.0")
     processing {
         incremental(true)
         module(project.name)
@@ -15,11 +15,11 @@ micronaut {
 dependencies {
     api project(":simple-awslambda")
 
-    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.15.0-SNAPSHOT"
+    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.16.0-SNAPSHOT"
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-graal"
 
-    compileOnly "io.goodforgod:graalvm-hint-annotations:0.15.0-SNAPSHOT"
+    compileOnly "io.goodforgod:graalvm-hint-annotations:0.16.0-SNAPSHOT"
     compileOnly "io.micronaut:micronaut-inject-java"
     compileOnly "org.graalvm.nativeimage:svm"
 
@@ -44,9 +44,9 @@ publishing {
             from components.java
 
             pom {
-                name = "Simple AWS Lambda Micronaut"
+                name = "Simple AWSLambda Micronaut"
                 url = "https://github.com/GoodforGod/$artifactId"
-                description = "Micronaut DI module for Simple Lambda."
+                description = "Micronaut Integration module for Simple AWSLambda."
 
                 license {
                     name = "Apache License 2.0"

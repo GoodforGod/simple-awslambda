@@ -18,10 +18,20 @@ import io.micronaut.core.annotation.Introspected;
 @ConfigurationProperties("gson")
 class MicronautGsonConfiguration {
 
+    private boolean enabled = true;
+
     @ConfigurationBuilder
     private final GsonConfiguration configuration = new GsonConfiguration();
 
     GsonConfiguration getConfiguration() {
         return configuration;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -7,6 +7,7 @@ import io.goodforgod.aws.lambda.simple.convert.gson.GsonConverter;
 import io.goodforgod.aws.lambda.simple.convert.gson.GsonConverterFactory;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Secondary;
 import io.micronaut.core.annotation.Introspected;
 import jakarta.inject.Inject;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 14.08.2021
  */
+@Requires(property = "gson.enabled", value = "true", defaultValue = "true")
 @Introspected
 @Factory
 class MicronautGsonFactory extends GsonConverterFactory {

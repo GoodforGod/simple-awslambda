@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Anton Kurako (GoodforGod)
  * @since 15.2.2021
  */
-class MicronautRuntimeContext implements RuntimeContext {
+final class MicronautRuntimeContext implements RuntimeContext {
 
     private ApplicationContext context;
 
