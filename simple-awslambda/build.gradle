@@ -7,8 +7,8 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.16.0-SNAPSHOT"
-    compileOnly "io.goodforgod:graalvm-hint-annotations:0.16.0-SNAPSHOT"
+    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.17.0-SNAPSHOT"
+    compileOnly "io.goodforgod:graalvm-hint-annotations:0.17.0-SNAPSHOT"
 
     implementation "io.goodforgod:gson-configuration:1.4.1"
     implementation "javax.inject:javax.inject:1"
