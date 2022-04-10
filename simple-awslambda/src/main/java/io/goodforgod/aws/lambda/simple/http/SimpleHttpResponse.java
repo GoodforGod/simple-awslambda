@@ -34,7 +34,6 @@ public interface SimpleHttpResponse {
     /**
      * @return body as String
      */
-    @NotNull
     default String bodyAsString() {
         return bodyAsString(StandardCharsets.UTF_8);
     }
@@ -43,6 +42,5 @@ public interface SimpleHttpResponse {
      * @param charset to convert body with
      * @return body as String
      */
-    @NotNull
-    String bodyAsString(Charset charset);
+    String bodyAsString(@NotNull Charset charset);
 }

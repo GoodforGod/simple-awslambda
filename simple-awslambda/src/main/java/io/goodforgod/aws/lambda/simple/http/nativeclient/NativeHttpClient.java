@@ -8,7 +8,6 @@ import io.goodforgod.aws.lambda.simple.http.SimpleHttpResponse;
 import io.goodforgod.http.common.HttpStatus;
 import io.goodforgod.http.common.exception.HttpStatusException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -58,45 +57,30 @@ public class NativeHttpClient implements SimpleHttpClient {
     }
 
     @Override
-    public @NotNull SimpleHttpResponse execute(@NotNull CharSequence httpMethod,
-                                               @NotNull URI uri,
-                                               @NotNull SimpleHttpRequest request,
-                                               @NotNull Duration timeout) {
-        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
+    public @NotNull SimpleHttpResponse execute(@NotNull SimpleHttpRequest request) {
+        final HttpRequest httpRequest = createHttpRequest(request);
         return sendAndGetResponse(httpRequest);
     }
 
     @Override
-    public @NotNull SimpleHttpResponse executeAndForget(@NotNull CharSequence httpMethod,
-                                                        @NotNull URI uri,
-                                                        @NotNull SimpleHttpRequest request,
-                                                        @NotNull Duration timeout) {
-        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
+    public @NotNull SimpleHttpResponse executeAndForget(@NotNull SimpleHttpRequest request) {
+        final HttpRequest httpRequest = createHttpRequest(request);
         return sendAndDiscardResponse(httpRequest);
     }
 
     @Override
-    public @NotNull CompletableFuture<SimpleHttpResponse> executeAsync(@NotNull CharSequence httpMethod,
-                                                                       @NotNull URI uri,
-                                                                       @NotNull SimpleHttpRequest request,
-                                                                       @NotNull Duration timeout) {
-        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
+    public @NotNull CompletableFuture<SimpleHttpResponse> executeAsync(@NotNull SimpleHttpRequest request) {
+        final HttpRequest httpRequest = createHttpRequest(request);
         return sendAndGetResponseAsync(httpRequest);
     }
 
     @Override
-    public @NotNull CompletableFuture<SimpleHttpResponse> executeAndForgetAsync(@NotNull CharSequence httpMethod,
-                                                                                @NotNull URI uri,
-                                                                                @NotNull SimpleHttpRequest request,
-                                                                                @NotNull Duration timeout) {
-        final HttpRequest httpRequest = createHttpRequest(uri, httpMethod, timeout, request);
+    public @NotNull CompletableFuture<SimpleHttpResponse> executeAndForgetAsync(@NotNull SimpleHttpRequest request) {
+        final HttpRequest httpRequest = createHttpRequest(request);
         return sendAndDiscardResponseAsync(httpRequest);
     }
 
-    private HttpRequest createHttpRequest(@NotNull URI uri,
-                                          @NotNull CharSequence httpMethod,
-                                          @NotNull Duration timeout,
-                                          @NotNull SimpleHttpRequest request) {
+    private HttpRequest createHttpRequest(@NotNull SimpleHttpRequest request) {
         final Publisher<ByteBuffer> bufferPublisher = request.body();
         final HttpRequest.BodyPublisher publisher;
         if (bufferPublisher == null) {
@@ -107,10 +91,13 @@ public class NativeHttpClient implements SimpleHttpClient {
             publisher = HttpRequest.BodyPublishers.fromPublisher(bufferPublisher);
         }
 
-        final HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
-                .method(httpMethod.toString(), publisher)
-                .timeout(timeout)
+        final HttpRequest.Builder builder = HttpRequest.newBuilder(request.uri())
+                .method(request.method(), publisher)
                 .version(DEFAULT_VERSION);
+
+        if (request.timeout() != null) {
+            builder.timeout(request.timeout());
+        }
 
         request.headers().getMultiMap().forEach((header, values) -> {
             for (String value : values) {
@@ -124,7 +111,7 @@ public class NativeHttpClient implements SimpleHttpClient {
     private SimpleHttpResponse sendAndGetResponse(HttpRequest request) {
         try {
             final HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
-            return InputStreamNativeHttpResponse.of(response);
+            return new InputStreamNativeHttpResponse(response);
         } catch (Exception e) {
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
@@ -133,7 +120,7 @@ public class NativeHttpClient implements SimpleHttpClient {
     private SimpleHttpResponse sendAndDiscardResponse(HttpRequest request) {
         try {
             final HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
-            return VoidNativeHttpResponse.of(response);
+            return new VoidNativeHttpResponse(response);
         } catch (Exception e) {
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
@@ -141,12 +128,12 @@ public class NativeHttpClient implements SimpleHttpClient {
 
     private CompletableFuture<SimpleHttpResponse> sendAndGetResponseAsync(HttpRequest request) {
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
-                .thenApply(InputStreamNativeHttpResponse::of);
+                .thenApply(InputStreamNativeHttpResponse::new);
     }
 
     private CompletableFuture<SimpleHttpResponse> sendAndDiscardResponseAsync(HttpRequest request) {
         return client.sendAsync(request, HttpResponse.BodyHandlers.discarding())
-                .thenApply(VoidNativeHttpResponse::of);
+                .thenApply(VoidNativeHttpResponse::new);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package io.goodforgod.aws.lambda.simple.http.nativeclient;
 
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpResponse;
-import io.goodforgod.aws.lambda.simple.http.common.AbstractHttpResponse;
 import io.goodforgod.http.common.HttpHeaders;
 import io.goodforgod.http.common.HttpStatus;
 import java.io.InputStream;
@@ -15,14 +14,10 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 20.08.2020
  */
-public final class VoidNativeHttpResponse extends AbstractHttpResponse {
+final record VoidNativeHttpResponse(HttpStatus status, HttpHeaders headers) implements SimpleHttpResponse {
 
-    private VoidNativeHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
-        super(HttpStatus.valueOf(httpResponse.statusCode()), HttpHeaders.ofMultiMap(httpResponse.headers().map()));
-    }
-
-    public static VoidNativeHttpResponse of(@NotNull HttpResponse<Void> httpResponse) {
-        return new VoidNativeHttpResponse(httpResponse);
+    VoidNativeHttpResponse(@NotNull HttpResponse<Void> httpResponse) {
+        this(HttpStatus.valueOf(httpResponse.statusCode()), HttpHeaders.ofMultiMap(httpResponse.headers().map()));
     }
 
     @Override
@@ -31,7 +26,7 @@ public final class VoidNativeHttpResponse extends AbstractHttpResponse {
     }
 
     @Override
-    public @NotNull String bodyAsString(Charset charset) {
-        return "";
+    public String bodyAsString(@NotNull Charset charset) {
+        return null;
     }
 }

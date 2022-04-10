@@ -4,16 +4,15 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
-import io.goodforgod.aws.lambda.simple.http.SimpleHttpClient;
-import io.goodforgod.aws.lambda.simple.http.SimpleHttpRequest;
-import io.goodforgod.aws.lambda.simple.http.SimpleHttpResponse;
-import io.goodforgod.aws.lambda.simple.http.common.StringHttpRequest;
+import io.goodforgod.aws.lambda.simple.http.*;
 import io.goodforgod.aws.lambda.simple.http.nativeclient.NativeHttpClient;
-import io.goodforgod.aws.lambda.simple.http.nativeclient.PublisherNativeHttpRequest;
 import io.goodforgod.aws.lambda.simple.runtime.RuntimeContext;
 import io.goodforgod.aws.lambda.simple.utils.StringUtils;
 import io.goodforgod.aws.lambda.simple.utils.TimeUtils;
+import io.goodforgod.http.common.HttpHeaders;
+import io.goodforgod.http.common.HttpMethod;
 import io.goodforgod.http.common.HttpStatus;
+import io.goodforgod.http.common.MediaType;
 import io.goodforgod.http.common.exception.HttpStatusException;
 import java.io.InputStream;
 import java.net.URI;
@@ -35,6 +34,8 @@ final class SimpleLambdaRuntimeEventLoop {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleLambdaRuntimeEventLoop.class);
     private static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(11);
+
+    private static final HttpHeaders JSON_HEADERS = HttpHeaders.of(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
     /**
      * @param runtimeContext        RuntimeContext instance supplier
@@ -69,7 +70,15 @@ final class SimpleLambdaRuntimeEventLoop {
             final SimpleHttpClient httpClient = new NativeHttpClient();
             final URI errorUri = apiEndpoint.resolve(AwsRuntimeVariables.INIT_ERROR);
             logger.debug("Responding to AWS Runtime Init Error URI: {}", errorUri);
-            httpClient.postAndForget(errorUri, getErrorResponse(e), DEFAULT_TIMEOUT);
+
+            final SimpleHttpRequest request = SimpleHttpRequest.builder(errorUri)
+                    .method(HttpMethod.POST)
+                    .body(getErrorResponseBody(e))
+                    .headers(JSON_HEADERS)
+                    .timeout(DEFAULT_TIMEOUT)
+                    .build();
+
+            httpClient.executeAndForget(request);
         }
     }
 
@@ -80,7 +89,12 @@ final class SimpleLambdaRuntimeEventLoop {
                                     URI apiEndpoint) {
         logger.trace("Invoking next event...");
 
-        final SimpleHttpResponse event = httpClient.get(invocationUri, DEFAULT_TIMEOUT);
+        final SimpleHttpRequest request = SimpleHttpRequest.builder(invocationUri)
+                .method(HttpMethod.GET)
+                .timeout(DEFAULT_TIMEOUT)
+                .build();
+
+        final SimpleHttpResponse event = httpClient.execute(request);
         SimpleLoggerLogLevelRefresher.refresh();
         logger.trace("Event received with httpCode '{}' with headers: {}", event.status(), event.headers());
 
@@ -128,8 +142,13 @@ final class SimpleLambdaRuntimeEventLoop {
                     ? TimeUtils.getTime()
                     : 0;
 
-            final SimpleHttpRequest responseHttpEvent = PublisherNativeHttpRequest.ofPublisher(responsePublisher);
-            final SimpleHttpResponse awsResponse = httpClient.post(responseUri, responseHttpEvent, DEFAULT_TIMEOUT);
+            final SimpleHttpRequest request = SimpleHttpRequest.builder(responseUri)
+                    .method(HttpMethod.POST)
+                    .timeout(DEFAULT_TIMEOUT)
+                    .body(SimpleHttpBody.ofPublisher(responsePublisher))
+                    .build();
+
+            final SimpleHttpResponse awsResponse = httpClient.execute(request);
             if (logger.isDebugEnabled()) {
                 logger.debug("Responding to AWS Invocation took: {} millis", TimeUtils.timeTook(respondingStart));
             }
@@ -143,7 +162,15 @@ final class SimpleLambdaRuntimeEventLoop {
             logger.error("Function Invocation error occurred", e);
             final URI uri = getInvocationErrorUri(apiResponseEndpoint, eventContext.getAwsRequestId());
             logger.debug("Responding to AWS Invocation Error URI: {}", uri);
-            httpClient.postAndForget(uri, getErrorResponse(e), DEFAULT_TIMEOUT);
+
+            final SimpleHttpRequest request = SimpleHttpRequest.builder(uri)
+                    .method(HttpMethod.POST)
+                    .body(getErrorResponseBody(e))
+                    .headers(JSON_HEADERS)
+                    .timeout(DEFAULT_TIMEOUT)
+                    .build();
+
+            httpClient.executeAndForget(request);
         }
     }
 
@@ -195,8 +222,8 @@ final class SimpleLambdaRuntimeEventLoop {
         return URI.create("http://" + runtimeApiEndpoint);
     }
 
-    private static SimpleHttpRequest getErrorResponse(Throwable e) {
+    private static SimpleHttpBody getErrorResponseBody(Throwable e) {
         final String body = "{\"errorMessage\":\"" + e.getMessage() + "\", \"errorType\":\"" + e.getClass().getName() + "\"}";
-        return StringHttpRequest.ofJson(body);
+        return SimpleHttpBody.ofString(body);
     }
 }

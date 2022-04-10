@@ -29,10 +29,10 @@ public final class ReflectionUtils {
         interfaces.addAll(Arrays.asList(theInterfaces));
         for (Type theInterface : theInterfaces) {
             if (theInterface instanceof Class) {
-                Class<?> i = (Class<?>) theInterface;
-                Type[] genericInterfaces = i.getGenericInterfaces();
+                Class<?> interfaceValue = (Class<?>) theInterface;
+                Type[] genericInterfaces = interfaceValue.getGenericInterfaces();
                 if (genericInterfaces.length > 0) {
-                    populateInterfaces(i, interfaces);
+                    populateInterfaces(interfaceValue, interfaces);
                 }
             }
         }

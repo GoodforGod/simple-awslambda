@@ -1,8 +1,9 @@
 package io.goodforgod.aws.lambda.simple.http;
 
-import io.goodforgod.aws.lambda.simple.http.common.StringHttpRequest;
 import io.goodforgod.http.common.HttpHeaders;
+import java.net.URI;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.util.concurrent.Flow.Publisher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,26 +14,23 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface SimpleHttpRequest {
 
-    /**
-     * @return empty simple http request
-     */
     @NotNull
-    static SimpleHttpRequest empty() {
-        return StringHttpRequest.empty();
-    }
+    URI uri();
 
-    /**
-     * @param headers to include in HttpRequest
-     * @return simple http request with headers only
-     */
     @NotNull
-    static SimpleHttpRequest ofHeaders(@NotNull HttpHeaders headers) {
-        return StringHttpRequest.ofHeaders(headers);
-    }
+    String method();
 
     @NotNull
     HttpHeaders headers();
 
     @Nullable
+    Duration timeout();
+
+    @Nullable
     Publisher<ByteBuffer> body();
+
+    @NotNull
+    static SimpleHttpRequestBuilder builder(@NotNull URI uri) {
+        return new NativeSimpleHttpRequestBuilder(uri);
+    }
 }
