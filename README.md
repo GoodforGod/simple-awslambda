@@ -1,26 +1,66 @@
-# Simple Lambda
+# Simple AWSLambda
 
-Simple-Lambda is small, lightweight, GraalVM optimized AWS Lambda Runtime with DI.
+Fastest, Lightweight and GraalVM optimized AWS Lambda Runtime.
 
-Allow building smallest and fastest native lambdas with DI support.
+Most simple and efficient way to build Native Serverless Java executables for AWS Lambda.
 
 ## Dependency :rocket:
 
 **Gradle**
 ```groovy
-dependencies {
-    implementation "io.goodforgod:simple-lambda:0.10.0-SNAPSHOT"
-}
+implementation "io.goodforgod:simple-awslambda:0.22.0-SNAPSHOT"
 ```
 
 **Maven**
 ```xml
 <dependency>
     <groupId>io.goodforgod</groupId>
-    <artifactId>simple-lambda</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <artifactId>simple-awslambda</artifactId>
+    <version>0.22.0-SNAPSHOT</version>
 </dependency>
 ```
+
+## Getting Started
+
+### Examples
+
+### Guide how to deploy
+
+## Ecosystem
+
+
+### Logging
+
+#### Configuration
+
+### Native Hints
+
+### Serialization
+
+#### Configuration
+
+### Http Components
+
+#### Reactive
+
+### Runtime
+
+#### Event Support
+
+### Build
+
+#### Docker Image
+
+Body event support and custom support
+
+### Extensibility
+
+
+
+## Testing
+
+
+
 
 ## Lambda
 
@@ -45,102 +85,3 @@ There two runtimes available for Lambda execution, choose runtime as main class 
 Available runtimes:
 - **AwsLambdaRuntime** (Process requests as is)
 - **AwsBodyLambdaRuntime** (Processes requests with body like [requests from AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) and respond in [AWS API Gateway format](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html))
-
-#### Gradle
-
-How to set runtime as main class in *build.gradle* for *jar* execution:
-```groovy
-mainClassName = "AwsLambdaRuntime"
-```
-
-For GraalVM check [corresponding](#graalvm) section.
-
-### GraalVM
-
-#### Dependencies
-
-Do not forget to add such dependencies in you build for DI and GraalVM support:
-
-```groovy
-dependencies {
-    annotationProcessor 'io.micronaut:micronaut-inject-java'
-    annotationProcessor 'io.micronaut:micronaut-graal'
-
-    compileOnly 'org.graalvm.nativeimage:svm'
-}
-```
-
-#### Type Hint
-
-In most cases you have classes as input\output type, so you need provide a hint for GraalVM to use reflection for serialization\deserialization.
-
-This can easily be done with annotation: *io.micronaut.core.annotation.TypeHint*
-
-For input there will be User class:
-```java
-@TypeHint(value = {User.class}, accessType = {TypeHint.AccessType.ALL_PUBLIC})
-public class User {
-    private String id;
-    private String name;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}
-```
-
-For output Lambda will return Book class:
-```java
-@TypeHint(value = {Book.class}, accessType = {TypeHint.AccessType.ALL_PUBLIC})
-public class Book {
-    private String guid;
-    private int pages;
-    
-    public Book(String guid, int pages) {
-        this.guid = guid;
-        this.pages = pages;
-    }
-    
-    public String getGuid() {
-        return guid;
-    }
-    
-    public int getPages() {
-        return pages;
-    }
-}
-```
-
-For correct serialization\deserialization we need reflection access, that is unavailable in GraalVM, in this case
-we need to provide a [hint for GraalVM](https://www.graalvm.org/reference-manual/native-image/Reflection/) for which classes we need such access.
-
-```java
-@Singleton
-public class GatewayLambda implements Lambda<Book, User> {
-
-    @Override
-    public Request handle(@NotNull User user) {
-        return new Book(UUID.randomUUID().toString(), 10);
-    }
-}
-```
-
-#### Runtime
-
-Just place *native-image.properties* in resource folder as [GraalVM specify](https://docs.oracle.com/en/graalvm/enterprise/19/guide/reference/native-image/configuration.html) with runtime as main class:
-```text
-Args = -H:Name=lambda \
-       -H:Class=AwsLambdaRuntime
-```

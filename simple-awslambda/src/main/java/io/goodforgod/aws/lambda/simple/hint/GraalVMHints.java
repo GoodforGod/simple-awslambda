@@ -7,7 +7,6 @@ import io.goodforgod.aws.lambda.events.kinesis.KinesisEvent;
 import io.goodforgod.aws.lambda.events.s3.S3BatchEvent;
 import io.goodforgod.graalvm.hint.annotation.InitializationHint;
 import io.goodforgod.graalvm.hint.annotation.ReflectionHint;
-import io.goodforgod.graalvm.hint.annotation.ResourceHint;
 
 /**
  * @author Anton Kurako (GoodforGod)
@@ -58,20 +57,15 @@ import io.goodforgod.graalvm.hint.annotation.ResourceHint;
         })
 @InitializationHint(
         typeNames = {
-                "io.goodforgod.aws.simplelambda",
+                "io.goodforgod.aws.lambda.simple",
                 "io.goodforgod.gson.configuration",
+                "io.goodforgod.http.common",
                 "io.goodforgod.slf4j.simplelogger",
-                "io.goodforgod.net.uri",
                 "com.google.gson",
                 "org.slf4j.impl",
                 "org.slf4j.LoggerFactory",
-                "io.goodforgod.http.common",
         },
         value = InitializationHint.InitPhase.BUILD)
-@ResourceHint(patterns = {
-        "gson.properties",
-        "simplelogger.properties"
-})
 final class GraalVMHints {
 
     private GraalVMHints() {}
