@@ -50,6 +50,9 @@ final class SimpleLambdaRuntimeEventLoop {
         try (final RuntimeContext context = runtimeContext) {
             context.setupInRuntime();
             final SimpleHttpClient httpClient = context.getBean(SimpleHttpClient.class);
+            if (httpClient == null) {
+                throw new IllegalStateException("SimpleHttpClient bean not found, but expected!");
+            }
 
             if (logger.isInfoEnabled()) {
                 logger.info("RuntimeContext runtime initialization took: {} millis", TimeUtils.timeTook(contextStart));
@@ -87,7 +90,7 @@ final class SimpleLambdaRuntimeEventLoop {
 
         final EventHandler eventHandler = context.getBean(EventHandler.class, eventHandlerQualifier);
         if (eventHandler == null) {
-            throw new IllegalStateException("EventHandler for qualifier '" + eventHandlerQualifier + "' not found!");
+            throw new IllegalStateException("EventHandler bean for qualifier '" + eventHandlerQualifier + "' not found!");
         }
 
         final EventContext requestContext = new EventContext(event.headers());
@@ -98,12 +101,12 @@ final class SimpleLambdaRuntimeEventLoop {
         final String handlerName = requestContext.getHandlerName();
         RequestHandler requestHandler = context.getBean(RequestHandler.class, handlerName);
         if (requestHandler == null) {
-            logger.debug("RequestHandler for qualifier '{}' not found, looking without qualifier...", handlerName);
+            logger.debug("RequestHandler bean for qualifier '{}' not found, looking without qualifier...", handlerName);
             requestHandler = context.getBean(RequestHandler.class);
         }
 
         if (requestHandler == null) {
-            throw new IllegalStateException("RequestHandler for qualifier '" + handlerName + "' not found!");
+            throw new IllegalStateException("RequestHandler bean for qualifier '" + handlerName + "' not found!");
         }
 
         logger.debug("Event received with RequestContext: {}", requestContext);
