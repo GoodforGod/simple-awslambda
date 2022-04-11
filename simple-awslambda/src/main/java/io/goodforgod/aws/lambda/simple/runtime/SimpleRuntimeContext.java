@@ -28,8 +28,26 @@ public class SimpleRuntimeContext implements RuntimeContext {
         }
     }
 
+    private record BeanContainer(Class<?> beanType, Object bean) {
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            BeanContainer that = (BeanContainer) o;
+            return Objects.equals(beanType, that.beanType);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(beanType);
+        }
+    }
+
     private boolean isSetup = false;
-    private final Map<Qualifier, List<Object>> beanMap = new HashMap<>(8);
+    private final Map<Qualifier, Collection<BeanContainer>> beanMap = new HashMap<>(8);
     private final Consumer<SimpleRuntimeContext> runtimeContextConsumer;
 
     public SimpleRuntimeContext(@NotNull Consumer<SimpleRuntimeContext> setupInRuntimeConsumer) {
@@ -64,14 +82,18 @@ public class SimpleRuntimeContext implements RuntimeContext {
 
     private void registerBean(@NotNull Object bean, @NotNull Class<?> beanType, @Nullable String beanQualifier) {
         final Qualifier qualifier = new Qualifier(beanType.getName(), beanQualifier);
-        final List<Object> beans = beanMap.computeIfAbsent(qualifier, k -> new ArrayList<>(3));
-        beans.add(bean);
+        final BeanContainer beanContainer = new BeanContainer(beanType, bean);
+        registerBean(qualifier, beanContainer);
 
         if (beanQualifier != null) {
             final Qualifier qualifierUnnamed = new Qualifier(beanType);
-            final List<Object> beansUnnamed = beanMap.computeIfAbsent(qualifierUnnamed, k -> new ArrayList<>(3));
-            beansUnnamed.add(bean);
+            registerBean(qualifierUnnamed, beanContainer);
         }
+    }
+
+    private void registerBean(@NotNull Qualifier qualifier, @NotNull BeanContainer beanContainer) {
+        final Collection<BeanContainer> beansUnnamed = beanMap.computeIfAbsent(qualifier, k -> new HashSet<>(4));
+        beansUnnamed.add(beanContainer);
     }
 
     @Override
@@ -99,9 +121,9 @@ public class SimpleRuntimeContext implements RuntimeContext {
     @Override
     public <T> T getBean(@NotNull Class<T> beanType, @Nullable String qualifier) {
         final Qualifier beanQualifier = new Qualifier(beanType.getName(), qualifier);
-        final List<Object> beans = beanMap.get(beanQualifier);
+        final Collection<BeanContainer> beans = beanMap.get(beanQualifier);
         if (beans != null) {
-            return (T) beans.get(0);
+            return (T) beans.iterator().next().bean();
         } else {
             return null;
         }
