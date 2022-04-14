@@ -20,12 +20,12 @@ public class MicronautInputLambdaEntrypoint extends AbstractLambdaEntrypoint {
     }
 
     @Override
-    protected String getEventHandlerQualifier() {
+    public String getEventHandlerQualifier() {
         return InputEventHandler.QUALIFIER;
     }
 
     @Override
-    public RuntimeContext getRuntimeContext() {
+    protected RuntimeContext initializeRuntimeContext() {
         return new MicronautRuntimeContext();
     }
 }

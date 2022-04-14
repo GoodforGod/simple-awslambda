@@ -14,9 +14,4 @@ import jakarta.inject.Singleton;
 @Named(NativeHttpClient.QUALIFIER)
 @Secondary
 @Singleton
-class MicronautNativeHttpClient extends NativeHttpClient {
-
-    MicronautNativeHttpClient() {
-        super();
-    }
-}
+class MicronautNativeHttpClient extends NativeHttpClient {}
