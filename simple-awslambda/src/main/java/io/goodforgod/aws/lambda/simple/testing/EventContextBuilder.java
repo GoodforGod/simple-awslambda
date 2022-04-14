@@ -1,4 +1,4 @@
-package io.goodforgod.aws.lambda.simple;
+package io.goodforgod.aws.lambda.simple.testing;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 16.03.2022
  */
-public final class EventContextBuilder {
+final class EventContextBuilder {
 
     record DummyContext(String awsRequestId,
                         String logGroupName,
@@ -98,6 +98,11 @@ public final class EventContextBuilder {
     @NotNull
     public static EventContextBuilder builder() {
         return new EventContextBuilder();
+    }
+
+    @NotNull
+    public static Context empty() {
+        return new EventContextBuilder().build();
     }
 
     @NotNull
