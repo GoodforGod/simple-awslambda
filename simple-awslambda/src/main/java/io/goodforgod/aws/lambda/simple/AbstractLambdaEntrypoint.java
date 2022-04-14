@@ -17,26 +17,25 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractLambdaEntrypoint {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractLambdaEntrypoint.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final RuntimeContext runtimeContext;
     private final SimpleLambdaRuntimeEventLoop eventLoop;
+    private final RuntimeContext runtimeContext;
 
     protected AbstractLambdaEntrypoint() {
         final long contextStart = TimeUtils.getTime();
-
+        this.runtimeContext = initializeRuntimeContext();
         this.eventLoop = getLambdaRuntimeEventLoop();
-        this.runtimeContext = getRuntimeContext();
-        Objects.requireNonNull(eventLoop, "EventLoop can't be nullable!");
-        Objects.requireNonNull(runtimeContext, "RuntimeContext can't be nullable!");
-
         if (logger.isInfoEnabled()) {
-            logger.info("RuntimeContext build initialization took: {} millis", TimeUtils.timeTook(contextStart));
+            logger.info("RuntimeContext compile time initialization took: {} millis", TimeUtils.timeTook(contextStart));
         }
     }
 
-    protected void run(String[] args) {
+    public final void run(String[] args) {
         try {
+            Objects.requireNonNull(eventLoop, "EventLoop can't be nullable!");
+            Objects.requireNonNull(runtimeContext, "RuntimeContext can't be nullable!");
+
             final String eventHandlerQualifier = getEventHandlerQualifier();
             eventLoop.execute(runtimeContext, eventHandlerQualifier);
         } catch (Exception e) {
@@ -47,13 +46,20 @@ public abstract class AbstractLambdaEntrypoint {
     /**
      * @return {@link RuntimeContext} implementation
      */
-    public abstract RuntimeContext getRuntimeContext();
+    public final RuntimeContext getRuntimeContext() {
+        return runtimeContext;
+    }
+
+    /**
+     * @return initial {@link RuntimeContext} implementation
+     */
+    protected abstract RuntimeContext initializeRuntimeContext();
 
     /**
      * @return Type of {@link EventHandler} implementation that will be responsible for handing event
      *             processing
      */
-    protected String getEventHandlerQualifier() {
+    public String getEventHandlerQualifier() {
         return InputEventHandler.QUALIFIER;
     }
 

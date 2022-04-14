@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow.Publisher;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 27.10.2020
  */
+@Internal
 @Named(QUALIFIER)
 @Singleton
 public class NativeHttpClient implements SimpleHttpClient {

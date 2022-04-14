@@ -1,5 +1,6 @@
 package io.goodforgod.aws.lambda.simple.runtime;
 
+import io.goodforgod.aws.lambda.simple.AwsRuntimeLoopCondition;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
 import io.goodforgod.aws.lambda.simple.convert.gson.GsonConverterFactory;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
@@ -47,24 +48,33 @@ public class SimpleRuntimeContext implements RuntimeContext {
     }
 
     private boolean isSetup = false;
-    private final Map<Qualifier, Collection<BeanContainer>> beanMap = new HashMap<>(8);
+    private final Map<Qualifier, Collection<BeanContainer>> beanMap = new HashMap<>();
     private final Consumer<SimpleRuntimeContext> runtimeContextConsumer;
 
-    public SimpleRuntimeContext(@NotNull Consumer<SimpleRuntimeContext> setupInRuntimeConsumer) {
-        final Converter converter = new GsonConverterFactory().build();
-        final EventHandler inputEventHandler = new InputEventHandler(converter);
-        final EventHandler bodyEventHandler = new BodyEventHandler(converter);
-        registerBean(converter);
-        registerBean(inputEventHandler);
-        registerBean(bodyEventHandler);
-
-        this.runtimeContextConsumer = setupInRuntimeConsumer;
+    public SimpleRuntimeContext(@NotNull Consumer<SimpleRuntimeContext> setupInRuntime,
+                                @NotNull Consumer<SimpleRuntimeContext> setupInCompileTime) {
+        this.runtimeContextConsumer = getRuntimeConsumer().andThen(setupInRuntime);
+        getCompileTimeConsumer().andThen(setupInCompileTime).accept(this);
     }
 
-    public SimpleRuntimeContext(@NotNull Consumer<SimpleRuntimeContext> setupInRuntimeConsumer,
-                                @NotNull Consumer<SimpleRuntimeContext> setupInCompileTimeConsumer) {
-        this(setupInRuntimeConsumer);
-        setupInCompileTimeConsumer.accept(this);
+    protected Consumer<SimpleRuntimeContext> getRuntimeConsumer() {
+        return context -> {
+            final SimpleHttpClient httpClient = new NativeHttpClient();
+            registerBean(httpClient);
+        };
+    }
+
+    protected Consumer<SimpleRuntimeContext> getCompileTimeConsumer() {
+        return context -> {
+            final Converter converter = new GsonConverterFactory().build();
+            registerBean(converter);
+            final EventHandler inputEventHandler = new InputEventHandler(converter);
+            registerBean(inputEventHandler);
+            final EventHandler bodyEventHandler = new BodyEventHandler(converter);
+            registerBean(bodyEventHandler);
+            final AwsRuntimeLoopCondition loopCondition = new DefaultAwsRuntimeLoopCondition();
+            registerBean(loopCondition);
+        };
     }
 
     public void registerBean(@NotNull Object bean) {
@@ -80,7 +90,9 @@ public class SimpleRuntimeContext implements RuntimeContext {
         registerBean(bean, beanType, qualifier);
     }
 
-    private void registerBean(@NotNull Object bean, @NotNull Class<?> beanType, @Nullable String beanQualifier) {
+    private void registerBean(@NotNull Object bean,
+                              @NotNull Class<?> beanType,
+                              @Nullable String beanQualifier) {
         final Qualifier qualifier = new Qualifier(beanType.getName(), beanQualifier);
         final BeanContainer beanContainer = new BeanContainer(beanType, bean);
         registerBean(qualifier, beanContainer);
@@ -92,15 +104,13 @@ public class SimpleRuntimeContext implements RuntimeContext {
     }
 
     private void registerBean(@NotNull Qualifier qualifier, @NotNull BeanContainer beanContainer) {
-        final Collection<BeanContainer> beansUnnamed = beanMap.computeIfAbsent(qualifier, k -> new HashSet<>(4));
+        final Collection<BeanContainer> beansUnnamed = beanMap.computeIfAbsent(qualifier, k -> new HashSet<>(5));
         beansUnnamed.add(beanContainer);
     }
 
     @Override
     public void setupInRuntime() {
         if (!isSetup) {
-            final SimpleHttpClient httpClient = new NativeHttpClient();
-            registerBean(httpClient);
             runtimeContextConsumer.accept(this);
             isSetup = true;
         }

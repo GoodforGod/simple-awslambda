@@ -6,13 +6,13 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
- * Copycat of GenericTypeUtils from Micronaut.
- *
  * @author Anton Kurako (GoodforGod)
  * @since 14.08.2021
  */
+@Internal
 public final class ReflectionUtils {
 
     public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];

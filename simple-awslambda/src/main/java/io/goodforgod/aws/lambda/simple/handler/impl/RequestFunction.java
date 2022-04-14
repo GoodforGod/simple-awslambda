@@ -1,4 +1,4 @@
-package io.goodforgod.aws.lambda.simple.handler;
+package io.goodforgod.aws.lambda.simple.handler.impl;
 
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
@@ -8,7 +8,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
  * @author Anton Kurako (GoodforGod)
  * @since 14.06.2021
  */
-public record RequestFunction(Class<?> input, Class<?> output) {
+record RequestFunction(Class<?> input, Class<?> output) {
 
     @Override
     public String toString() {

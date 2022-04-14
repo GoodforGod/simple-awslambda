@@ -28,12 +28,12 @@ public abstract class AbstractBodyLambdaEntrypoint extends AbstractLambdaEntrypo
     }
 
     @Override
-    public RuntimeContext getRuntimeContext() {
+    public RuntimeContext initializeRuntimeContext() {
         return new SimpleRuntimeContext(setupInRuntime(), setupInCompileTime());
     }
 
     @Override
-    protected String getEventHandlerQualifier() {
+    public String getEventHandlerQualifier() {
         return BodyEventHandler.QUALIFIER;
     }
 }

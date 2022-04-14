@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Anton Kurako (GoodforGod)
  * @since 11.04.2022
  */
-class NativeSimpleHttpRequestBuilder implements SimpleHttpRequestBuilder {
+final class NativeSimpleHttpRequestBuilder implements SimpleHttpRequestBuilder {
 
     private final URI uri;
 

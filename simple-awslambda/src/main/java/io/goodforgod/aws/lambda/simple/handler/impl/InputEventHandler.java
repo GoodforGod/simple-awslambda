@@ -2,13 +2,11 @@ package io.goodforgod.aws.lambda.simple.handler.impl;
 
 import static io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler.QUALIFIER;
 
-import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
+import io.goodforgod.aws.lambda.simple.handler.Event;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
-import io.goodforgod.aws.lambda.simple.handler.RequestFunction;
 import io.goodforgod.aws.lambda.simple.utils.TimeUtils;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow.Publisher;
 import javax.inject.Inject;
@@ -33,9 +31,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
         super(converter);
     }
 
-    public @NotNull Publisher<ByteBuffer> handle(@NotNull RequestHandler requestHandler,
-                                                 @NotNull InputStream eventStream,
-                                                 @NotNull Context context) {
+    public @NotNull Publisher<ByteBuffer> handle(@NotNull Event event, @NotNull RequestHandler requestHandler) {
         logger.trace("Function input conversion started...");
         final long inputStart = (logger.isDebugEnabled())
                 ? TimeUtils.getTime()
@@ -45,7 +41,7 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
         logger.debug("Function '{}' execution started with input '{}' and output '{}'",
                 requestHandler.getClass().getName(), function.input().getName(), function.output().getName());
 
-        final Object functionInput = getFunctionInput(eventStream, function.input(), function.output(), context);
+        final Object functionInput = getFunctionInput(event.input(), function.input(), function.output(), event.context());
         if (logger.isDebugEnabled()) {
             logger.debug("Function input conversion took: {} millis", TimeUtils.timeTook(inputStart));
             logger.debug("Function input: {}", functionInput);
@@ -55,14 +51,14 @@ public class InputEventHandler extends AbstractEventHandler implements EventHand
         final long responseStart = (logger.isInfoEnabled())
                 ? TimeUtils.getTime()
                 : 0;
-        final Object functionOutput = requestHandler.handleRequest(functionInput, context);
+        final Object functionOutput = requestHandler.handleRequest(functionInput, event.context());
         if (logger.isInfoEnabled()) {
             logger.info("Function processing took: {} millis", TimeUtils.timeTook(responseStart));
         }
 
         logger.trace("Function output conversion started...");
         final long outputStart = TimeUtils.getTime();
-        final Object response = getFunctionOutput(functionOutput, function.input(), function.output(), context);
+        final Object response = getFunctionOutput(functionOutput, function.input(), function.output(), event.context());
         if (logger.isDebugEnabled()) {
             logger.debug("Function output conversion took: {} millis", TimeUtils.timeTook(outputStart));
             logger.debug("Function output: {}", response);

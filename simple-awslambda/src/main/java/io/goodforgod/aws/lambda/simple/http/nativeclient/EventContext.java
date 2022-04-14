@@ -1,4 +1,4 @@
-package io.goodforgod.aws.lambda.simple;
+package io.goodforgod.aws.lambda.simple.http.nativeclient;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
@@ -31,10 +31,6 @@ record EventContext(HttpHeaders headers) implements Context {
     @Override
     public String getLogStreamName() {
         return getEnv(AwsContextVariables.AWS_LAMBDA_LOG_STREAM_NAME);
-    }
-
-    public String getHandlerName() {
-        return getEnv(AwsContextVariables.HANDLER);
     }
 
     @Override

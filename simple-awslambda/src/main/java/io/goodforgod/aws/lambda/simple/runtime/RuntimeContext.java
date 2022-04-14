@@ -23,7 +23,6 @@ public interface RuntimeContext extends AutoCloseable {
      * @param <T>      type of bean to instantiate
      * @return return bean instance
      */
-    @Nullable
     <T> T getBean(@NotNull Class<T> beanType);
 
     /**
@@ -32,6 +31,5 @@ public interface RuntimeContext extends AutoCloseable {
      * @param <T>       type of bean to instantiate
      * @return return bean instance
      */
-    @Nullable
     <T> T getBean(@NotNull Class<T> beanType, @Nullable String qualifier);
 }

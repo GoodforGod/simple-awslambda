@@ -4,7 +4,6 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
 import io.goodforgod.aws.lambda.simple.handler.EventHandler;
-import io.goodforgod.aws.lambda.simple.handler.RequestFunction;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpRequest;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpResponse;
 import io.goodforgod.aws.lambda.simple.utils.InputStreamUtils;
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @author Anton Kurako (GoodforGod)
  * @since 7.11.2020
  */
-public abstract class AbstractEventHandler implements EventHandler {
+abstract class AbstractEventHandler implements EventHandler {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

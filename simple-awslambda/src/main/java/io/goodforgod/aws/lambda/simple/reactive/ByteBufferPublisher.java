@@ -11,7 +11,7 @@ import java.util.concurrent.Flow;
  * @author Anton Kurako (GoodforGod)
  * @since 10.10.2021
  */
-public class ByteBufferPublisher implements Flow.Publisher<ByteBuffer> {
+class ByteBufferPublisher implements Flow.Publisher<ByteBuffer> {
 
     private static final int DEFAULT_BUFSIZE = 16 * 1024;
 

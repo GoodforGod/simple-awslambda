@@ -1,10 +1,9 @@
 package io.goodforgod.aws.lambda.simple;
 
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.util.concurrent.Flow;
-
 import com.amazonaws.services.lambda.runtime.Context;
+import io.goodforgod.aws.lambda.simple.handler.Event;
+import io.goodforgod.aws.lambda.simple.http.SimpleHttpBody;
+import java.net.URI;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,6 +15,15 @@ import org.jetbrains.annotations.NotNull;
 public interface AwsRuntimeClient {
 
     /**
+     * AWS Lambda provides an HTTP API for custom runtimes to receive invocation events from Lambda and
+     * send response data back within the Lambda execution environment.
+     *
+     * @return URI where AWS Lambda runtime is located
+     */
+    @NotNull
+    URI getAwsRuntimeApi();
+
+    /**
      * @param runtimeEndpoint {@link io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API}
      * @return next AWSLambda event to be processed
      */
@@ -24,24 +32,24 @@ public interface AwsRuntimeClient {
 
     /**
      * @param runtimeEndpoint {@link io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API}
-     * @param response to post for AWSLambda event
-     * @param context of the event
+     * @param lambdaResult    to post for AWSLambda event
+     * @param context         of the event
      */
     void reportInvocationSuccess(@NotNull URI runtimeEndpoint,
-                                 @NotNull Flow.Publisher<ByteBuffer> response,
+                                 @NotNull SimpleHttpBody lambdaResult,
                                  @NotNull Context context);
 
     /**
      * @param runtimeEndpoint {@link io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API}
-     * @param throwable to report for AWS
+     * @param throwable       to report for AWS
      */
     void reportInitializationError(@NotNull URI runtimeEndpoint,
                                    @NotNull Throwable throwable);
 
     /**
      * @param runtimeEndpoint {@link io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API}
-     * @param throwable to report for AWS
-     * @param context of the event
+     * @param throwable       to report for AWS
+     * @param context         of the event
      */
     void reportInvocationError(@NotNull URI runtimeEndpoint,
                                @NotNull Throwable throwable,

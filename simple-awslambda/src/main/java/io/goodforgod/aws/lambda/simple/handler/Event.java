@@ -1,10 +1,8 @@
-package io.goodforgod.aws.lambda.simple;
+package io.goodforgod.aws.lambda.simple.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import org.jetbrains.annotations.NotNull;
-
-import java.awt.event.InputEvent;
 import java.io.InputStream;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Describes AWS Lambda event
