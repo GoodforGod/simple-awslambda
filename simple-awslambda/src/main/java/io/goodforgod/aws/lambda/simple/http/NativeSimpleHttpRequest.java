@@ -20,6 +20,8 @@ record NativeSimpleHttpRequest(URI uri,
 
     @Override
     public @Nullable Publisher<ByteBuffer> body() {
-        return httpBody.value();
+        return (httpBody == null)
+                ? null
+                : httpBody.value();
     }
 }

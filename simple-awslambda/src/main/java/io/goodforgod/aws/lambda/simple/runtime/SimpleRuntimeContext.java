@@ -1,5 +1,6 @@
 package io.goodforgod.aws.lambda.simple.runtime;
 
+import io.goodforgod.aws.lambda.simple.AwsRuntimeClient;
 import io.goodforgod.aws.lambda.simple.AwsRuntimeLoopCondition;
 import io.goodforgod.aws.lambda.simple.convert.Converter;
 import io.goodforgod.aws.lambda.simple.convert.gson.GsonConverterFactory;
@@ -8,6 +9,7 @@ import io.goodforgod.aws.lambda.simple.handler.impl.BodyEventHandler;
 import io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler;
 import io.goodforgod.aws.lambda.simple.http.SimpleHttpClient;
 import io.goodforgod.aws.lambda.simple.http.nativeclient.NativeHttpClient;
+import io.goodforgod.aws.lambda.simple.http.nativeclient.SimpleAwsRuntimeClient;
 import java.util.*;
 import java.util.function.Consumer;
 import javax.inject.Named;
@@ -61,6 +63,8 @@ public class SimpleRuntimeContext implements RuntimeContext {
         return context -> {
             final SimpleHttpClient httpClient = new NativeHttpClient();
             registerBean(httpClient);
+            final AwsRuntimeClient awsRuntimeClient = new SimpleAwsRuntimeClient(httpClient);
+            registerBean(awsRuntimeClient);
         };
     }
 
