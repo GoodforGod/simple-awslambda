@@ -31,7 +31,7 @@ final class SimpleLambdaRuntimeEventLoop {
      * @param eventHandlerQualifier to use for implementation injection
      */
     void execute(@NotNull RuntimeContext runtimeContext, @NotNull String eventHandlerQualifier) {
-        SimpleLoggerLogLevelRefresher.refresh();
+        SimpleLoggerRefresher.refresh();
 
         final long contextStart = TimeUtils.getTime();
         try (final RuntimeContext context = runtimeContext) {

@@ -18,6 +18,7 @@ public interface AwsRuntimeClient {
      * AWS Lambda provides an HTTP API for custom runtimes to receive invocation events from Lambda and
      * send response data back within the Lambda execution environment.
      *
+     * @see io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API
      * @return URI where AWS Lambda runtime is located
      */
     @NotNull
@@ -42,16 +43,16 @@ public interface AwsRuntimeClient {
     /**
      * @param runtimeEndpoint {@link io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API}
      * @param throwable       to report for AWS
-     */
-    void reportInitializationError(@NotNull URI runtimeEndpoint,
-                                   @NotNull Throwable throwable);
-
-    /**
-     * @param runtimeEndpoint {@link io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API}
-     * @param throwable       to report for AWS
      * @param context         of the event
      */
     void reportInvocationError(@NotNull URI runtimeEndpoint,
                                @NotNull Throwable throwable,
                                @NotNull Context context);
+
+    /**
+     * @param runtimeEndpoint {@link io.goodforgod.aws.lambda.simple.config.AwsRuntimeVariables#AWS_LAMBDA_RUNTIME_API}
+     * @param throwable       to report for AWS
+     */
+    void reportInitializationError(@NotNull URI runtimeEndpoint,
+                                   @NotNull Throwable throwable);
 }

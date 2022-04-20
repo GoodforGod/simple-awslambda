@@ -2,13 +2,13 @@
 
 Fastest, Lightweight and GraalVM optimized AWS Lambda Runtime.
 
-Most simple and efficient way to build Native Serverless Java executables for AWS Lambda.
+Simple and efficient way to build Native Java Serverless executables for AWS Lambda.
 
 ## Dependency :rocket:
 
 **Gradle**
 ```groovy
-implementation "io.goodforgod:simple-awslambda:0.22.0-SNAPSHOT"
+implementation "io.goodforgod:simple-awslambda:0.27.0-SNAPSHOT"
 ```
 
 **Maven**
@@ -16,7 +16,7 @@ implementation "io.goodforgod:simple-awslambda:0.22.0-SNAPSHOT"
 <dependency>
     <groupId>io.goodforgod</groupId>
     <artifactId>simple-awslambda</artifactId>
-    <version>0.22.0-SNAPSHOT</version>
+    <version>0.27.0-SNAPSHOT</version>
 </dependency>
 ```
 
