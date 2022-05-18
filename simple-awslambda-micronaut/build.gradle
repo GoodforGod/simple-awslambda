@@ -1,9 +1,9 @@
 plugins {
-    id "io.micronaut.library" version "3.3.2"
+    id "io.micronaut.library" version "3.4.0"
 }
 
 micronaut {
-    version("3.4.2")
+    version("3.4.3")
     processing {
         incremental(true)
         module(project.name)
