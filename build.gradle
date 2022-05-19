@@ -5,7 +5,14 @@ plugins {
 
     id "org.sonarqube" version "3.3"
     id "com.diffplug.spotless" version "6.1.0"
-    id "org.graalvm.buildtools.native" version "0.9.11"
+    id "org.graalvm.buildtools.native" version "0.9.9"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    gradlePluginPortal()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 group = groupId
@@ -13,6 +20,19 @@ version = artifactVersion
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
+
+graalvmNative {
+    binaries {
+        test {
+            verbose = true
+            debug = true
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(17)
+                vendor = JvmVendorSpec.AMAZON
+            }
+        }
+    }
+}
 
 subprojects {
     apply plugin: "jacoco"
@@ -25,6 +45,7 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
@@ -61,6 +82,19 @@ subprojects {
         reports {
             html.enabled(false)
             junitXml.enabled(false)
+        }
+    }
+
+    graalvmNative {
+        binaries {
+            test {
+                verbose = true
+                debug = true
+                javaLauncher = javaToolchains.launcherFor {
+                    languageVersion = JavaLanguageVersion.of(17)
+                    vendor = JvmVendorSpec.AMAZON
+                }
+            }
         }
     }
 
