@@ -28,11 +28,20 @@ implementation "io.goodforgod:simple-awslambda:0.29.0-SNAPSHOT"
 
 ## Getting Started
 
+ 
+
 ### Examples
 
 Here is repository with many examples of [simple-awslambda](https://github.com/GoodforGod/simple-awslambda-examples) for hello-world, DynamoDB, AuroraDB, etc.
 
 ### Guide how to deploy
+
+Guide to deploy consists of 5 steps:
+1) [Build](#build) *function.zip* artifact via *build.sh*
+2) Sign in AWS Accounts
+3) Create AWS Lambda function
+4) Upload *function.zip* artifact
+5) Done
 
 ## Ecosystem
 
@@ -101,7 +110,7 @@ Runtime provides *SimpleHttpClient* and other contracts to interact with HTTP.
 
 Runtime that is responsible for handling Event is Reactive by design and returns Publisher from Java API.
 
-### Runtime
+### Entrypoint
 
 There two runtime entrypoints available to extend:
 - *AbstractInputLambdaEntrypoint* - entrypoint for direct event that should be propagated for processing.
