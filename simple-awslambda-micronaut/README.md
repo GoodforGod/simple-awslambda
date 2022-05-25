@@ -56,11 +56,15 @@ public class HelloWorldLambda implements RequestHandler<Request, Response> {
 }
 ```
 
+You can check [examples](https://github.com/GoodforGod/simple-awslambda-examples) for more details and context.
+
 ## Configuration
 
-GSON configuration is provided via *application.yaml* as other Micronaut configurations, nothing different from Micronaut service configs.
-
 When using *simple-logger* it is still configured via *simplelogger.property* file.
+
+### GSON
+
+GSON configuration is provided via *application.yaml* as other Micronaut configurations, nothing different from Micronaut service configs.
 
 ## Entrypoint
 

@@ -28,7 +28,7 @@ implementation "io.goodforgod:simple-awslambda:0.29.0-SNAPSHOT"
 
 ## Getting Started
 
- 
+
 
 ### Examples
 
