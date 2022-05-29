@@ -38,10 +38,11 @@ Here is repository with many examples of [simple-awslambda](https://github.com/G
 
 Guide to deploy consists of 5 steps:
 1) [Build](#build) *function.zip* artifact via *build.sh*
-2) Sign in AWS Accounts
+2) Sign in [AWS Accounts](https://console.aws.amazon.com/)
 3) Create AWS Lambda function
 4) Upload *function.zip* artifact
-5) Done
+5) Test
+6) Done
 
 ## Ecosystem
 
