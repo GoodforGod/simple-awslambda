@@ -58,12 +58,7 @@ import io.goodforgod.graalvm.hint.annotation.ReflectionHint;
 @InitializationHint(
         typeNames = {
                 "io.goodforgod.aws.lambda.simple",
-                "io.goodforgod.gson.configuration",
                 "io.goodforgod.http.common",
-                "io.goodforgod.slf4j.simplelogger",
-                "com.google.gson",
-                "org.slf4j.impl",
-                "org.slf4j.LoggerFactory",
         },
         value = InitializationHint.InitPhase.BUILD)
 final class GraalVMHints {
