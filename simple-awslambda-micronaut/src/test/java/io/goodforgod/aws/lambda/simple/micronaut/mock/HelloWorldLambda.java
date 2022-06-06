@@ -4,6 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import java.util.UUID;
 import javax.inject.Singleton;
+
+import io.goodforgod.graalvm.hint.annotation.NativeImageHint;
+import io.goodforgod.graalvm.hint.annotation.NativeImageOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
  * @author Anton Kurako (GoodforGod)
  * @since 31.07.2021
  */
+@NativeImageHint(options = NativeImageOptions.QUICK_BUILD)
 @Singleton
 public class HelloWorldLambda implements RequestHandler<Request, Response> {
 
