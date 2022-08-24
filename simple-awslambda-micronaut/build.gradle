@@ -1,9 +1,9 @@
 plugins {
-    id "io.micronaut.library" version "3.4.0"
+    id "io.micronaut.library" version "3.5.1"
 }
 
 micronaut {
-    version("3.4.4")
+    version("3.6.1")
     processing {
         incremental(true)
         module(project.name)
@@ -24,7 +24,7 @@ dependencies {
 
     implementation "javax.inject:javax.inject:1"
     implementation "org.jetbrains:annotations:23.0.0"
-    implementation "io.goodforgod:gson-configuration:1.4.2-SNAPSHOT"
+    implementation "io.goodforgod:gson-configuration:1.4.2"
 
     testAnnotationProcessor "io.goodforgod:graalvm-hint-processor:0.19.0"
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
