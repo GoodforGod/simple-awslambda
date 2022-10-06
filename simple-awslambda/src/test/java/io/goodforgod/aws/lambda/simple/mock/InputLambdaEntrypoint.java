@@ -3,9 +3,6 @@ package io.goodforgod.aws.lambda.simple.mock;
 import io.goodforgod.aws.lambda.simple.AbstractInputLambdaEntrypoint;
 import io.goodforgod.aws.lambda.simple.handler.impl.InputEventHandler;
 import io.goodforgod.aws.lambda.simple.runtime.SimpleRuntimeContext;
-import io.goodforgod.graalvm.hint.annotation.NativeImageHint;
-import io.goodforgod.graalvm.hint.annotation.NativeImageOptions;
-
 import java.util.function.Consumer;
 
 /**

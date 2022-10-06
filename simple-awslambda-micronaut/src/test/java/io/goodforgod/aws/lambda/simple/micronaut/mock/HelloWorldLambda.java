@@ -2,11 +2,10 @@ package io.goodforgod.aws.lambda.simple.micronaut.mock;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import java.util.UUID;
-import javax.inject.Singleton;
-
 import io.goodforgod.graalvm.hint.annotation.NativeImageHint;
 import io.goodforgod.graalvm.hint.annotation.NativeImageOptions;
+import java.util.UUID;
+import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
