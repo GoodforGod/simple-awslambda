@@ -1,5 +1,6 @@
 # Simple AWSLambda
 
+[![Minimum required Java version](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
 ![GraalVM Enabled](https://img.shields.io/badge/GraalVM-Ready-orange?style=plastic)
 [![GitHub Action](https://github.com/goodforgod/simple-awslambda-project/workflows/Java%20CI/badge.svg)](https://github.com/GoodforGod/simple-awslambda-project/actions?query=workflow%3A%22Java+CI%22)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
@@ -14,7 +15,7 @@ Simple and efficient way to build Native Java Serverless executables for AWS Lam
 
 [**Gradle**](https://mvnrepository.com/artifact/io.goodforgod/graalvm-hint-processor)
 ```groovy
-implementation "io.goodforgod:simple-awslambda:0.29.0-SNAPSHOT"
+implementation "io.goodforgod:simple-awslambda:1.0.0-SNAPSHOT"
 ```
 
 [**Maven**](https://mvnrepository.com/artifact/io.goodforgod/graalvm-hint-processor)
@@ -22,7 +23,7 @@ implementation "io.goodforgod:simple-awslambda:0.29.0-SNAPSHOT"
 <dependency>
     <groupId>io.goodforgod</groupId>
     <artifactId>simple-awslambda</artifactId>
-    <version>0.29.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
