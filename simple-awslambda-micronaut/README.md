@@ -6,7 +6,7 @@ Simple AWSLambda extension that allow to use Micronaut IoC and all Micronaut mod
 
 **Gradle**
 ```groovy
-implementation "io.goodforgod:simple-awslambda-micronaut:1.0.0-SNAPSHOT"
+implementation "io.goodforgod:simple-awslambda-micronaut:1.0.0"
 ```
 
 **Maven**
@@ -14,7 +14,7 @@ implementation "io.goodforgod:simple-awslambda-micronaut:1.0.0-SNAPSHOT"
 <dependency>
     <groupId>io.goodforgod</groupId>
     <artifactId>simple-awslambda-micronaut</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 

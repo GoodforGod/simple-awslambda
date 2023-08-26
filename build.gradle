@@ -1,36 +1,49 @@
+buildscript {
+    dependencies {
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:6.19.0"
+    }
+}
+
 plugins {
+    id "base"
     id "jacoco"
-    id "java-library"
-    id "maven-publish"
+    id "jacoco-report-aggregation"
 
-    id "org.sonarqube" version "3.3"
-    id "com.diffplug.spotless" version "6.12.0"
-    id "org.graalvm.buildtools.native" version "0.9.22"
+    id "org.sonarqube" version "4.2.1.3168"
+    id "io.github.gradle-nexus.publish-plugin" version "1.3.0"
+    id "org.graalvm.buildtools.native" version "0.9.24"
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    gradlePluginPortal()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "goodforgod"
+        property "sonar.projectKey", "GoodforGod_$artifactRootId"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
+    }
 }
 
-group = groupId
-version = artifactVersion
+dependencies {
+    jacocoAggregation project(":simple-awslambda")
+    jacocoAggregation project(":simple-awslambda-micronaut")
+}
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-graalvmNative {
-    binaries {
-        test {
-            verbose = true
-            debug = true
-            javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(17)
-                vendor = JvmVendorSpec.AMAZON
-            }
+reporting {
+    reports {
+        testCodeCoverageReport(JacocoCoverageReport) {
+            testType = TestSuiteType.UNIT_TEST
         }
+    }
+}
+
+allprojects {
+    group = groupId
+    var ver = System.getenv().getOrDefault("RELEASE_VERSION", artifactVersion)
+    version = ver.startsWith("v") ? ver.substring(1) : ver
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
     }
 }
 
@@ -42,16 +55,6 @@ subprojects {
     apply plugin: "com.diffplug.spotless"
     apply plugin: "org.graalvm.buildtools.native"
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    }
-
-    group = groupId
-    version = artifactVersion
-
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 
@@ -60,28 +63,6 @@ subprojects {
             resolutionStrategy {
                 cacheChangingModulesFor 0, "seconds" // check for updates every build
             }
-        }
-    }
-
-    spotless {
-        java {
-            encoding("UTF-8")
-            importOrder()
-            removeUnusedImports()
-            eclipse("4.21.0").configFile("${rootDir}/config/codestyle.xml")
-        }
-    }
-
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events("passed", "skipped", "failed")
-            exceptionFormat("full")
-        }
-
-        reports {
-            html.enabled(false)
-            junitXml.enabled(false)
         }
     }
 
@@ -98,7 +79,29 @@ subprojects {
         }
     }
 
-    jar.enabled(true)
+    test {
+        failFast(false)
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+            exceptionFormat("full")
+            showStandardStreams(false)
+        }
+
+        reports {
+            html.required = false
+            junitXml.required = false
+        }
+    }
+
+    spotless {
+        java {
+            encoding("UTF-8")
+            importOrder()
+            removeUnusedImports()
+            eclipse("4.21").configFile("${rootDir}/config/codestyle.xml")
+        }
+    }
 
     tasks.withType(JavaCompile) {
         options.encoding("UTF-8")
@@ -109,7 +112,7 @@ subprojects {
     check.dependsOn jacocoTestReport
     jacocoTestReport {
         reports {
-            xml.enabled true
+            xml.required = true
             html.destination file("${buildDir}/jacocoHtml")
         }
     }
@@ -120,10 +123,76 @@ subprojects {
             options.addBooleanOption("html5", true)
         }
     }
+}
 
-    if (project.hasProperty("signing.keyId")) {
+subprojects {
+    apply plugin: "maven-publish"
+    apply plugin: "org.sonarqube"
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                pom {
+                    name = "${project.name}"
+                    url = "https://github.com/GoodforGod/$artifactRootId"
+
+                    license {
+                        name = "Apache License 2.0"
+                        url = "https://github.com/GoodforGod/$artifactRootId/blob/master/LICENSE"
+                        distribution = "repo"
+                    }
+
+                    developer {
+                        id = "GoodforGod"
+                        name = "Anton Kurako"
+                        email = "goodforgod.dev@gmail.com"
+                        url = "https://github.com/GoodforGod"
+                    }
+
+                    scm {
+                        connection = "scm:git:git://github.com/GoodforGod/${artifactRootId}.git"
+                        developerConnection = "scm:git:ssh://GoodforGod/${artifactRootId}.git"
+                        url = "https://github.com/GoodforGod/$artifactRootId/tree/master"
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username System.getenv("OSS_USERNAME")
+                    password System.getenv("OSS_PASSWORD")
+                }
+            }
+            if (!version.endsWith("SNAPSHOT")) {
+                maven {
+                    name = "GitHubPackages"
+                    url = "https://maven.pkg.github.com/GoodforGod/$artifactRootId"
+                    credentials {
+                        username = System.getenv("GITHUB_ACTOR")
+                        password = System.getenv("GITHUB_TOKEN")
+                    }
+                }
+            }
+        }
+    }
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    if (project.hasProperty("signingKey")) {
         apply plugin: "signing"
         signing {
+            def signingKey = findProperty("signingKey")
+            def signingPassword = findProperty("signingPassword")
+            useInMemoryPgpKeys(signingKey, signingPassword)
             sign publishing.publications.mavenJava
         }
     }

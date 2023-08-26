@@ -1,8 +1,9 @@
 # Simple AWSLambda
 
-[![Minimum required Java version](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
 ![GraalVM Enabled](https://img.shields.io/badge/GraalVM-Ready-orange?style=plastic)
-[![GitHub Action](https://github.com/goodforgod/simple-awslambda-project/workflows/Java%20CI/badge.svg)](https://github.com/GoodforGod/simple-awslambda-project/actions?query=workflow%3A%22Java+CI%22)
+[![Minimum required Java version](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/simple-awslambda/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/simple-awslambda)
+[![GitHub Action](https://github.com/goodforgod/simple-awslambda/workflows/CI%20Master/badge.svg)](https://github.com/GoodforGod/simple-awslambda/actions?query=workflow%3ACI+Master)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=ncloc)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
@@ -13,23 +14,21 @@ Simple and efficient way to build Native Java Serverless executables for AWS Lam
 
 ## Dependency :rocket:
 
-[**Gradle**](https://mvnrepository.com/artifact/io.goodforgod/graalvm-hint-processor)
+[**Gradle**](https://mvnrepository.com/artifact/io.goodforgod/simple-awslambda)
 ```groovy
-implementation "io.goodforgod:simple-awslambda:1.0.0-SNAPSHOT"
+implementation "io.goodforgod:simple-awslambda:1.0.0"
 ```
 
-[**Maven**](https://mvnrepository.com/artifact/io.goodforgod/graalvm-hint-processor)
+[**Maven**](https://mvnrepository.com/artifact/io.goodforgod/simple-awslambda)
 ```xml
 <dependency>
     <groupId>io.goodforgod</groupId>
     <artifactId>simple-awslambda</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
 ## Getting Started
-
-
 
 ### Examples
 
@@ -61,7 +60,7 @@ Aws Lambda Runtime uses [slf4j](https://github.com/qos-ch/slf4j) for logging and
 It is recommended to use [slf4j-simple-logger](https://github.com/GoodforGod/slf4j-simple-logger) for logging,
 it is part of *simple-awslambda* ecosystem and was designed to be used in serverless environment, is GraalVM friendly and easy to use.
 
-You can use any slf4j compatible implementation if needed.
+You can use any SLF4J compatible implementation if needed.
 
 Logging example:
 ```java
@@ -87,7 +86,7 @@ Native image require special configurations to build and run native executables.
 Most used cases is reflection config for DTO serialization/deserialization.
 
 You can use any approach you would like to generate such configs, but there is library
-that provide [annotation based]() way to generate such configs,
+that provide [annotation based](https://github.com/GoodforGod/graalvm-hint) way to generate such configs,
 this is easy, simple and solid solution for such configs.
 
 You can also use [GraalVM Native Image agent](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#agent-support), but its up to you how to include and generate such configs.

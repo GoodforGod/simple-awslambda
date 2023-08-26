@@ -84,7 +84,6 @@ public final class AwsLambdaAssertions {
 
     private AwsLambdaAssertions(AbstractLambdaEntrypoint entrypoint) {
         this.entrypoint = entrypoint;
-        this.entrypoint.getRuntimeContext().setupInRuntime();
     }
 
     @NotNull
@@ -125,31 +124,35 @@ public final class AwsLambdaAssertions {
 
     private <T> T inputBytesAndExpectBytes(Function<RuntimeContext, byte[]> inputConverter,
                                            BiFunction<RuntimeContext, byte[], T> resultConverter) {
-        try {
-            final TestingEntrypoint testingEntrypoint = new TestingEntrypoint(entrypoint);
-            try (final TestingRuntimeContext testingRuntimeContext = (TestingRuntimeContext) testingEntrypoint
-                    .getRuntimeContext()) {
-                testingRuntimeContext.setupInRuntime();
+        final TestingEntrypoint testingEntrypoint = new TestingEntrypoint(entrypoint);
+        try (final TestingRuntimeContext testingRuntimeContext = (TestingRuntimeContext) testingEntrypoint
+                .getRuntimeContext()) {
+            testingRuntimeContext.setupInRuntime();
 
-                final byte[] inputAsBytes = inputConverter.apply(testingRuntimeContext);
-                final TestingAwsRuntimeClient testingAwsRuntimeClient = testingRuntimeContext.getTestingAwsRuntimeClient();
-                testingAwsRuntimeClient.setEvent(new ByteArrayInputStream(inputAsBytes));
+            final byte[] inputAsBytes = inputConverter.apply(testingRuntimeContext);
+            final TestingAwsRuntimeClient testingAwsRuntimeClient = testingRuntimeContext.getTestingAwsRuntimeClient();
+            testingAwsRuntimeClient.setEvent(new ByteArrayInputStream(inputAsBytes));
 
-                testingEntrypoint.test(new String[0]);
+            testingEntrypoint.test(new String[0]);
 
-                final Throwable throwable = testingAwsRuntimeClient.getThrowable();
-                if (throwable != null) {
-                    if (throwable instanceof RuntimeException ex) {
-                        throw ex;
-                    } else {
-                        throw new TestingAwsLambdaException(throwable);
-                    }
+            final Throwable throwable = testingAwsRuntimeClient.getThrowable();
+            if (throwable != null) {
+                if (throwable instanceof RuntimeException ex) {
+                    throw ex;
                 } else {
-                    return resultConverter.apply(testingRuntimeContext, testingAwsRuntimeClient.getResult());
+                    throw new TestingAwsLambdaException(throwable);
                 }
+            } else {
+                return resultConverter.apply(testingRuntimeContext, testingAwsRuntimeClient.getResult());
             }
         } catch (Exception e) {
             throw new TestingAwsLambdaException(e);
+        } finally {
+            try {
+                ((TestingRuntimeContext) testingEntrypoint.getRuntimeContext()).closeReal();
+            } catch (Exception e) {
+                // do nothing
+            }
         }
     }
 }

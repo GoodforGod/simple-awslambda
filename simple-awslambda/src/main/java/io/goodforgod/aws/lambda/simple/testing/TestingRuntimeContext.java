@@ -52,6 +52,10 @@ final class TestingRuntimeContext implements RuntimeContext {
 
     @Override
     public void close() throws Exception {
+        // do nothing
+    }
+
+    void closeReal() throws Exception {
         getRealRuntimeContext().close();
     }
 

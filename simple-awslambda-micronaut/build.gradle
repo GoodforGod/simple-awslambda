@@ -1,9 +1,9 @@
 plugins {
-    id "io.micronaut.library" version "3.7.9"
+    id "io.micronaut.library" version "4.0.2"
 }
 
 micronaut {
-    version("3.7.7")
+    version("4.0.2")
     processing {
         incremental(true)
         module(project.name)
@@ -14,26 +14,26 @@ micronaut {
 dependencies {
     api project(":simple-awslambda")
 
-    annotationProcessor "io.goodforgod:graalvm-hint-processor:0.20.0"
+    annotationProcessor "io.goodforgod:graalvm-hint-processor:1.1.0"
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-graal"
 
-    compileOnly "io.goodforgod:graalvm-hint-annotations:0.20.0"
+    compileOnly "io.goodforgod:graalvm-hint-annotations:1.1.0"
     compileOnly "io.micronaut:micronaut-inject-java"
     compileOnly "org.graalvm.nativeimage:svm"
 
     implementation "javax.inject:javax.inject:1"
-    implementation "org.jetbrains:annotations:23.0.0"
+    implementation "org.jetbrains:annotations:24.0.1"
     implementation "io.goodforgod:gson-configuration:2.0.0"
 
-    testAnnotationProcessor "io.goodforgod:graalvm-hint-processor:0.20.0"
+    testAnnotationProcessor "io.goodforgod:graalvm-hint-processor:1.1.0"
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 
-    testImplementation "io.goodforgod:graalvm-hint-annotations:0.20.0"
+    testImplementation "io.goodforgod:graalvm-hint-annotations:1.1.0"
     testImplementation "io.micronaut.test:micronaut-test-core"
     testImplementation "io.micronaut.test:micronaut-test-junit5"
 
-    testRuntimeOnly "io.goodforgod:slf4j-simple-logger:0.16.0"
+    testRuntimeOnly "io.goodforgod:slf4j-simple-logger:2.0.0"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.junit.jupiter:junit-jupiter-params"
@@ -42,42 +42,8 @@ dependencies {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
-
             pom {
-                name = "Simple AWSLambda Micronaut"
-                url = "https://github.com/GoodforGod/$artifactId"
                 description = "Micronaut Integration module for Simple AWSLambda."
-
-                license {
-                    name = "Apache License 2.0"
-                    url = "https://github.com/GoodforGod/$artifactId/blob/master/LICENSE"
-                    distribution = "repo"
-                }
-
-                developer {
-                    id = "GoodforGod"
-                    name = "Anton Kurako"
-                    email = "goodforgod.dev@gmail.com"
-                    url = "https://github.com/GoodforGod"
-                }
-
-                scm {
-                    connection = "scm:git:git://github.com/GoodforGod/${artifactId}.git"
-                    developerConnection = "scm:git:ssh://GoodforGod/${artifactId}.git"
-                    url = "https://github.com/GoodforGod/$artifactId/tree/master"
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username System.getenv("OSS_USERNAME")
-                password System.getenv("OSS_PASSWORD")
             }
         }
     }
