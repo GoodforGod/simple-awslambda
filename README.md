@@ -3,7 +3,7 @@
 ![GraalVM Enabled](https://img.shields.io/badge/GraalVM-Ready-orange?style=plastic)
 [![Minimum required Java version](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/simple-awslambda/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/simple-awslambda)
-[![GitHub Action](https://github.com/goodforgod/simple-awslambda/workflows/CI%20Master/badge.svg)](https://github.com/GoodforGod/simple-awslambda/actions?query=workflow%3ACI+Master)
+[![GitHub Action](https://github.com/goodforgod/simple-awslambda/workflows/CI%20Master/badge.svg)](https://github.com/GoodforGod/simple-awslambda/actions?query=CI+Master)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda&metric=ncloc)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda)
