@@ -44,14 +44,13 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
 
 subprojects {
     apply plugin: "jacoco"
     apply plugin: "java-library"
-    apply plugin: "maven-publish"
-    apply plugin: "org.sonarqube"
     apply plugin: "com.diffplug.spotless"
     apply plugin: "org.graalvm.buildtools.native"
 

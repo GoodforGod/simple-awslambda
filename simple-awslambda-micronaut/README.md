@@ -1,5 +1,15 @@
 # Simple AWSLambda Micronaut
 
+![GraalVM Enabled](https://img.shields.io/badge/GraalVM-Ready-orange?style=plastic)
+[![Minimum required Java version](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/simple-awslambda-micronaut/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.goodforgod/simple-awslambda-micronaut)
+[![GitHub Action](https://github.com/goodforgod/simple-awslambda/workflows/CI%20Master/badge.svg)](https://github.com/GoodforGod/simple-awslambda/actions?query=workflow%3ACI+Master)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=coverage)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=ncloc)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
+
+Fast, Lightweight and GraalVM oriented AWS Lambda Runtime with Micronaut.
+
 Simple AWSLambda extension that allow to use Micronaut IoC and all Micronaut modules.
 
 ## Dependency :rocket:

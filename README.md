@@ -8,7 +8,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GoodforGod_simple-awslambda-project&metric=ncloc)](https://sonarcloud.io/dashboard?id=GoodforGod_simple-awslambda-project)
 
-Fast, Lightweight and GraalVM optimized AWS Lambda Runtime.
+Fast, Lightweight and GraalVM oriented AWS Lambda Runtime.
 
 Simple and efficient way to build Native Java Serverless executables for AWS Lambda.
 
@@ -47,11 +47,11 @@ Guide to deploy consists of 5 steps:
 ## Ecosystem
 
 *simple-awslambda* runtime provides different *modules* that form an ecosystem and solve crucial serverless problems like:
-- Logging 
-- Http Components
-- GraalVM Hints
-- Docker Image
-- Testing
+- [Logging](https://github.com/GoodforGod/slf4j-simple-logger)
+- [HTTP Components](https://github.com/GoodforGod/http-common)
+- [GraalVM Hints](https://github.com/GoodforGod/graalvm-hint)
+- [Docker Image](https://github.com/GoodforGod/docker-amazonlinux-graalvm)
+- [Testing](#testing)
 
 ### Logging
 
