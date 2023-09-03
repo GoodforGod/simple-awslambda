@@ -5,7 +5,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "simple-awslambda-project"
+rootProject.name = artifactRootId
 
 include "simple-awslambda"
 include "simple-awslambda-micronaut"
